@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+	<launch>
+		<!-- Run the armor_service node -->
+		<node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService"/>
+		<!-- Run the load ontology node -->
+		<node name = "load_onotlogy" pkg = "Assignment1" type = "load_ontology.py" output = "screen"/>
+ </launch>
+
+
