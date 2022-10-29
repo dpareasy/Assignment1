@@ -59,6 +59,39 @@ class ArmorManipulationClient(object):
         else:
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
 
+    def launch_reasoner(self):
+        """
+        Add an individual to a class.
+    
+        Args:
+            ind_name (str): individual to be added to the class.
+            class_name (str): individual will be added to this class. It will be created a new class if it does not exist.
+    
+        Returns:
+            bool: True if ontology is consistent, else False
+    
+        Raises:
+            armor_api.exceptions.ArmorServiceCallError: if call to ARMOR fails
+            armor_api.exceptions.ArmorServiceInternalError: if ARMOR reports an internal error
+    
+        Note:
+            It returns the boolean consistency state of the ontology. This value is not updated to the last operation
+            if you are working in buffered reasoner or manipulation mode!
+        """
+        try:
+            res = self._client.call('REASON','','', [])
+    
+        except rospy.ServiceException as e:
+            raise ArmorServiceCallError("Reasoner failed")
+    
+        except rospy.ROSException:
+            raise ArmorServiceCallError("Cannot reach ARMOR client: Timeout Expired. Check if ARMOR is running.")
+    
+        if res.success:
+            return res.is_consistent
+        else:
+            raise ArmorServiceInternalError(res.error_description, res.exit_code)
+
     
     def disj_inds_of_class(self, ind_name, class_name):
         """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python3 
 
 import rospy
 from actionlib import SimpleActionClient
@@ -108,6 +108,8 @@ class InterfaceHelper: #Assumes that no state runs concurrently (the mutex is sh
 
     def is_battery_low(self):
         return self._battery_low
+
+    # PROBABLY HERE i HAVE TO MODIFY THE CODE BY ADAPTING IT TO THE ONTOLOGY
     
     #Update the current robot pose stored in the robot-state node
     def initialise_robot_pose(self, point):

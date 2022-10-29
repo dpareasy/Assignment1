@@ -24,7 +24,7 @@ NODE_ROBOT_STATE = 'robot-state'
 # The name of the server to get the current robot pose.
 SERVER_GET_POSE = 'state/get_pose'
 
-# The name of the server to set the current robot pose. 
+# The name of the server to set the current robot pose.
 SERVER_SET_POSE = 'state/set_pose'
 
 # The name of the topic where the battery state is published.
