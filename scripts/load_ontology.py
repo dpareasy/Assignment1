@@ -9,9 +9,9 @@ def LoadMap():
     # Put the path of the file.owl
     path = path + "/../../topological_map/"
 
-    client = ArmorClient("test2", "ontology2")
+    client = ArmorClient("test", "ontology")
     # Initializing with buffered manipulation and reasoning
-    client.utils.load_ref_from_file(path + "topological_map.owl", "http://bnc/exp-rob-lab/2022-23", True, "PELLET", True, False)
+    client.utils.load_ref_from_file(path + "my_topological_map.owl", "http://bnc/exp-rob-lab/2022-23", True, "PELLET", True, False)
 
     client.utils.mount_on_ref()
     client.utils.set_log_to_terminal(True)
@@ -103,13 +103,8 @@ def LoadMap():
     client.utils.apply_buffered_changes()
     client.utils.sync_buffered_reasoner()
 
-    """
-    # Launch reasoner
-    client.manipulation.launch_reasoner()
-    print("REASONER LAUNCHED")"""
-
     # SAVE AND EXIT
-    client.utils.save_ref_with_inferences(path + "topological_map.owl")
+    client.utils.save(path + "my_topological_map.owl")
 
 
 
