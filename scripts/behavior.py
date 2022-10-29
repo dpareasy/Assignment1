@@ -32,6 +32,7 @@ TRANS_RECHARGING = 'recharging'
 TRANS_WENT_RANDOM_POSE = 'went_to_random_pose'
 TRANS_RECHARGED = 'recharged'
 
+client = ArmorClient("test", "ontology")
 
 class LoadOntology(State):
     def __init__(self):
@@ -44,11 +45,16 @@ class LoadOntology(State):
 class DecideTarget(State):
     def __init__(self):
         State.__init__(self, outcomes = [TRANS_DECIDED])
-
+        
     def execute(self, userdata):
+        reachable = client.query.can_reach_ind("canReach", "Robot1")
+        print(reachable)
+        destination = random.choice(reachable)
+        print(destination)
         rospy.sleep(5)
         print("target decided")
         return TRANS_DECIDED
+
 
 class Recharging(State):
     def __init__(self):

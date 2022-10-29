@@ -133,4 +133,31 @@ class ArmorQueryClient(object):
             return True
         else:
             return False
+
+    def can_reach_ind(self, objectprop_name, ind_name):
+        """
+        Query all objects an individual can reach.
+    
+        Args:
+            objectprop_name (str): object property whose values you want to query.
+            ind_name (str): individual whose value you want to query.
+    
+        Returns:
+            list(str): list of queried values as strings.
+        """
+        
+        try:
+            res = self._client.call('QUERY', 'OBJECTPROP', 'IND', [objectprop_name, ind_name])
+    
+        except rospy.ServiceException:
+            raise ArmorServiceCallError("Service call failed upon querying {0} from {1}".format(
+                self._client.reference_name, self._client.client_id))
+    
+        except rospy.ROSException:
+            raise ArmorServiceCallError("Cannot reach ARMOR client: Timeout Expired. Check if ARMOR is running.")
+
+        if res.success: 
+            return res.queried_objects
+        else:
+            return ArmorServiceInternalError(res.error_description, res.exit_code)
     

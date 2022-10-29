@@ -46,6 +46,10 @@ def LoadMap():
     client.manipulation.add_ind_to_class("D7", "DOOR")
     print("Added D7 to DOOR")
 
+
+    client.manipulation.remove_ind_from_class("G", "LOCATION")
+    print("G has been removed")
+    
     # DISJOINT OF THE INDIVIDUALS OF THE CLASSES
     client.manipulation.disj_inds_of_class("R1", "LOCATION")
     client.manipulation.disj_inds_of_class("R2", "LOCATION")
@@ -103,8 +107,15 @@ def LoadMap():
     client.utils.apply_buffered_changes()
     client.utils.sync_buffered_reasoner()
 
+    """
+    # Launch reasoner
+    client.manipulation.launch_reasoner()
+    print("REASONER LAUNCHED")
+    
+    """
+
     # SAVE AND EXIT
-    client.utils.save(path + "my_topological_map.owl")
+    client.utils.save_ref_with_inferences(path + "my_topological_map.owl")
 
 
 
