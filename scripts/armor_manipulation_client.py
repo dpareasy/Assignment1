@@ -61,7 +61,7 @@ class ArmorManipulationClient(object):
 
     def launch_reasoner(self):
         """
-        Add an individual to a class.
+        Launch the reasoner
     
         Args:
             ind_name (str): individual to be added to the class.
@@ -93,7 +93,7 @@ class ArmorManipulationClient(object):
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
 
     
-    def disj_inds_of_class(self, ind_name, class_name):
+    def disj_inds_of_class(self, class_name):
         """
         Disjoint all individuals of a class.
 
@@ -116,7 +116,7 @@ class ArmorManipulationClient(object):
             res = self._client.call('DISJOINT', 'IND', 'CLASS', [class_name])
 
         except rospy.ServiceException as e:
-            raise ArmorServiceCallError("Service call failed upon adding individual {0} to class {1}: {2}".format(ind_name, class_name, e))
+            raise ArmorServiceCallError("Service call failed upon adding individual {0} to class {1}: {2}".format(class_name, e))
 
         except rospy.ROSException:
             raise ArmorServiceCallError("Cannot reach ARMOR client: Timeout Expired. Check if ARMOR is running.")

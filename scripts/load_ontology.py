@@ -1,21 +1,26 @@
 #! /usr/bin/env python3
 
 # Import the armor client class
+import time
 from armor_client import ArmorClient
 from os.path import dirname, realpath
+client = ArmorClient("assignment", "my_ontology") 
+
+
+#def LoadMap():
+path = dirname(realpath(__file__))
+# Put the path of the file.owl
+path = path + "/../../topological_map/"
+
+
+# Initializing with buffered manipulation and reasoning
+client.utils.load_ref_from_file(path + "my_ontology_map.owl", "http://bnc/exp-rob-lab/2022-23", True, "PELLET", False, False)
+
+client.utils.mount_on_ref()
+client.utils.set_log_to_terminal(True)
 
 def LoadMap():
-    path = dirname(realpath(__file__))
-    # Put the path of the file.owl
-    path = path + "/../../topological_map/"
-
-    client = ArmorClient("test", "ontology")
-    # Initializing with buffered manipulation and reasoning
-    client.utils.load_ref_from_file(path + "my_topological_map.owl", "http://bnc/exp-rob-lab/2022-23", True, "PELLET", True, False)
-
-    client.utils.mount_on_ref()
-    client.utils.set_log_to_terminal(True)
-
+   
     # ADD ALL OUR AXIOMS
     client.manipulation.add_ind_to_class("R1", "LOCATION")
     print("Added R1 to LOCATION")
@@ -47,22 +52,9 @@ def LoadMap():
     print("Added D7 to DOOR")
 
     # DISJOINT OF THE INDIVIDUALS OF THE CLASSES
-    client.manipulation.disj_inds_of_class("R1", "LOCATION")
-    client.manipulation.disj_inds_of_class("R2", "LOCATION")
-    client.manipulation.disj_inds_of_class("R3", "LOCATION")
-    client.manipulation.disj_inds_of_class("R4", "LOCATION")
-    client.manipulation.disj_inds_of_class("R5", "LOCATION")
-    client.manipulation.disj_inds_of_class("R6", "LOCATION")
-    client.manipulation.disj_inds_of_class("C1", "LOCATION")
-    client.manipulation.disj_inds_of_class("C2", "LOCATION")
-    client.manipulation.disj_inds_of_class("D1", "DOOR")
-    client.manipulation.disj_inds_of_class("D2", "DOOR")
-    client.manipulation.disj_inds_of_class("D1", "DOOR")
-    client.manipulation.disj_inds_of_class("D4", "DOOR")
-    client.manipulation.disj_inds_of_class("D5", "DOOR")
-    client.manipulation.disj_inds_of_class("D6", "DOOR")
-    client.manipulation.disj_inds_of_class("D7", "DOOR")
-
+    client.manipulation.disj_inds_of_class("LOCATION")
+    client.manipulation.disj_inds_of_class("DOOR")
+    
     print("All individuals are disjointed")
 
     # ADD PROPERTIES TO OBJECTS
@@ -81,8 +73,16 @@ def LoadMap():
     client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D6")
     client.manipulation.add_objectprop_to_ind("hasDoor", "E", "D6")
     client.manipulation.add_objectprop_to_ind("hasDoor", "E", "D7")
-
     print("All properties added!")
+
+    # ADD DATAPROPERTIES TO OBJECTS
+    client.manipulation.add_dataprop_to_ind("visitedAt", "R1", "Long", str(int(time.time())))
+    client.manipulation.add_dataprop_to_ind("visitedAt", "R2", "Long", str(int(time.time())))
+    client.manipulation.add_dataprop_to_ind("visitedAt", "R3", "Long", str(int(time.time())))
+    client.manipulation.add_dataprop_to_ind("visitedAt", "R4", "Long", str(int(time.time())))
+    client.manipulation.add_dataprop_to_ind("visitedAt", "C1", "Long", str(int(time.time())))
+    client.manipulation.add_dataprop_to_ind("visitedAt", "C2", "Long", str(int(time.time())))
+    client.manipulation.add_dataprop_to_ind("visitedAt", "E", "Long", str(int(time.time())))
 
     # Connections between locations
     client.manipulation.add_objectprop_to_ind("connectedTo", "R1", "C1")
@@ -102,9 +102,6 @@ def LoadMap():
     # APPLY CHANGES AND QUERY
     client.utils.apply_buffered_changes()
     client.utils.sync_buffered_reasoner()
-
-    # SAVE AND EXIT
-    client.utils.save(path + "my_topological_map.owl")
 
 
 
