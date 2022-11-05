@@ -25,6 +25,7 @@ class ActionClientHelper:
         self._external_feedback_cb = feedback_callback
         self._client.wait_for_server()
 
+
     def send_goal(self, goal):#async call 
         if not self._is_running:
             self._client.send_goal(goal, done_cb = self._done_callback, feedback_cb = self._feedback_callback)
@@ -108,20 +109,4 @@ class InterfaceHelper: #Assumes that no state runs concurrently (the mutex is sh
 
     def is_battery_low(self):
         return self._battery_low
-
-    # PROBABLY HERE i HAVE TO MODIFY THE CODE BY ADAPTING IT TO THE ONTOLOGY
-    
-    #Update the current robot pose stored in the robot-state node
-    def initialise_robot_pose(self, point):
-        #eventually wait for the server to be initialised
-        rospy.wait_for_service(anm.SERVER_SET_POSE)
-        try:
-            #call the service and set the current robot pose
-            service = rospy.ServiceProxy(anm.SERVER_SET_POSE, SetPose)
-            response = service(point)
-            # Log servuce call
-            rospy.loginfo(anm.tag_log(f"setting intial robot position ({point.x}, {point.y}) to the '{anm.SERVER_SET_POSE}' node."))
-        except rospy.ServiceException as e:
-            log_msg = "Cannot set current robot position through {anm.SERVER_SET_POSE} server. Error: {e}"
-            rospy.logerr(anm.tag_log(log_msg, LOG_TAG))
 

@@ -1,8 +1,32 @@
 <?xml version="1.0"?>
 	<launch>
 		<!-- Run the armor_service node -->
-		<node pkg="armor" type="execute" name="armor_service" launch-prefix="xterm -e" args="it.emarolab.armor.ARMORMainService"/>
+		<node pkg="armor" 
+			  type="execute" 
+			  name="armor_service" 
+			  launch-prefix="xterm -e" 
+			  output = "screen"
+			  args="it.emarolab.armor.ARMORMainService"
+		> <node/>
+		<!-- Run the architecture's component and test it based on random-based stimulus. -->
+		<!--rosparam param="test/random_sense/active"> True </rosparam-->
+		<!--rosparam param="test/random_sense/battery_time"> [15.0, 40.0] </rosparam-->
+		<node pkg = "Assignment1"  
+			type = "behavior.py" 
+			name = "behavior"
+			launch-prefix="xterm -e"
+		> </node>
+
+		<node pkg = "Assignment1"  
+			type = "robot_state.py" 
+			name = "robot_state"
+			launch-prefix="xterm -e"
+		> </node>
+
+		<node pkg = "Assignment1"  
+			type = "behavior.py" 
+			name = "behavior"
+			output = "screen"
+		> </node>
 		
  </launch>
-
-
