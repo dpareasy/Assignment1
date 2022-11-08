@@ -97,7 +97,6 @@ class MoveToTarget(smach.State):
         client.utils.sync_buffered_reasoner()
         print("Now the robot is in " + choice)
         print("Last visit for " + choice + " was " + last_visit + " new visit at " + current_time)
-        
         rospy.sleep(5)
         print("target decided")
         return TRANS_MOVED

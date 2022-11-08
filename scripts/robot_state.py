@@ -4,15 +4,10 @@ import threading
 import random
 import rospy
 # Import constant name defined to structure the architecture.
-from arch_skeleton import architecture_name_mapper as anm
+from Assignment1 import architecture_name_mapper as anm
 # Import the messages used by services and publishers.
 from std_msgs.msg import Bool
 from Assignment1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
-
-
-# A tag for identifying logs producer.
-LOG_TAG = anm.NODE_ROBOT_STATE
-
 
 # The node manager class.
 # This class defines two services to get and set the current 
@@ -20,13 +15,58 @@ LOG_TAG = anm.NODE_ROBOT_STATE
 class RobotState:
 
     def __init__(self):
+        #######################################################################################
         # Initialise this node.
-        rospy.init_node(anm.NODE_ROBOT_STATE, log_level = rospy.INFO)
+        rospy.init_node('robot-state', log_level = rospy.INFO)
+        # Initialise robot position.
+        self._pose = None
         # Initialise battery level.
         self._battery_low = False
+        # Initialise randomness, if enabled.
+        self._randomness = rospy.get_param('test/random_sense/active', True)
+        if self._randomness:
+            self._random_battery_time = rospy.get_param(anm.PARAM_BATTERY_TIME, [15.0, 40.0])
+        # Define services.
+        rospy.Service('state/get_pose', GetPose, self.get_pose)
+        rospy.Service('state/set_pose', SetPose, self.set_pose)
         # Start publisher on a separate thread.
         th = threading.Thread(target = self._is_battery_low)
         th.start()
+        ######################################################################################
+
+    # The `robot/set_pose` service implementation.
+    # The `request` input parameter is the current robot pose to be set,
+    # as given by the client. This server returns an empty `response`.
+    def set_pose(self, request):
+        if request.pose is not None:
+            # Store the new current robot position.
+            self._pose = request.pose
+            print("Set current robot position")
+            # Log information.
+            #self._print_info(f'Set current robot position through `{anm.SERVER_SET_POSE}` '
+                             #f'as ({self._pose.x}, {self._pose.y}).')
+        else:
+            print("Cannot set an unspecified robot position")
+            #rospy.logerr(anm.tag_log('Cannot set an unspecified robot position', LOG_TAG))
+        # Return an empty response.
+        return SetPoseResponse()
+
+    # The `robot/get_pose` service implementation.
+    # The `request` input parameter is given by the client as empty. Thus, it is not used.
+    # The `response` returned to the client contains the current robot pose.
+    def get_pose(self, response):
+        # Log information.
+        if self._pose is None:
+            print("Cannot get an unspecified robot position")
+            #rospy.logerr(anm.tag_log('Cannot get an unspecified robot position', LOG_TAG))
+        else:
+            print("Get current robot position")
+            #log_msg = f'Get current robot position through `{anm.SERVER_GET_POSE}` as ({self._pose.x}, {self._pose.y})'
+            #self._print_info(log_msg)
+        # Create the response with the robot pose and return it.
+        response = GetPoseResponse()
+        response.pose = self._pose
+        return response
 
     # Publish changes of battery levels. This method runs on a separate thread.
     def _is_battery_low(self):
@@ -46,24 +86,15 @@ class RobotState:
             publisher.publish(Bool(self._battery_low))
             # Log state.
             if self._battery_low:
-                log_msg = f'Robot got low battery after {delay} seconds.'
+                print("Robot got low battery after" , delay , "seconds")
             else:
-                log_msg = f'Robot got a fully charged battery after {delay} seconds.'
-            self._print_info(log_msg)
+                print("Robot got fully charged battery after" , delay , "seconds")
             # Wait for simulate battery usage.
-            #delay = random.uniform(self._random_battery_time[0], self._random_battery_time[1])
-            delay = 10
+            delay = random.uniform(self._random_battery_time[0], self._random_battery_time[1])
+            #delay = 10
             rospy.sleep(delay)
             # Change battery state.
             self._battery_low = not self._battery_low
-
-
-    # Print logging only when random testing is active.
-    # This is done to allow an intuitive usage of the keyboard-based interface.
-    def _print_info(self, msg):
-        if self._randomness:
-            rospy.loginfo(anm.tag_log(msg, LOG_TAG))
-
 
 if __name__ == "__main__":
     # Instantiate the node manager class and wait.
