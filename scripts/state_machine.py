@@ -59,8 +59,16 @@ class DecideTarget(smach.State):
         State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'choice', 'random_plan'])
         # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
+        # Get the environment size from ROS parameters.
+        self.environment_size = rospy.get_param(anm.PARAM_ENVIRONMENT_SIZE)
 
     def execute(self, userdata):
+        # Define a random point to be reached through some via-points to be planned.
+        goal = PlanGoal()
+        goal.target = Point(x = random.uniform(0, self.environment_size[0]),
+                            y = random.uniform(0, self.environment_size[1]))
+        # Invoke the planner action server.
+        self._helper.planner_client.send_goal(goal)
         while not rospy.is_shutdown():
             # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
             self._helper.mutex.acquire()
@@ -71,6 +79,7 @@ class DecideTarget(smach.State):
                     return TRANS_RECHARGING
                 # If the controller finishes its computation, then take the `went_random_pose` transition, which is related to the `repeat` transition.
                 if self._helper.planner_client.is_done():
+
                     current_pose = client.query.objectprop_b2_ind("isIn","Robot1")
                     current_pose = current_pose[0][32:-1]
                     userdata.current_pose = current_pose
@@ -85,6 +94,7 @@ class DecideTarget(smach.State):
                     choice = choice[32:-1]
                     userdata.choice = choice
                     print(choice)
+                    userdata.random_plan = self._helper.planner_client.get_results().via_points
                     return TRANS_DECIDED
                     # Note that if unexpected stimulus comes from the other nodes of the architecture through the
                     # `self._helper` class, then this state will not take any transitions. This is equivalent to have a
@@ -107,7 +117,7 @@ class MoveToTarget(smach.State):
         # Get the plan to a random position computed by the `PLAN_TO_RANDOM_POSE` state.
         plan = userdata.random_plan
         # Start the action server for moving the robot through the planned via-points.
-        goal = ControlGoal(via_points=plan)
+        goal = ControlGoal(via_points = plan)
         self._helper.controller_client.send_goal(goal)
         client.utils.sync_buffered_reasoner()
         choice = userdata.choice
@@ -190,6 +200,11 @@ def main():
     rospy.init_node('state_machine', log_level = rospy.INFO)
     # Initialise an helper class to manage the interfaces with the other nodes in the architectures, i.e., it manages external stimulus.
     helper = InterfaceHelper()
+
+    # Get the initial robot pose from ROS parameters.
+    robot_pose_param = rospy.get_param(anm.PARAM_INITIAL_POSE, [0, 0])
+    # Initialise robot position in the `robot_state`, as required by the plan anc control action servers.
+    helper.init_robot_pose(Point(x = robot_pose_param[0], y = robot_pose_param[1]))
 
     sm_main = smach.StateMachine([])
     with sm_main:

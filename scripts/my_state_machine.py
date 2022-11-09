@@ -1,24 +1,17 @@
 #!/usr/bin/env python3 
 
-import roslib
 import smach
-import time
 import rospy
 from pydoc import Helper
 import random
-import string
-import os
 import smach_ros
 from threading import Lock
 from std_msgs.msg import Bool
 from smach import StateMachine, State
-from armor_client import ArmorClient
 from load_ontology import LoadMap
-from armor_client import ArmorClient
 from Assignment1 import architecture_name_mapper as anm
-from interface_helper import InterfaceHelper
+from interface_helper import InterfaceHelper, BehaviorHelper
 from Assignment1.msg import Point, ControlGoal, PlanGoal
-from os.path import dirname, realpath
 
 #list of states in the machine
 STATE_INIT = 'INITIALIZE_MAP'
@@ -43,10 +36,8 @@ TRANS_RECHARGED = 'recharged'
 # for getting stimulus from the other components of the architecture.
 LOOP_SLEEP_TIME = 0.3
 
-client = ArmorClient("assignment", "my_ontology")
-
 class LoadOntology(smach.State):
-    def __init__(self, interface_helper):
+    def __init__(self, interface_helper, behavior_helper):
         State.__init__(self, outcomes = [TRANS_INITIALIZED])
 
     def execute(self, userdata):
@@ -55,10 +46,11 @@ class LoadOntology(smach.State):
         return TRANS_INITIALIZED
 
 class DecideTarget(smach.State):
-    def __init__(self, interface_helper):
+    def __init__(self, interface_helper, behavior_helper):
         State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'choice', 'random_plan'])
         # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
+        self._behavior = behavior_helper
         # Get the environment size from ROS parameters.
         self.environment_size = rospy.get_param(anm.PARAM_ENVIRONMENT_SIZE)
 
@@ -79,20 +71,9 @@ class DecideTarget(smach.State):
                     return TRANS_RECHARGING
                 # If the controller finishes its computation, then take the `went_random_pose` transition, which is related to the `repeat` transition.
                 if self._helper.planner_client.is_done():
-                    current_pose = client.query.objectprop_b2_ind("isIn","Robot1")
-                    current_pose = current_pose[0][32:-1]
+                    current_pose, choice = self._behavior.decide_target()
                     userdata.current_pose = current_pose
-                    print("\ncurrent pose is " + current_pose)
-                    destination = client.query.objectprop_b2_ind("canReach", "Robot1")
-                    print("Possible destinations")
-                    print(destination)
-                    if len(destination) == 1:
-                        choice = destination[0]
-                    else:
-                        choice = random.choice(destination)
-                    choice = choice[32:-1]
                     userdata.choice = choice
-                    print(choice)
                     userdata.random_plan = self._helper.planner_client.get_results().via_points
                     return TRANS_DECIDED
                     # Note that if unexpected stimulus comes from the other nodes of the architecture through the
@@ -104,30 +85,24 @@ class DecideTarget(smach.State):
                 self._helper.mutex.release()
             # Wait for a reasonably small amount of time to allow `self._helper` processing stimulus (eventually).
             rospy.sleep(LOOP_SLEEP_TIME)
-        
 
 class MoveToTarget(smach.State):
-    def __init__(self, interface_helper):
+    def __init__(self, interface_helper, behavior_helper):
         State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose', 'choice'], output_keys= ['current_location'])
          # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
+        self._behavior = behavior_helper
 
     def execute(self, userdata):
         # Get the plan to a random position computed by the `PLAN_TO_RANDOM_POSE` state.
         plan = userdata.random_plan
         # Start the action server for moving the robot through the planned via-points.
-        goal = ControlGoal(via_points=plan)
+        goal = ControlGoal(via_points = plan)
         self._helper.controller_client.send_goal(goal)
-        client.utils.sync_buffered_reasoner()
         choice = userdata.choice
         current_pose = userdata.current_pose
         userdata.current_location = current_pose
-        client.manipulation.replace_objectprop_b2_ind("isIn", "Robot1", choice, current_pose)
-        last_visit = client.query.dataprop_b2_ind("visitedAt", choice)
-        last_visit = last_visit[0][:11]
-        last_visit = last_visit[1:]
-        print(last_visit)
-        current_time = str(int(time.time()))
+
         while not rospy.is_shutdown():
             # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
             self._helper.mutex.acquire()
@@ -138,18 +113,7 @@ class MoveToTarget(smach.State):
                     return TRANS_RECHARGING
                 # If the controller finishes its computation, then take the `went_random_pose` transition, which is related to the `repeat` transition.
                 if self._helper.controller_client.is_done():
-                    client.manipulation.replace_dataprop_b2_ind("visitedAt", choice, "Long", current_time, last_visit)
-                    client.utils.apply_buffered_changes()
-                    client.utils.sync_buffered_reasoner()
-                    last_change = client.query.dataprop_b2_ind("now", "Robot1")
-                    last_change = last_change[0][:11]
-                    last_change = last_change[1:]
-                    print("last change was")
-                    print(last_change)
-                    client.manipulation.replace_dataprop_b2_ind("now", "Robot1", "Long", current_time, last_change)
-                    client.utils.sync_buffered_reasoner()
-                    print("Now the robot is in " + choice)
-                    print("Last visit for " + choice + " was " + last_visit + " new visit at " + current_time)
+                    self._behavior.move_to_target(choice, current_pose)
                     return TRANS_MOVED
                     # Note that if unexpected stimulus comes from the other nodes of the architecture through the
                     # `self._helper` class, then this state will not take any transitions. This is equivalent to have a
@@ -163,9 +127,10 @@ class MoveToTarget(smach.State):
 
 class Recharging(State):
     # Construct this class, i.e., initialise this state.
-    def __init__(self, interface_helper):
+    def __init__(self, interface_helper, behavior_helper):
         # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
+        self._behavior = behavior_helper
         # Initialise this state with possible transitions (i.e., valid outputs of the `execute` function).
         State.__init__(self, outcomes = [TRANS_RECHARGED], 
                        input_keys = ['current_location'])
@@ -173,6 +138,7 @@ class Recharging(State):
     # Define the function performed each time a transition is such to enter in this state.
     # Note that the input parameter `userdata` is not used since no data is required from the other states.
     def execute(self, userdata):
+        current_location = userdata.current_location
         while not rospy.is_shutdown():  # Wait for stimulus from the other nodes of the architecture.
             # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
             self._helper.mutex.acquire()
@@ -180,11 +146,7 @@ class Recharging(State):
                 # If the battery is no low anymore take the `charged` transition.
                 if not self._helper.is_battery_low():
                     self._helper.reset_states()  # Reset the state variable related to the stimulus.
-                    current_location = userdata.current_location
-                    print(current_location)
-                    client.manipulation.replace_objectprop_b2_ind("isIn", "Robot1", "E", current_location)
-                    client.utils.apply_buffered_changes()
-                    client.utils.sync_buffered_reasoner()
+                    self._behavior.go_to_recharge(current_location)
                     return TRANS_RECHARGED
                     # Note that if unexpected stimulus comes from the other nodes of the architecture through the
                     # `self._helper` class, then this state will not take any transitions. This is equivalent to have a
@@ -199,7 +161,7 @@ def main():
     rospy.init_node('state_machine', log_level = rospy.INFO)
     # Initialise an helper class to manage the interfaces with the other nodes in the architectures, i.e., it manages external stimulus.
     helper = InterfaceHelper()
-
+    behavior = BehaviorHelper()
     # Get the initial robot pose from ROS parameters.
     robot_pose_param = rospy.get_param(anm.PARAM_INITIAL_POSE, [0, 0])
     # Initialise robot position in the `robot_state`, as required by the plan anc control action servers.
@@ -208,15 +170,15 @@ def main():
     sm_main = smach.StateMachine([])
     with sm_main:
 
-        smach.StateMachine.add(STATE_INIT, LoadOntology(helper),
+        smach.StateMachine.add(STATE_INIT, LoadOntology(helper, behavior),
                          transitions = {TRANS_INITIALIZED: STATE_DECISION})
-        smach.StateMachine.add(STATE_DECISION, DecideTarget(helper),
+        smach.StateMachine.add(STATE_DECISION, DecideTarget(helper, behavior),
                          transitions = {TRANS_RECHARGING : STATE_RECHARGING,
                                         TRANS_DECIDED: STATE_MOVING})
-        smach.StateMachine.add(STATE_MOVING, MoveToTarget(helper),
+        smach.StateMachine.add(STATE_MOVING, MoveToTarget(helper, behavior),
                          transitions = {TRANS_RECHARGING : STATE_RECHARGING,
                                         TRANS_MOVED: STATE_DECISION})
-        smach.StateMachine.add(STATE_RECHARGING, Recharging(helper),
+        smach.StateMachine.add(STATE_RECHARGING, Recharging(helper, behavior),
                          transitions = {TRANS_RECHARGED: STATE_DECISION})
     # Create and start the introspection server for visualization
     sis = smach_ros.IntrospectionServer('server_name', sm_main, '/SM_ROOT')

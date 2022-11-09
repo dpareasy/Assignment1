@@ -2,10 +2,12 @@
 
 # Import ROS libraries.
 import rospy
+import random
 from actionlib import SimpleActionClient
 
 # Import mutex to manage synchronization among ROS-based threads (i.e., node loop and subscribers)
 from threading import Lock
+from armor_client import ArmorClient
 
 # Import constant names that define the architecture's structure.
 from Assignment1 import architecture_name_mapper as anm
@@ -14,6 +16,8 @@ from Assignment1 import architecture_name_mapper as anm
 from std_msgs.msg import Bool
 from Assignment1.msg import PlanAction, ControlAction
 from Assignment1.srv import SetPose
+
+client = ArmorClient("assignment", "my_ontology")
 
 # A class to simplify the implementation of a client for ROS action servers. It is used by the `InterfaceHelper` class.
 class ActionClientHelper:
@@ -190,25 +194,6 @@ class InterfaceHelper:
     def is_battery_low(self):
         return self._battery_low
 
-    # Get the state variable encoded in this class that specifies if the interaction should start.
-    # The returning value will be `True` if the interaction should start, `False` otherwise.
-    # Note that the node using this class might exploit the `reset_state` function to improve robustness.
-    # Also note that this function should be used when the `mutex` has been acquired. This assures the
-    # synchronization  with the threads involving the subscribers and action clients.
-    def should_interaction_start(self):
-        return self._start_interaction
-
-    # It return the negation of the outcome of the `self.should_interaction_start()` function.
-    def should_interaction_end(self):
-        return not self._start_interaction
-
-    # It returns the location pointed by the user, if any. Otherwise, it returns `None`.
-    # This method reset to `None` the state variable of this class, i.e., it consumes the data.
-    def consume_gesture(self):
-        gesture = self._gesture  # get the last gesture
-        self._gesture = None
-        return gesture
-
     # Update the current robot pose stored in the `robot-state` node.
     @staticmethod
     def init_robot_pose(point):
@@ -226,4 +211,38 @@ class InterfaceHelper:
             #err_msg = f'Cannot set current robot position through `{anm.SERVER_SET_POSE}` server. Error: {e}'
             #rospy.logerr(anm.tag_log(err_msg, LOG_TAG))
 
+class BehaviorHelper:
+
+    def __init__(self):
+
+        self.decide_target()
+
+    def decide_target(self):
+        current_pose = client.query.objectprop_b2_ind("isIn","Robot1")
+        current_pose = current_pose[0][32:-1]
+        current_pose = current_pose
+        print("\ncurrent pose is " + current_pose)
+        destination = client.query.objectprop_b2_ind("canReach", "Robot1")
+        print("Possible destinations")
+        print(destination)
+        if len(destination) == 1:
+            choice = destination[0]
+        else:
+            choice = random.choice(destination)
+        choice = choice[32:-1]
+        choice = choice
+        print(choice)
+        return current_pose, choice
+
+    def move_to_target(self, choice, current_pose):
+        client.manipulation.replace_objectprop_b2_ind("isIn", "Robot1", choice, current_pose)
+        client.utils.apply_buffered_changes()
+        client.utils.sync_buffered_reasoner()
+        print("Now the robot is in " + choice)
+
+    def go_to_recharge(self, current_location):
+        client.manipulation.replace_objectprop_b2_ind("isIn", "Robot1", "E", current_location)
+        client.utils.apply_buffered_changes()
+        client.utils.sync_buffered_reasoner()
+        print("Robot recharged")
 
