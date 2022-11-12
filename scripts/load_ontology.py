@@ -2,6 +2,8 @@
 
 # Import the armor client class
 import time
+import rospy
+import os
 from armor_client import ArmorClient
 from os.path import dirname, realpath
 client = ArmorClient("assignment", "my_ontology") 
@@ -14,13 +16,19 @@ path = path + "/../../topological_map/"
 
 
 # Initializing with buffered manipulation and reasoning
-client.utils.load_ref_from_file(path + "my_ontology_map.owl", "http://bnc/exp-rob-lab/2022-23", True, "PELLET", False, False)
+client.utils.load_ref_from_file(path + "topological_map.owl", "http://bnc/exp-rob-lab/2022-23", True, "PELLET", False, False)
 
 client.utils.mount_on_ref()
 client.utils.set_log_to_terminal(True)
 
 def LoadMap():
-   
+
+    for num in range(1,100):
+        num += 1
+        print("Loading Map: " + str(num) + "%")
+        rospy.sleep(0.04)
+        os.system("clear")
+
     # ADD ALL OUR AXIOMS
     client.manipulation.add_ind_to_class("R1", "LOCATION")
     print("Added R1 to LOCATION")
@@ -54,7 +62,6 @@ def LoadMap():
     # DISJOINT OF THE INDIVIDUALS OF THE CLASSES
     client.manipulation.disj_inds_of_class("LOCATION")
     client.manipulation.disj_inds_of_class("DOOR")
-    
     print("All individuals are disjointed")
 
     # ADD PROPERTIES TO OBJECTS

@@ -56,7 +56,7 @@ class LoadOntology(smach.State):
 
 class DecideTarget(smach.State):
     def __init__(self, interface_helper):
-        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'choice', 'random_plan'])
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'random_plan'])
         # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
         # Get the environment size from ROS parameters.
@@ -79,7 +79,6 @@ class DecideTarget(smach.State):
                     return TRANS_RECHARGING
                 # If the controller finishes its computation, then take the `went_random_pose` transition, which is related to the `repeat` transition.
                 if self._helper.planner_client.is_done():
-
                     current_pose = client.query.objectprop_b2_ind("isIn","Robot1")
                     current_pose = current_pose[0][32:-1]
                     userdata.current_pose = current_pose
@@ -109,7 +108,7 @@ class DecideTarget(smach.State):
 
 class MoveToTarget(smach.State):
     def __init__(self, interface_helper):
-        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose', 'choice'], output_keys= ['current_location'])
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose'], output_keys= ['current_location'])
          # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
 
@@ -123,7 +122,7 @@ class MoveToTarget(smach.State):
         choice = userdata.choice
         current_pose = userdata.current_pose
         userdata.current_location = current_pose
-        client.manipulation.replace_objectprop_b2_ind("isIn", "Robot1", choice, current_pose)
+        client.manipulation.replace_objectprop_b2_ind("isIn", "Robot1", "C1", current_pose)
         last_visit = client.query.dataprop_b2_ind("visitedAt", choice)
         last_visit = last_visit[0][:11]
         last_visit = last_visit[1:]

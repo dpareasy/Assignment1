@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-
+import os
 import random
 import rospy
 # Import constant name defined to structure the architecture.
@@ -46,9 +46,11 @@ class ControllingAction(object):
 
         # Construct the feedback and loop for each via point.
         feedback = ControlFeedback()
+        os.system('clear')
         for point in goal.via_points:
             # Check that the client did not cancel this service.
             if self._as.is_preempt_requested():
+                rospy.loginfo(anm.tag_log('Server has been cancelled by the client!', LOG_TAG))
                 # Actually cancel this service.
                 self._as.set_preempted()
                 return

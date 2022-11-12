@@ -12,6 +12,8 @@ from load_ontology import LoadMap
 from Assignment1 import architecture_name_mapper as anm
 from interface_helper import InterfaceHelper, BehaviorHelper
 from Assignment1.msg import Point, ControlGoal, PlanGoal
+from armor_client import ArmorClient
+client = ArmorClient("assignment", "my_ontology") 
 
 #list of states in the machine
 STATE_INIT = 'INITIALIZE_MAP'
@@ -41,24 +43,30 @@ class LoadOntology(smach.State):
         State.__init__(self, outcomes = [TRANS_INITIALIZED])
 
     def execute(self, userdata):
-        LoadMap()
-        print("MAP ACQUIRED")
+        #LoadMap()
+        print("MAP LOADED")
+        rospy.sleep(2)
         return TRANS_INITIALIZED
+    
 
 class DecideTarget(smach.State):
     def __init__(self, interface_helper, behavior_helper):
-        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'choice', 'random_plan'])
+        
         # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
         self._behavior = behavior_helper
         # Get the environment size from ROS parameters.
         self.environment_size = rospy.get_param(anm.PARAM_ENVIRONMENT_SIZE)
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'choice', 'random_plan'])
 
     def execute(self, userdata):
         # Define a random point to be reached through some via-points to be planned.
         goal = PlanGoal()
         goal.target = Point(x = random.uniform(0, self.environment_size[0]),
                             y = random.uniform(0, self.environment_size[1]))
+        current_pose, choice = self._behavior.decide_target()
+        userdata.current_pose = current_pose
+        userdata.choice = choice
         # Invoke the planner action server.
         self._helper.planner_client.send_goal(goal)
         while not rospy.is_shutdown():
@@ -68,18 +76,13 @@ class DecideTarget(smach.State):
                 # If the battery is low, then cancel the control action server and take the `battery_low` transition.
                 if self._helper.is_battery_low():  # Higher priority
                     self._helper.planner_client.cancel_goals()
+                    self._behavior.go_to_recharge(current_pose)
                     return TRANS_RECHARGING
                 # If the controller finishes its computation, then take the `went_random_pose` transition, which is related to the `repeat` transition.
                 if self._helper.planner_client.is_done():
-                    current_pose, choice = self._behavior.decide_target()
-                    userdata.current_pose = current_pose
-                    userdata.choice = choice
                     userdata.random_plan = self._helper.planner_client.get_results().via_points
                     return TRANS_DECIDED
-                    # Note that if unexpected stimulus comes from the other nodes of the architecture through the
-                    # `self._helper` class, then this state will not take any transitions. This is equivalent to have a
-                    # loop-like transition in the behavioural UML diagram for all the other stimulus except
-                    # `TRANS_RECHARGING`, `TRANS_START_INTERACTION` and `TRANS_WENT_RANDOM_POSE`.
+
             finally:
                 # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
                 self._helper.mutex.release()
@@ -88,10 +91,11 @@ class DecideTarget(smach.State):
 
 class MoveToTarget(smach.State):
     def __init__(self, interface_helper, behavior_helper):
-        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose', 'choice'], output_keys= ['current_location'])
          # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
         self._behavior = behavior_helper
+
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose', 'choice'])
 
     def execute(self, userdata):
         # Get the plan to a random position computed by the `PLAN_TO_RANDOM_POSE` state.
@@ -99,9 +103,8 @@ class MoveToTarget(smach.State):
         # Start the action server for moving the robot through the planned via-points.
         goal = ControlGoal(via_points = plan)
         self._helper.controller_client.send_goal(goal)
-        choice = userdata.choice
         current_pose = userdata.current_pose
-        userdata.current_location = current_pose
+        choice = userdata.choice
 
         while not rospy.is_shutdown():
             # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
@@ -110,15 +113,14 @@ class MoveToTarget(smach.State):
                 # If the battery is low, then cancel the control action server and take the `battery_low` transition.
                 if self._helper.is_battery_low():  # Higher priority
                     self._helper.controller_client.cancel_goals()
+                    self._behavior.go_to_recharge(current_pose)
                     return TRANS_RECHARGING
                 # If the controller finishes its computation, then take the `went_random_pose` transition, which is related to the `repeat` transition.
                 if self._helper.controller_client.is_done():
                     self._behavior.move_to_target(choice, current_pose)
+                    actual_position = client.query.objectprop_b2_ind("isIn", "Robot1")
+                    print(actual_position)
                     return TRANS_MOVED
-                    # Note that if unexpected stimulus comes from the other nodes of the architecture through the
-                    # `self._helper` class, then this state will not take any transitions. This is equivalent to have a
-                    # loop-like transition in the behavioural UML diagram for all the other stimulus except
-                    # `TRANS_RECHARGING`, `TRANS_START_INTERACTION` and `TRANS_WENT_RANDOM_POSE`.
             finally:
                 # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
                 self._helper.mutex.release()
@@ -132,13 +134,11 @@ class Recharging(State):
         self._helper = interface_helper
         self._behavior = behavior_helper
         # Initialise this state with possible transitions (i.e., valid outputs of the `execute` function).
-        State.__init__(self, outcomes = [TRANS_RECHARGED], 
-                       input_keys = ['current_location'])
+        State.__init__(self, outcomes = [TRANS_RECHARGED])
 
     # Define the function performed each time a transition is such to enter in this state.
     # Note that the input parameter `userdata` is not used since no data is required from the other states.
     def execute(self, userdata):
-        current_location = userdata.current_location
         while not rospy.is_shutdown():  # Wait for stimulus from the other nodes of the architecture.
             # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
             self._helper.mutex.acquire()
@@ -146,11 +146,7 @@ class Recharging(State):
                 # If the battery is no low anymore take the `charged` transition.
                 if not self._helper.is_battery_low():
                     self._helper.reset_states()  # Reset the state variable related to the stimulus.
-                    self._behavior.go_to_recharge(current_location)
                     return TRANS_RECHARGED
-                    # Note that if unexpected stimulus comes from the other nodes of the architecture through the
-                    # `self._helper` class, then this state will not take any transitions. This is equivalent to have a
-                    # loop-like transition in the behavioural UML diagram for all the other stimulus except `TRAMS_RECHARGED`.
             finally:
                 # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
                 self._helper.mutex.release()

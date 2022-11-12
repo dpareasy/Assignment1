@@ -4,7 +4,7 @@
 from armor_client import ArmorClient
 from os.path import dirname, realpath
 
-client = ArmorClient("assignment", "my_ontology")
+client = ArmorClient("assignment", "my_ontology2")
 
 
 #def LoadMap():

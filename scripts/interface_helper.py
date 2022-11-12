@@ -3,6 +3,8 @@
 # Import ROS libraries.
 import rospy
 import random
+import time
+import simple_colors
 from actionlib import SimpleActionClient
 
 # Import mutex to manage synchronization among ROS-based threads (i.e., node loop and subscribers)
@@ -64,7 +66,6 @@ class ActionClientHelper:
             self._is_running = True
             self._is_done = False
             self._results = None
-            print("SENDING GOALS")
         else:
             print("Warning send a new goal, cancel the current request first!")
             #warn_msg = 'Warning send a new goal, cancel the current request first!'
@@ -214,35 +215,93 @@ class InterfaceHelper:
 class BehaviorHelper:
 
     def __init__(self):
+        self.agent = "Robot1"
+        self.current_position = "isIn"
+        self.reachable = "canReach"
+        self.last_visit = "visitedAt"
+        self.robot_timestamp = "now"
+        self.charging_location = "E"
+        self.time_stamps_type = "Long"
 
-        self.decide_target()
+    def inters_b2_lists(self, list1, list2):
+        intersection = []
+        for element in list1:
+            if element in list2:
+                intersection.append(element)
+        return intersection
+
+    def clean_strings(self, string_type, str_):
+        if string_type == 1:
+            for x in range (len(str_)):
+                str_[x] = str_[x][32:-1]
+        if string_type == 2:
+            str_ = str_[0][1:-11]
+        return str_
 
     def decide_target(self):
-        current_pose = client.query.objectprop_b2_ind("isIn","Robot1")
+        client.utils.sync_buffered_reasoner()
+        current_pose = client.query.objectprop_b2_ind(self.current_position, self.agent)
         current_pose = current_pose[0][32:-1]
-        current_pose = current_pose
-        print("\ncurrent pose is " + current_pose)
-        destination = client.query.objectprop_b2_ind("canReach", "Robot1")
-        print("Possible destinations")
-        print(destination)
-        if len(destination) == 1:
-            choice = destination[0]
+        #current_pose = current_pose
+        print(simple_colors.blue("\ncurrent pose is " + current_pose))
+        client.utils.sync_buffered_reasoner()
+        possible_destinations = client.query.objectprop_b2_ind(self.reachable, self.agent)
+        possible_destinations = self.clean_strings(1,possible_destinations)
+        #for x in range(len(possible_destinations)):
+        #    possible_destinations[x]=possible_destinations[x][32:-1]
+        print(simple_colors.blue("Possible destinations"))
+        print(simple_colors.blue(possible_destinations))
+        urgent_rooms = client.query.ind_b2_class("URGENT")
+        urgent_rooms = self.clean_strings(1, urgent_rooms)
+        #for i in range(len(urgent_rooms)):
+        #    urgent_rooms[i] = urgent_rooms[i][32:-1]
+        print(simple_colors.red(urgent_rooms))
+        #choice = []
+        #for element in possible_destinations:
+        #    if element in urgent_rooms:
+        #        choice.append(element)
+        choice = self.inters_b2_lists(possible_destinations, urgent_rooms)
+        print(simple_colors.green("URGENT AND REACHABLE LOCATIONS:"))
+        print(simple_colors.green(choice))
+        if not choice:
+            if len(possible_destinations) == 1:
+                choice = possible_destinations[0]
+            else:
+                choice = random.choice(possible_destinations)
         else:
-            choice = random.choice(destination)
-        choice = choice[32:-1]
-        choice = choice
-        print(choice)
+            choice = random.choice(choice)
+        print(simple_colors.blue("Moving to " + choice))
         return current_pose, choice
 
     def move_to_target(self, choice, current_pose):
-        client.manipulation.replace_objectprop_b2_ind("isIn", "Robot1", choice, current_pose)
+
+        last_visit = client.query.dataprop_b2_ind(self.last_visit, choice)
+        last_visit = self.clean_strings(2, last_visit)
+        #last_visit = last_visit[0][1:-11]
+        #last_visit = last_visit[1:]
+        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, choice, current_pose)
         client.utils.apply_buffered_changes()
         client.utils.sync_buffered_reasoner()
-        print("Now the robot is in " + choice)
+        last_change = client.query.dataprop_b2_ind(self.robot_timestamp, self.agent)
+        print(simple_colors.blue(last_change))
+        last_change = self.clean_strings(2, last_change)
+        #last_change = last_change[0][1:-11]
+        #last_change = last_change[1:]
+        print(simple_colors.blue("last change was " + last_change))
+        current_time = str(int(time.time()))
+        client.manipulation.replace_dataprop_b2_ind(self.last_visit, choice, self.time_stamps_type, current_time, last_visit)
+        client.manipulation.replace_dataprop_b2_ind(self.robot_timestamp, self.agent, self.time_stamps_type, current_time, last_change)
+        client.utils.apply_buffered_changes()
+        client.utils.sync_buffered_reasoner()
+        print(simple_colors.blue("Now the robot is in " + choice))
+        print(simple_colors.blue("Last visit for " + choice + " was " + last_visit + " new visit at " + current_time))
+        print(simple_colors.blue("Last time the robot changed location was " + last_change + " new visit at " + current_time))
+
 
     def go_to_recharge(self, current_location):
-        client.manipulation.replace_objectprop_b2_ind("isIn", "Robot1", "E", current_location)
+        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, self.charging_location, current_location)
         client.utils.apply_buffered_changes()
         client.utils.sync_buffered_reasoner()
-        print("Robot recharged")
+
+
 

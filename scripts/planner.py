@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-
+import os
 import random
 import rospy
 # Import constant name defined to structure the architecture.
@@ -32,15 +32,7 @@ class PlaningAction(object):
                                       execute_cb=self.execute_callback, 
                                       auto_start=False)
         self._as.start()
-      
-    # The callback invoked when a client set a goal to the `planner` server.
-    # This function will return a list of random points (i.e., the plan) when the fist point
-    # is the current robot position (retrieved from the `robot-state` node), while the last 
-    # point is the `goal` position (given as input parameter). The plan will contain 
-    # a random number of other points, which spans in the range 
-    # [`self._random_plan_points[0]`, `self._random_plan_points[1]`). To simulate computation,
-    # each point is added to the plan with a random delay spanning in the range 
-    # [`self._random_plan_time[0]`, `self._random_plan_time[1]`).
+        
     def execute_callback(self, goal):
         # Get the input parameters to compute the plan, i.e., the start (or current) and target positions.
         start_point = _get_pose_client()
@@ -70,6 +62,7 @@ class PlaningAction(object):
         # Get a random number of via points to be included in the plan.
         number_of_points = random.randint(self._random_plan_points[0], self._random_plan_points[1] + 1)
         
+        os.system('clear')
         # Generate the points of the plan.
         for i in range(1, number_of_points):
             # Check that the client did not cancel this service.
@@ -93,16 +86,13 @@ class PlaningAction(object):
                 # Append the target point to the plan as the last point.
                 feedback.via_points.append(target_point)
 
-        # Publish the results to the client.        
+        # Publish the results to the client.
         result = PlanResult()
         result.via_points = feedback.via_points
         self._as.set_succeeded(result)
-        log_msg = 'Motion plan succeeded with plan: '
-        log_msg += ''.join('(' + str(point.x) + ', ' + str(point.y) + '), ' for point in result.via_points)
-        rospy.loginfo(anm.tag_log(log_msg, LOG_TAG))
-
-    # Check if the point is within the environment bounds, i.e.
-    # x: [0, `self._environment_size[0]`], and y: [0, `self._environment_size[1]`].
+        for point in result.via_points:
+            print('[' + str(point.x) + ',' + str(point.y) + ']')
+        
     def _is_valid(self, point):
         return 0.0 <= point.x <= self._environment_size[0] and 0.0 <= point.y <= self._environment_size[1]
 
