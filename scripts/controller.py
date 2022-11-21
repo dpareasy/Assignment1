@@ -15,11 +15,14 @@ import Assignment1  # This is required to pass the `PlanAction` type for instant
 LOG_TAG = anm.NODE_CONTROLLER
 
 
-# An action server to simulate motion controlling.
-# Given a plan as a set of via points, it simulate the movements
-# to reach each point with a random delay. This server updates
-# the current robot position stored in the `robot-state` node.
+
 class ControllingAction(object):
+    """
+    An action server to simulate motion controlling.
+    Given a plan as a set of via points, it simulate the movements
+    to reach each point with a random delay. This server updates
+    the current robot position stored in the `robot-state` node.
+    """
 
     def __init__(self):
         # Get random-based parameters used by this server
@@ -31,13 +34,19 @@ class ControllingAction(object):
                                       auto_start=False)
         self._as.start()
 
-    # The callback invoked when a client set a goal to the `controller` server.
-    # This function requires a list of via points (i.e., the plan), and it simulate
-    # a movement through each point with a delay spanning in 
-    # ['self._random_motion_time[0]`, `self._random_motion_time[1]`).
-    # As soon as each via point is reached, the related robot position is updated
-    # in the `robot-state` node.
+    
     def execute_callback(self, goal):
+        """
+        The callback invoked when a client set a goal to the `controller` server.
+        This function requires a list of via points (i.e., the plan), and it simulate
+        a movement through each point with a delay spanning in 
+        ['self._random_motion_time[0]`, `self._random_motion_time[1]`).
+        As soon as each via point is reached, the related robot position is updated
+        in the `robot-state` node.
+
+        Args: 
+        goal: the goal position
+        """
         # Check if the provided plan is processable. If not, this service will be aborted.
         if goal is None or goal.via_points is None or len(goal.via_points) == 0:
             rospy.logerr(anm.tag_log('No via points provided! This service will be aborted!', LOG_TAG))
@@ -73,9 +82,15 @@ class ControllingAction(object):
         return  # Succeeded.
 
 
-# Update the current robot `pose` stored in the `robot-state` node.
-# This method is performed for each point provided in the action's server feedback.
+#
 def _set_pose_client(pose):
+    """
+    Update the current robot `pose` stored in the `robot-state` node.
+    This method is performed for each point provided in the action's server feedback.
+
+    Args:
+    pose: point (x and y coordinates)
+    """
     # Eventually, wait for the server to be initialised.
     rospy.wait_for_service(anm.SERVER_SET_POSE)
     try:

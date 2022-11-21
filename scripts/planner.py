@@ -11,15 +11,13 @@ from Assignment1.msg import Point, PlanFeedback, PlanResult
 from Assignment1.srv import GetPose
 import Assignment1  # This is required to pass the `PlanAction` type for instantiating the `SimpleActionServer`.
 
-
-# A tag for identifying logs producer.
-LOG_TAG = anm.NODE_PLANNER
-
-
-# An action server to simulate motion planning.
-# Given a target position, it retrieve the current robot position from the 
-# `robot-state` node, and return a plan as a set of via points.
+# 
 class PlaningAction(object):
+    """
+    An action server to simulate motion planning.
+    Given a target position, it retrieve the current robot position from the 
+    `robot-state` node, and return a plan as a set of via points.
+    """
 
     def __init__(self):
         # Get random-based parameters used by this server
@@ -34,14 +32,16 @@ class PlaningAction(object):
         self._as.start()
         
     def execute_callback(self, goal):
+        """
+        
+        """
         # Get the input parameters to compute the plan, i.e., the start (or current) and target positions.
         start_point = _get_pose_client()
         target_point = goal.target
 
         # Check if the start and target positions are correct. If not, this service will be aborted.
         if start_point is None or target_point is None:
-            log_msg = 'Cannot have `None` start point nor target_point. This service will be aborted!.'
-            rospy.logerr(anm.tag_log(log_msg, LOG_TAG))
+            print('Cannot have `None` start point nor target_point. This service will be aborted!.')
             # Close service by returning an `ABORT` state to the client.
             self._as.set_aborted()
             return
@@ -67,7 +67,7 @@ class PlaningAction(object):
         for i in range(1, number_of_points):
             # Check that the client did not cancel this service.
             if self._as.is_preempt_requested():
-                rospy.loginfo(anm.tag_log('Server has been cancelled by the client!', LOG_TAG))
+                print('Server has been cancelled by the client!')
                 # Actually cancel this service.
                 self._as.set_preempted()  
                 return
@@ -97,13 +97,20 @@ class PlaningAction(object):
         return 0.0 <= point.x <= self._environment_size[0] and 0.0 <= point.y <= self._environment_size[1]
 
 
-# Retrieve the current robot pose by the `state/get_pose` server of the `robot-state` node.
+# 
 def _get_pose_client():
+    """
+    Retrieve the current robot pose by the `state/get_pose` server of the `robot-state` node.
+    This function calls the service to get the pose of the robot in the dummy simulation.
+
+    Returns:
+    pose: the robot position
+    """
     # Eventually, wait for the server to be initialised.
-    rospy.wait_for_service(anm.SERVER_GET_POSE)
+    rospy.wait_for_service('state/get_pose')
     try:
         # Call the service and get a response with the current robot position.
-        service = rospy.ServiceProxy(anm.SERVER_GET_POSE, GetPose)
+        service = rospy.ServiceProxy('state/get_pose', GetPose)
         response = service()
         pose = response.pose
         return pose

@@ -558,6 +558,19 @@ class ArmorManipulationClient(object):
                 return False
         return True
 
+    def disjoint_all_ind(self, ind_list):
+        try:
+            res = self._client.call('DISJOINT', 'IND','', ind_list)
+
+        except rospy.ROSException:
+            raise ArmorServiceCallError("Cannot reach ARMOR client: Timeout Expired. Check if ARMOR is running.")
+
+        if res.success:
+            return res.is_consistent
+        else:
+            raise ArmorServiceInternalError(res.error_description, res.exit_code)
+
+
 
     def remove_ind_from_class(self, ind_name, class_name):
         """

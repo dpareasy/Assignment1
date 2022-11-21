@@ -1,4 +1,12 @@
 #! /usr/bin/env python3
+"""
+..module::load_onotology
+  :platform: Unix
+  :synopsis: Python module for defining function used by the state machine
+..moduleauthor::Davide Leo Parisi <davide.parisi1084@gmail.com>
+
+ROS node for creating the ontology
+"""
 
 # Import the armor client class
 import time
@@ -6,7 +14,7 @@ import rospy
 import os
 from armor_client import ArmorClient
 from os.path import dirname, realpath
-client = ArmorClient("assignment", "my_ontology") 
+client = ArmorClient("assignment", "my_ontology")
 
 
 #def LoadMap():
@@ -22,85 +30,79 @@ client.utils.mount_on_ref()
 client.utils.set_log_to_terminal(True)
 
 def LoadMap():
+    """
+    Function initializing the environment in which the robot should move.
+    This mechanism is generalized in a way in which every envirnoment can be 
+    created. The creatio of the environment is done via call to armor server.
+    """
 
-    for num in range(1,100):
-        num += 1
-        print("Loading Map: " + str(num) + "%")
-        rospy.sleep(0.04)
-        os.system("clear")
+    room_list = []
+    door_list = []
+    corridor_list = []
+    #for num in range(1,100):
+    #    num += 1
+    #    print("Loading Map: " + str(num) + "%")
+    #    rospy.sleep(0.04)
+    #    os.system("clear")
+
+    room_number = int(input('Specify the number of rooms: '))
+    corridor_number = int(input('Specify the number of corridors: '))
 
     # ADD ALL OUR AXIOMS
-    client.manipulation.add_ind_to_class("R1", "LOCATION")
-    print("Added R1 to LOCATION")
-    client.manipulation.add_ind_to_class("R2", "LOCATION")
-    print("Added R2 to LOCATION")
-    client.manipulation.add_ind_to_class("R3", "LOCATION")
-    print("Added R3 to LOCATION")
-    client.manipulation.add_ind_to_class("R4", "LOCATION")
-    print("Added R4 to LOCATION")
-    client.manipulation.add_ind_to_class("C1", "LOCATION")
-    print("Added C1 to LOCATION")
-    client.manipulation.add_ind_to_class("C2", "LOCATION")
-    print("Added C2 to LOCATION")
+    door_number = room_number + 2*corridor_number - 1
+
+    for i in range(0, room_number):
+        room_list.append('R'+ str(i+1))
+        client.manipulation.add_ind_to_class(room_list[i], "LOCATION")
+        client.manipulation.add_dataprop_to_ind("visitedAt", room_list[i], "Long", str(int(time.time())))
+        print("Added " + room_list[i] + " to LOCATION")
+    
+    for j in range(0,corridor_number):
+        corridor_list.append('C' + str(j+1))
+        client.manipulation.add_ind_to_class(corridor_list[j], "LOCATION")
+        print("Added " + corridor_list[j] + " to LOCATION")
+
+    for d in range(0,door_number):
+        door_list.append('D'+str(d+1))
+        client.manipulation.add_ind_to_class(door_list[d], "DOOR")
+        print("Added " + door_list[d] + " to DOOR")
+    
+        
+    corridor_list.append('E')
     client.manipulation.add_ind_to_class("E", "LOCATION")
     print("Added E to LOCATION")
-    client.manipulation.add_ind_to_class("D1", "DOOR")
-    print("Added D1 to DOOR")
-    client.manipulation.add_ind_to_class("D2", "DOOR")
-    print("Added D2 to DOOR")
-    client.manipulation.add_ind_to_class("D3", "DOOR")
-    print("Added D3 to DOOR")
-    client.manipulation.add_ind_to_class("D4", "DOOR")
-    print("Added D4 to DOOR")
-    client.manipulation.add_ind_to_class("D5", "DOOR")
-    print("Added D5 to DOOR")
-    client.manipulation.add_ind_to_class("D6", "DOOR")
-    print("Added D6 to DOOR")
-    client.manipulation.add_ind_to_class("D7", "DOOR")
-    print("Added D7 to DOOR")
-
-    # DISJOINT OF THE INDIVIDUALS OF THE CLASSES
-    client.manipulation.disj_inds_of_class("LOCATION")
-    client.manipulation.disj_inds_of_class("DOOR")
-    print("All individuals are disjointed")
-
-    # ADD PROPERTIES TO OBJECTS
-    # Distinction between rooms and corridors
-    client.manipulation.add_objectprop_to_ind("hasDoor", "R1", "D1")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "R2", "D2")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "R3", "D3")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "R4", "D4")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "C1", "D1")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "C1", "D2")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "C1", "D5")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "C1", "D7")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D3")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D4")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D5")
-    client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D6")
     client.manipulation.add_objectprop_to_ind("hasDoor", "E", "D6")
     client.manipulation.add_objectprop_to_ind("hasDoor", "E", "D7")
-    print("All properties added!")
 
-    # ADD DATAPROPERTIES TO OBJECTS
-    client.manipulation.add_dataprop_to_ind("visitedAt", "R1", "Long", str(int(time.time())))
-    client.manipulation.add_dataprop_to_ind("visitedAt", "R2", "Long", str(int(time.time())))
-    client.manipulation.add_dataprop_to_ind("visitedAt", "R3", "Long", str(int(time.time())))
-    client.manipulation.add_dataprop_to_ind("visitedAt", "R4", "Long", str(int(time.time())))
-    client.manipulation.add_dataprop_to_ind("visitedAt", "C1", "Long", str(int(time.time())))
-    client.manipulation.add_dataprop_to_ind("visitedAt", "C2", "Long", str(int(time.time())))
-    client.manipulation.add_dataprop_to_ind("visitedAt", "E", "Long", str(int(time.time())))
+    ind_list = room_list + corridor_list + door_list
 
-    # Connections between locations
-    client.manipulation.add_objectprop_to_ind("connectedTo", "R1", "C1")
-    client.manipulation.add_objectprop_to_ind("connectedTo", "R2", "C1")
-    client.manipulation.add_objectprop_to_ind("connectedTo", "C1", "C2")
-    client.manipulation.add_objectprop_to_ind("connectedTo", "R3", "C2")
-    client.manipulation.add_objectprop_to_ind("connectedTo", "R4", "C2")
-    client.manipulation.add_objectprop_to_ind("connectedTo", "E", "C1")
-    client.manipulation.add_objectprop_to_ind("connectedTo", "E", "C2")
 
-    print("All connections declared!")
+    # DISJOINT OF THE INDIVIDUALS OF THE CLASSES
+    client.manipulation.disjoint_all_ind(ind_list)
+    print("All individuals are disjointed")
+
+    n_room_for_corridor = int(len(room_list)/(len(corridor_list)-1))
+    h = 0
+
+    for l in range(0,len(corridor_list)-1):
+        for c in range(0, n_room_for_corridor):
+            client.manipulation.add_objectprop_to_ind('hasDoor', room_list[h], door_list[h])
+            client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[l], door_list[h])
+            print('corridor ' + corridor_list[l] + ' connected to ' + room_list[h] + ' trough '+ door_list[h])
+            h = h+1
+
+    for k in range(0, len(corridor_list)-2):
+        client.manipulation.add_objectprop_to_ind('connectedTo', corridor_list[k], corridor_list[k+1])
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[k], door_list[h])
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[k+1], door_list[h])
+        print('corridor ' + corridor_list[k] + ' connected to corridor ' + corridor_list[k+1] + ' trough '+ door_list[h])
+        h = h+1
+    
+    for n in range(0, len(corridor_list)-1):
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[n], door_list[h])
+        client.manipulation.add_objectprop_to_ind('hasDoor', 'E', door_list[h])
+        print('corridor ' + corridor_list[n] + ' connected to corridor E trough ' + door_list[h])
+        h = h+1
 
     # INITIALIZE ROBOT POSITION
     client.manipulation.add_objectprop_to_ind("isIn", "Robot1", "E")
@@ -109,7 +111,3 @@ def LoadMap():
     # APPLY CHANGES AND QUERY
     client.utils.apply_buffered_changes()
     client.utils.sync_buffered_reasoner()
-
-
-
-

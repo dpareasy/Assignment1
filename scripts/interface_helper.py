@@ -1,9 +1,22 @@
 #!/usr/bin/env python3
 
+"""
+..module::interface_helper
+  :platform: Unix
+  :synopsis: Python module for defining function used by the state machine
+..moduleauthor::Davide Leo Parisi <davide.parisi1084@gmail.com>
+
+ROS node for defining the behavior of the state machine
+
+Subscribes to:
+    /state/battery_low where the robot_state publishes the battery status
+"""
+
 # Import ROS libraries.
 import rospy
 import random
 import time
+import os
 import simple_colors
 from actionlib import SimpleActionClient
 
@@ -23,18 +36,20 @@ client = ArmorClient("assignment", "my_ontology")
 
 # A class to simplify the implementation of a client for ROS action servers. It is used by the `InterfaceHelper` class.
 class ActionClientHelper:
-    # Class constructor, i.e., class initializer. Input parameters are:
-    #  - `service_name`: it is the name of the server that will be invoked by this client.
-    #  - `action_type`: it is the message type that the server will exchange.
-    #  - `done_callback`: it is the name of the function called when the action server completed its computation. If
-    #     this parameter is not set (i.e., set to `None`), then only the `self._done_callback` function will be
-    #     called when the server completes its computation.
-    #  - `feedback_callback`: it is the name of the function called when the action server sends a feedback message. If
-    #    this parameter is not set (i.e., set to `None`), then only the `self._feedback_callback` functions will be
-    #    called when the server sends a feedback message.
-    #  - `mutex`: it is a `Lock` object synchronised with the `done_callback` and `feedback_callback`. If it is not set
-    #    (i.e., set to `None`), then a new mutex instance is considered. Set this variable if you want to extends the
-    #    synchronization with other classes.
+    """
+    Class constructor, i.e., class initializer. Input parameters are:
+    - `service_name`: it is the name of the server that will be invoked by this client.
+    - `action_type`: it is the message type that the server will exchange.
+    - `done_callback`: it is the name of the function called when the action server completed its computation. If
+       this parameter is not set (i.e., set to `None`), then only the `self._done_callback` function will be
+       called when the server completes its computation.
+    - `feedback_callback`: it is the name of the function called when the action server sends a feedback message. If
+       this parameter is not set (i.e., set to `None`), then only the `self._feedback_callback` functions will be
+       called when the server sends a feedback message.
+    - `mutex`: it is a `Lock` object synchronised with the `done_callback` and `feedback_callback`. If it is not set
+       (i.e., set to `None`), then a new mutex instance is considered. Set this variable if you want to extends the
+       synchronization with other classes.
+    """
     def __init__(self, service_name, action_type, done_callback=None, feedback_callback=None, mutex=None):
         # Initialise the state of this client, i.e.,  `_is_running`, `_is_done`, and `_results`.
         self.reset_client_states()
@@ -53,8 +68,11 @@ class ActionClientHelper:
         # Wait for the action server to be alive.
         self._client.wait_for_server()
 
-    # Start the action server with a new `goal`. Note this call is not blocking (i.e., asynchronous performed).
+    # 
     def send_goal(self, goal):
+        """
+        Start the action server with a new `goal`. Note this call is not blocking (i.e., asynchronous performed).
+        """
         # A new goal can be given to the action server only if it is not running. This simplification implies that
         # within the ROS architecture no more than one client can use the same server at the same time.
         if not self._is_running:
@@ -68,11 +86,12 @@ class ActionClientHelper:
             self._results = None
         else:
             print("Warning send a new goal, cancel the current request first!")
-            #warn_msg = 'Warning send a new goal, cancel the current request first!'
-            #rospy.logwarn(anm.tag_log(warn_msg, LOG_TAG))
 
-    # Stop the computation of the action server.
+
     def cancel_goals(self):
+        """
+        Stop the computation of the action server.
+        """
         # The computation can be stopped only if the server is actually computing.
         if self._is_running:
             # Stop the computation.
@@ -81,31 +100,43 @@ class ActionClientHelper:
             self.reset_client_states()
         else:
             print("Warning cannot cancel a not running service!")
-            #warn_msg = 'Warning cannot cancel a not running service!'
-            #rospy.logwarn(anm.tag_log(warn_msg, LOG_TAG))
 
-    # Reset the client state variables stored in this class.
+    # 
     def reset_client_states(self):
+        """
+        Reset the client state variables stored in this class.
+        """
         self._is_running = False
         self._is_done = False
         self._results = None
 
-    # This function is called when the action server send some `feedback` back to the client.
+    # 
     def _feedback_callback(self, feedback):
+        """
+        This function is called when the action server send some `feedback` back to the client.
+
+        Args:
+        feedback: feddbacks from the action server
+        """
         # Acquire the mutex to synchronise the computation concerning the `feedback` message with the other nodes of the architecture.
         self._mutex.acquire()
         try:
             # Eventually, call the method provided by the node that uses this action client to manage a feedback.
             if self._external_feedback_cb is not None:
                 self._external_feedback_cb(feedback)
-            # Uncomment below to log information.
-            # rospy.loginfo(anm.tag_log(f'`{self._service_name}` action server provide feedback: {feedback}.', LOG_TAG))
         finally:
             # Realise the mutex to (eventually) unblock ROS-based thread waiting on the same mutex.
             self._mutex.release()
 
-    # This function is called when the action server finish its computation, i.e., it provides a `done` message.
+    # 
     def _done_callback(self, status, results):
+        """
+        This function is called when the action server finish its computation, i.e., it provides a `done` message.
+
+        Args:
+        status: 
+        results: results from the action server
+        """
         # Acquire the mutex to synchronise the computation concerning the `done` message with the other nodes of the architecture.
         self._mutex.acquire()
         try:
@@ -116,30 +147,44 @@ class ActionClientHelper:
             # Eventually, call the method provided by the node that uses this action client to manage a result.
             if self._external_done_cb is not None:
                 self._external_done_cb(status, results)
-            # Uncomment below to log information.
-            # log_msg = f'`{self._service_name}` done with state `{self._client.get_state_txt()}` and result: {results}.'
-            # rospy.loginfo(anm.tag_log(log_msg, LOG_TAG))
         finally:
             self._mutex.release()
 
-    # Get `True` if the action server finished is computation, or `False` otherwise.
-    # Note that use this method should do it in a `self._mutex` safe manner.
+    #
     def is_done(self):  # they should be mutex safe
+        """
+        Get `True` if the action server finished is computation, or `False` otherwise.
+        Note that use this method should do it in a `self._mutex` safe manner.
+
+        Results:
+        self._is_done: If the reasoner has finished its calculations.
+        """
         return self._is_done
 
-    # Get `True` if the action server is running, or `False` otherwise.
-    # A note that use this method should do it in a `self._mutex` safe manner.
+    # 
     def is_running(self):
+        """
+        Get `True` if the action server is running, or `False` otherwise.
+        A note that use this method should do it in a `self._mutex` safe manner.
+
+        Returns:
+        self._is_running: If the server is still running.
+        """
         return self._is_running
 
-    # Get the results of the action server, if any, or `None`.
+    # 
     def get_results(self):
+        """
+        Get the results of the action server, if any, or `None` and return this value.
+
+        Returns:
+        self._results: If some results have arrived.
+        None: If no results
+        """
         if self._is_done:
             return self._results
         else:
             print("Error: cannot result")
-            #log_err = f'Error: cannot get result for `{self._service_name}`.'
-            #rospy.logerr(anm.tag_log(log_err, LOG_TAG))
             return None
 
 
@@ -162,16 +207,19 @@ class InterfaceHelper:
         self.planner_client = ActionClientHelper('motion/planner', PlanAction, mutex=self.mutex)
         self.controller_client = ActionClientHelper(anm.ACTION_CONTROLLER, ControlAction, mutex=self.mutex)
 
-    # Reset the stimulus, which are stored as states variable fo this class.
-    # This function assumes that no states of the Finite State Machine run concurrently.
     def reset_states(self):
+        """
+        Reset the stimulus, which are stored as states variable fo this class.
+        This function assumes that no states of the Finite State Machine run concurrently.
+        """
         self._battery_low = False
         self._start_interaction = False
         self._gesture = None
 
-
-    # The subscriber to get messages published from the `robot-state` node into the `/state/battery_low/` topic.
     def _battery_callback(self, msg):
+        """
+        The subscriber to get messages published from the `robot-state` node into the `/state/battery_low/` topic.
+        """
         # Acquire the mutex to assure the synchronization with the other subscribers and action clients (this assure data consistency).
         self.mutex.acquire()
         try:
@@ -187,12 +235,18 @@ class InterfaceHelper:
             # Release the mutex to eventually unblock the other subscribers or action servers that are waiting.
             self.mutex.release()
 
-    # Get the state variable encoded in this class that concerns the battery level.
-    # The returning value will be `True` if the battery is low, `False` otherwise.
-    # Note that the node using this class might exploit the `reset_state` function to improve robustness.
-    # Also note that this function should be used when the `mutex` has been acquired. This assures the
-    # synchronization  with the threads involving the subscribers and action clients.
+    #
     def is_battery_low(self):
+        """
+        Get the state variable encoded in this class that concerns the battery level.
+        The returning value will be `True` if the battery is low, `False` otherwise.
+        Note that the node using this class might exploit the `reset_state` function to improve robustness.
+        Also note that this function should be used when the `mutex` has been acquired. This assures the
+        synchronization  with the threads involving the subscribers and action clients.
+
+        Returns:
+        self._battery_low(str): `True` if the battery is low, `False` otherwise
+        """
         return self._battery_low
 
     # Update the current robot pose stored in the `robot-state` node.
@@ -205,103 +259,176 @@ class InterfaceHelper:
             service = rospy.ServiceProxy(anm.SERVER_SET_POSE, SetPose)
             service(point)  # None that the service `response` is not used.
             print("Setting initial robot position")
-            #log_msg = f'Setting initial robot position ({point.x}, {point.y}) to the `{anm.SERVER_SET_POSE}` node.'
-            #rospy.loginfo(anm.tag_log(log_msg, LOG_TAG))
         except rospy.ServiceException as e:
             print("Cannot set current robot position")
-            #err_msg = f'Cannot set current robot position through `{anm.SERVER_SET_POSE}` server. Error: {e}'
-            #rospy.logerr(anm.tag_log(err_msg, LOG_TAG))
 
 class BehaviorHelper:
 
     def __init__(self):
         self.agent = "Robot1"
         self.current_position = "isIn"
+        self.urgent_class = "URGENT"
         self.reachable = "canReach"
         self.last_visit = "visitedAt"
         self.robot_timestamp = "now"
         self.charging_location = "E"
         self.time_stamps_type = "Long"
+        self.corridors = 'CORRIDOR'
+
+        self.urgent = 'urgent'
+        self.corridor = 'corridor'
+        self.robot_position = 'robot_position'
+        self.reachable_destinations = 'reachable_destinations'
 
     def inters_b2_lists(self, list1, list2):
+        """
+        Intersection between the urgent rooms and the reacheble rooms.
+
+        Args:
+        list1(lst): first list to intersect
+        list2(lst): second list to intersect
+
+        Returns:
+        intersection(str): list of the intersection
+        """
         intersection = []
         for element in list1:
             if element in list2:
                 intersection.append(element)
         return intersection
 
-    def clean_strings(self, string_type, str_):
+    def clean_strings(self, string_type, list_):
+        """
+        clean the strings obtained by the query.
+
+        Args:
+        string_type(int): an integer specifying if the string is obtained from 
+        list_(lst): list of string to be cleaned 
+
+        Returns:
+        list_(lst): list of cleaned strings
+        """
         if string_type == 1:
-            for x in range (len(str_)):
-                str_[x] = str_[x][32:-1]
+            if len(list_) == 1:
+                list_[0] = list_[0][32:-1]
+            else:
+                for x in range (len(list_)):
+                    list_[x] = list_[x][32:-1]
         if string_type == 2:
-            str_ = str_[0][1:-11]
-        return str_
+            list_ = list_[0][1:-11]
+        return list_
+
+    def get_locations(self, location):
+        """
+        function for location's query
+
+        Args:
+        location(str): a string to select the query to ask
+
+        Returns:
+        location_list(lst): list of queried location
+        """
+
+        if location == self.corridor:
+            list_of_corridors = client.query.ind_b2_class(self.corridors)
+            location_list = self.clean_strings(1, list_of_corridors)
+            
+        if location == self.urgent:
+            urgent_rooms = client.query.ind_b2_class(self.urgent_class)
+            location_list = self.clean_strings(1, urgent_rooms)
+
+        if location == self.robot_position:
+            current_pose = client.query.objectprop_b2_ind(self.current_position, self.agent)
+            location = self.clean_strings(1, current_pose)
+            location_list = current_pose[0]
+
+        if location == self.reachable_destinations:
+            possible_destinations = client.query.objectprop_b2_ind(self.reachable, self.agent)
+            location_list = self.clean_strings(1, possible_destinations)
+
+        return location_list
+
 
     def decide_target(self):
+
+        """
+        Plan the next robot movement.
+
+        Returns:
+        current_pose(str): The current robot position obtained from the ontology
+        target(str): The target position chosen from a list of reachable and urgent locations
+        list_of_corridors(lst): List of corridors in the map
+        """
+
         client.utils.sync_buffered_reasoner()
-        current_pose = client.query.objectprop_b2_ind(self.current_position, self.agent)
-        current_pose = current_pose[0][32:-1]
-        #current_pose = current_pose
-        print(simple_colors.blue("\ncurrent pose is " + current_pose))
-        client.utils.sync_buffered_reasoner()
-        possible_destinations = client.query.objectprop_b2_ind(self.reachable, self.agent)
-        possible_destinations = self.clean_strings(1,possible_destinations)
-        #for x in range(len(possible_destinations)):
-        #    possible_destinations[x]=possible_destinations[x][32:-1]
-        print(simple_colors.blue("Possible destinations"))
-        print(simple_colors.blue(possible_destinations))
-        urgent_rooms = client.query.ind_b2_class("URGENT")
-        urgent_rooms = self.clean_strings(1, urgent_rooms)
-        #for i in range(len(urgent_rooms)):
-        #    urgent_rooms[i] = urgent_rooms[i][32:-1]
-        print(simple_colors.red(urgent_rooms))
-        #choice = []
-        #for element in possible_destinations:
-        #    if element in urgent_rooms:
-        #        choice.append(element)
-        choice = self.inters_b2_lists(possible_destinations, urgent_rooms)
-        print(simple_colors.green("URGENT AND REACHABLE LOCATIONS:"))
-        print(simple_colors.green(choice))
-        if not choice:
+        list_of_corridors = self.get_locations(self.corridor)
+        current_pose = self.get_locations(self.robot_position)
+        print(simple_colors.cyan("current pose is: ["+(current_pose)+"]"))
+        possible_destinations = self.get_locations(self.reachable_destinations)
+        print(simple_colors.cyan("Possible destinations: [" + ", ".join(possible_destinations) +"]"))
+        urgent_rooms = self.get_locations(self.urgent)
+        print(simple_colors.red("URGENT ROOMS: [" + ", " .join(urgent_rooms) + "]"))
+        reachable_urgent = self.inters_b2_lists(possible_destinations, urgent_rooms)
+        print(simple_colors.green("URGENT AND REACHABLE LOCATIONS: ["+", ".join(reachable_urgent)+"]"))
+        # if the list is empty
+        if not reachable_urgent:
+            # if the list of possible destination 
+            # contains only one element
             if len(possible_destinations) == 1:
-                choice = possible_destinations[0]
+                target = possible_destinations[0]
             else:
-                choice = random.choice(possible_destinations)
+                target = random.choice(self.inters_b2_lists(possible_destinations, list_of_corridors))
+        # if chosen_target list is not empty
         else:
-            choice = random.choice(choice)
-        print(simple_colors.blue("Moving to " + choice))
-        return current_pose, choice
+            # save the first element of the list as the oldest timestamp
+            oldest = client.query.dataprop_b2_ind(self.last_visit, reachable_urgent[0])
+            # clean the string
+            oldest = self.clean_strings(2, oldest)
+            for i in range (len(reachable_urgent)):
+                choice_last_visit = client.query.dataprop_b2_ind(self.last_visit, reachable_urgent[i])
+                choice_last_visit = self.clean_strings(2, choice_last_visit)
+                print(choice_last_visit)
+                if choice_last_visit <= oldest:
+                    target = reachable_urgent[i]
+        print(simple_colors.cyan("Moving to " + target))
+        return current_pose, target, list_of_corridors
 
-    def move_to_target(self, choice, current_pose):
 
-        last_visit = client.query.dataprop_b2_ind(self.last_visit, choice)
-        last_visit = self.clean_strings(2, last_visit)
-        #last_visit = last_visit[0][1:-11]
-        #last_visit = last_visit[1:]
-        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, choice, current_pose)
-        client.utils.apply_buffered_changes()
+    def move_to_target(self, chosen_target, current_pose, list_of_corridors):
+        """
+        Moving to the target room.
+
+        Args:
+        chosen_target(str): The target position chosen from a list of reachable and urgent locations
+        current_pose(str): The current robot position obtained from the ontology
+        list_of_corridors(lst): List of corridors  in the map
+        """
+        last_visit = client.query.dataprop_b2_ind(self.last_visit, chosen_target)
+
+        if chosen_target not in list_of_corridors:
+            last_visit = self.clean_strings(2, last_visit)
+
+        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, chosen_target, current_pose)
         client.utils.sync_buffered_reasoner()
         last_change = client.query.dataprop_b2_ind(self.robot_timestamp, self.agent)
-        print(simple_colors.blue(last_change))
         last_change = self.clean_strings(2, last_change)
-        #last_change = last_change[0][1:-11]
-        #last_change = last_change[1:]
-        print(simple_colors.blue("last change was " + last_change))
+        print(simple_colors.cyan("last change was " + last_change))
         current_time = str(int(time.time()))
-        client.manipulation.replace_dataprop_b2_ind(self.last_visit, choice, self.time_stamps_type, current_time, last_visit)
+
+        if chosen_target not in list_of_corridors:
+            client.manipulation.replace_dataprop_b2_ind(self.last_visit, chosen_target, self.time_stamps_type, current_time, last_visit)
+
         client.manipulation.replace_dataprop_b2_ind(self.robot_timestamp, self.agent, self.time_stamps_type, current_time, last_change)
-        client.utils.apply_buffered_changes()
         client.utils.sync_buffered_reasoner()
-        print(simple_colors.blue("Now the robot is in " + choice))
-        print(simple_colors.blue("Last visit for " + choice + " was " + last_visit + " new visit at " + current_time))
-        print(simple_colors.blue("Last time the robot changed location was " + last_change + " new visit at " + current_time))
+        print(simple_colors.cyan("Now the robot is in " + chosen_target))
 
 
     def go_to_recharge(self, current_location):
+        """
+        Going to charging location.
+
+        Args:
+        current_location(str): The current robot position obtained from the ontology
+        """
         client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, self.charging_location, current_location)
-        client.utils.apply_buffered_changes()
         client.utils.sync_buffered_reasoner()
-
-
-

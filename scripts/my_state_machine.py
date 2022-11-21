@@ -43,13 +43,27 @@ class LoadOntology(smach.State):
         State.__init__(self, outcomes = [TRANS_INITIALIZED])
 
     def execute(self, userdata):
-        #LoadMap()
+        """
+        Function responsible of the loading of the
+        environment. It calls the LoadMap() function which 
+        is the one responsible of the creation of the environment. 
+        The input parameter `userdata` is not used since no data is 
+        required from the other states.
+
+
+        Returns:
+        TRANS_INITIALIZED(): transition to the STATE_DECISION
+        """
+        LoadMap()
         print("MAP LOADED")
         rospy.sleep(2)
         return TRANS_INITIALIZED
     
 
 class DecideTarget(smach.State):
+    """
+    
+    """
     def __init__(self, interface_helper, behavior_helper):
         
         # Get a reference to the interfaces with the other nodes of the architecture.
@@ -57,16 +71,30 @@ class DecideTarget(smach.State):
         self._behavior = behavior_helper
         # Get the environment size from ROS parameters.
         self.environment_size = rospy.get_param(anm.PARAM_ENVIRONMENT_SIZE)
-        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'choice', 'random_plan'])
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'choice', 'list_of_corridors', 'random_plan'])
 
     def execute(self, userdata):
+        """
+        Function responsible of the transition between the 
+        STATE_DECISION and the STATE_RECHARGING or STATE_MOVING.
+        The function will call several functions responsible of
+        the decision state of the robot. It makes a request to the
+        planner server, which is the one responsible of the dummy
+        simulation of the way int which the robot decide the target. The `userdata`
+        parameter is used to use some variables in the other states.
+
+        Returns:
+        TRANS_RECHARGING(): transition to the recharging state
+        TRANS_DECIDED(): transition to the moving state
+        """
         # Define a random point to be reached through some via-points to be planned.
         goal = PlanGoal()
         goal.target = Point(x = random.uniform(0, self.environment_size[0]),
                             y = random.uniform(0, self.environment_size[1]))
-        current_pose, choice = self._behavior.decide_target()
+        current_pose, choice, list_of_corridors = self._behavior.decide_target()
         userdata.current_pose = current_pose
         userdata.choice = choice
+        userdata.list_of_corridors = list_of_corridors
         # Invoke the planner action server.
         self._helper.planner_client.send_goal(goal)
         while not rospy.is_shutdown():
@@ -95,9 +123,22 @@ class MoveToTarget(smach.State):
         self._helper = interface_helper
         self._behavior = behavior_helper
 
-        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose', 'choice'])
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose', 'choice', 'list_of_corridors'])
 
     def execute(self, userdata):
+        """
+        Function responsible of the transition between the 
+        STATE_MOVING and the STATE_RECHARGING or STATE_DECISION.
+        The function will call several functions responsible of 
+        the movement of the robot. It makes a request to the controller
+        server which is the one responsible of the dummy simulation of the 
+        movement of the robot from a location to the target. The `userdata`
+        parameter is used to import parameters from the other states.
+        
+        Returns:
+        TRANS_RECHARGING(): transition to the recharging state
+        TRANS_MOVED(): transition to the moving state
+        """
         # Get the plan to a random position computed by the `PLAN_TO_RANDOM_POSE` state.
         plan = userdata.random_plan
         # Start the action server for moving the robot through the planned via-points.
@@ -105,6 +146,7 @@ class MoveToTarget(smach.State):
         self._helper.controller_client.send_goal(goal)
         current_pose = userdata.current_pose
         choice = userdata.choice
+        list_of_corridors = userdata.list_of_corridors
 
         while not rospy.is_shutdown():
             # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
@@ -117,9 +159,9 @@ class MoveToTarget(smach.State):
                     return TRANS_RECHARGING
                 # If the controller finishes its computation, then take the `went_random_pose` transition, which is related to the `repeat` transition.
                 if self._helper.controller_client.is_done():
-                    self._behavior.move_to_target(choice, current_pose)
-                    actual_position = client.query.objectprop_b2_ind("isIn", "Robot1")
-                    print(actual_position)
+                    self._behavior.move_to_target(choice, current_pose, list_of_corridors)
+                    #actual_position = client.query.objectprop_b2_ind("isIn", "Robot1")
+                    #print(actual_position)
                     return TRANS_MOVED
             finally:
                 # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
@@ -139,6 +181,16 @@ class Recharging(State):
     # Define the function performed each time a transition is such to enter in this state.
     # Note that the input parameter `userdata` is not used since no data is required from the other states.
     def execute(self, userdata):
+        """
+        Function responsible of the transition between the 
+        STATE_RECHARGING to the STATE_DECISION.
+        It waits until the battery is fully charged and then it changes state.
+        The input parameter `userdata` is not used since no data is required
+        from the other states.
+        
+        Returns:
+        TRANS_RECHARGED(): transition to the recharging state
+        """
         while not rospy.is_shutdown():  # Wait for stimulus from the other nodes of the architecture.
             # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
             self._helper.mutex.acquire()
@@ -154,6 +206,9 @@ class Recharging(State):
             rospy.sleep(LOOP_SLEEP_TIME)
 
 def main():
+    """
+    MANCA DA COMMENTARE
+    """
     rospy.init_node('state_machine', log_level = rospy.INFO)
     # Initialise an helper class to manage the interfaces with the other nodes in the architectures, i.e., it manages external stimulus.
     helper = InterfaceHelper()
