@@ -24,9 +24,18 @@ This repository contains a ROS package named Assignment1 that includes the follo
 2. `package.xml`: File to configure this package;
 3. `launch/`: Contains the configuration to launch this package;
     * launch_file.launch: it launches armor server and all the nodes used in this simulation.
-
-    
-    
-    
-
+4. `msg/`: It contains the message exchanged through ROS topics:
+    * Point.msg: It is the message representing a 2D point.
+5. `srv/`: It Contains the definition of each server used by this software:
+    * GetPose.srv: It defines the request and response to get the current robot position;
+    * SetPose.srv: It defines the request and response to set the current robot position.
+6. `action/`: It contains the definition of each action server used by this software:
+    * Plan.action: It defines the goal, feedback and results concerning motion planning;
+    * Control.action: It defines the goal, feedback and results concerning motion controlling.
+7. `scripts/`: It contains the implementation of each software components:
+    * load_ontology.py: It creates the topological map of the environment;
+    * my_state_machine.py: It defines the states of the state machine;
+    * robot_state.py: It implements the robot state including: current position, and battery level;
+    * planner.py: It is a dummy implementation of a motion planner;
+    * controller.py: It is a dummy implementation of a motion controller.
 
