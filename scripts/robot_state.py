@@ -18,7 +18,6 @@ class RobotState:
     """
 
     def __init__(self):
-        #######################################################################################
         # Initialise this node.
         rospy.init_node('robot-state', log_level = rospy.INFO)
         # Initialise robot position.
@@ -35,8 +34,6 @@ class RobotState:
         # Start publisher on a separate thread.
         th = threading.Thread(target = self._is_battery_low)
         th.start()
-        ######################################################################################
-
     
     def set_pose(self, request):
         """
@@ -63,7 +60,6 @@ class RobotState:
         # Return an empty response.
         return SetPoseResponse()
 
-    
     def get_pose(self, response):
         """
         The `robot/get_pose` service implementation.
@@ -87,7 +83,6 @@ class RobotState:
         response.pose = self._pose
         return response
 
-    # 
     def _is_battery_low(self):
         """
         Publish changes of battery levels. This method runs on a separate thread.
@@ -97,7 +92,6 @@ class RobotState:
         # Publish battery level changes randomly.
         self._random_battery_notifier(publisher)
 
-    
     def _random_battery_notifier(self, publisher):
         """
         Publish when the battery change state (i.e., high/low) based on a random

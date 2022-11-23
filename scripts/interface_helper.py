@@ -34,9 +34,10 @@ from Assignment1.srv import SetPose
 
 client = ArmorClient("assignment", "my_ontology")
 
-# A class to simplify the implementation of a client for ROS action servers. It is used by the `InterfaceHelper` class.
 class ActionClientHelper:
     """
+    A class to simplify the implementation of a client for ROS action servers. It is used by the `InterfaceHelper` class.
+
     Class constructor, i.e., class initializer. Input parameters are:
     - `service_name`: it is the name of the server that will be invoked by this client.
     - `action_type`: it is the message type that the server will exchange.
@@ -68,7 +69,6 @@ class ActionClientHelper:
         # Wait for the action server to be alive.
         self._client.wait_for_server()
 
-    # 
     def send_goal(self, goal):
         """
         Start the action server with a new `goal`. Note this call is not blocking (i.e., asynchronous performed).
@@ -87,7 +87,6 @@ class ActionClientHelper:
         else:
             print("Warning send a new goal, cancel the current request first!")
 
-
     def cancel_goals(self):
         """
         Stop the computation of the action server.
@@ -101,7 +100,6 @@ class ActionClientHelper:
         else:
             print("Warning cannot cancel a not running service!")
 
-    # 
     def reset_client_states(self):
         """
         Reset the client state variables stored in this class.
@@ -110,7 +108,6 @@ class ActionClientHelper:
         self._is_done = False
         self._results = None
 
-    # 
     def _feedback_callback(self, feedback):
         """
         This function is called when the action server send some `feedback` back to the client.
@@ -128,7 +125,6 @@ class ActionClientHelper:
             # Realise the mutex to (eventually) unblock ROS-based thread waiting on the same mutex.
             self._mutex.release()
 
-    # 
     def _done_callback(self, status, results):
         """
         This function is called when the action server finish its computation, i.e., it provides a `done` message.
@@ -150,7 +146,6 @@ class ActionClientHelper:
         finally:
             self._mutex.release()
 
-    #
     def is_done(self):  # they should be mutex safe
         """
         Get `True` if the action server finished is computation, or `False` otherwise.
@@ -161,7 +156,6 @@ class ActionClientHelper:
         """
         return self._is_done
 
-    # 
     def is_running(self):
         """
         Get `True` if the action server is running, or `False` otherwise.
@@ -171,8 +165,7 @@ class ActionClientHelper:
         self._is_running: If the server is still running.
         """
         return self._is_running
-
-    # 
+ 
     def get_results(self):
         """
         Get the results of the action server, if any, or `None` and return this value.
@@ -188,10 +181,13 @@ class ActionClientHelper:
             return None
 
 
-# A class to decouple the implementation of the Finite State Machine to the stimulus might that
-# lead to state transitions. This class manages the synchronization with subscribers and action
-# servers.
+
 class InterfaceHelper:
+    """
+    A class to decouple the implementation of the Finite State Machine to the stimulus might that
+    lead to state transitions. This class manages the synchronization with subscribers and action
+    servers.
+    """
 
     # Class constructor, i.e., class initializer.
     def __init__(self):
@@ -235,7 +231,6 @@ class InterfaceHelper:
             # Release the mutex to eventually unblock the other subscribers or action servers that are waiting.
             self.mutex.release()
 
-    #
     def is_battery_low(self):
         """
         Get the state variable encoded in this class that concerns the battery level.
@@ -263,6 +258,9 @@ class InterfaceHelper:
             print("Cannot set current robot position")
 
 class BehaviorHelper:
+    """
+    A class to define the methods used for implementing the behavior of the robot. 
+    """
 
     def __init__(self):
         self.agent = "Robot1"

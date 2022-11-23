@@ -11,7 +11,6 @@ from Assignment1.msg import Point, PlanFeedback, PlanResult
 from Assignment1.srv import GetPose
 import Assignment1  # This is required to pass the `PlanAction` type for instantiating the `SimpleActionServer`.
 
-# 
 class PlaningAction(object):
     """
     An action server to simulate motion planning.
@@ -33,7 +32,14 @@ class PlaningAction(object):
         
     def execute_callback(self, goal):
         """
-        
+        The callback invoked when a client set a goal to the `planner` server.
+        This function will return a list of random points (i.e., the plan) when the fist point
+        is the current robot position (retrieved from the `robot-state` node), while the last 
+        point is the `goal` position (given as input parameter). The plan will contain 
+        a random number of other points, which spans in the range 
+        [`self._random_plan_points[0]`, `self._random_plan_points[1]`). To simulate computation,
+        each point is added to the plan with a random delay spanning in the range 
+        [`self._random_plan_time[0]`, `self._random_plan_time[1]`).
         """
         # Get the input parameters to compute the plan, i.e., the start (or current) and target positions.
         start_point = _get_pose_client()
@@ -96,8 +102,6 @@ class PlaningAction(object):
     def _is_valid(self, point):
         return 0.0 <= point.x <= self._environment_size[0] and 0.0 <= point.y <= self._environment_size[1]
 
-
-# 
 def _get_pose_client():
     """
     Retrieve the current robot pose by the `state/get_pose` server of the `robot-state` node.

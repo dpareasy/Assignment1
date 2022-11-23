@@ -14,8 +14,6 @@ import Assignment1  # This is required to pass the `PlanAction` type for instant
 # A tag for identifying logs producer.
 LOG_TAG = anm.NODE_CONTROLLER
 
-
-
 class ControllingAction(object):
     """
     An action server to simulate motion controlling.
@@ -34,7 +32,6 @@ class ControllingAction(object):
                                       auto_start=False)
         self._as.start()
 
-    
     def execute_callback(self, goal):
         """
         The callback invoked when a client set a goal to the `controller` server.
@@ -81,8 +78,6 @@ class ControllingAction(object):
         self._as.set_succeeded(result)
         return  # Succeeded.
 
-
-#
 def _set_pose_client(pose):
     """
     Update the current robot `pose` stored in the `robot-state` node.
@@ -99,7 +94,6 @@ def _set_pose_client(pose):
         service(pose)  # The `response` is not used.
     except rospy.ServiceException as e:
         print("Server cannot set current robot position")
-
 
 if __name__ == '__main__':
     # Initialise the node, its action server, and wait.   

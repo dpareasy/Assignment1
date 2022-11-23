@@ -33,7 +33,7 @@ def LoadMap():
     """
     Function initializing the environment in which the robot should move.
     This mechanism is generalized in a way in which every envirnoment can be 
-    created. The creatio of the environment is done via call to armor server.
+    created. The creation of the environment is done via call to armor server.
     """
 
     room_list = []
@@ -45,8 +45,9 @@ def LoadMap():
     #    rospy.sleep(0.04)
     #    os.system("clear")
 
-    room_number = int(input('Specify the number of rooms: '))
     corridor_number = int(input('Specify the number of corridors: '))
+    room_for_corridors = int(input('Specify the number of rooms for corridors: '))
+    room_number = corridor_number*room_for_corridors
 
     # ADD ALL OUR AXIOMS
     door_number = room_number + 2*corridor_number - 1
@@ -82,27 +83,26 @@ def LoadMap():
     print("All individuals are disjointed")
 
     n_room_for_corridor = int(len(room_list)/(len(corridor_list)-1))
-    h = 0
-
+    door_index = 0
+    room_index = 0
     for l in range(0,len(corridor_list)-1):
         for c in range(0, n_room_for_corridor):
-            client.manipulation.add_objectprop_to_ind('hasDoor', room_list[h], door_list[h])
-            client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[l], door_list[h])
-            print('corridor ' + corridor_list[l] + ' connected to ' + room_list[h] + ' trough '+ door_list[h])
-            h = h+1
+            client.manipulation.add_objectprop_to_ind('hasDoor', room_list[room_index], door_list[door_index])
+            client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[l], door_list[door_index])
+            print('corridor ' + corridor_list[l] + ' connected to ' + room_list[room_index] + ' trough '+ door_list[door_index])
+            door_index = door_index + 1
+            room_index = room_index + 1
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[l], door_list[door_index])
+        client.manipulation.add_objectprop_to_ind('hasDoor', 'E', door_list[door_index])
+        print('corridor ' + corridor_list[l] + ' connected to corridor E trough ' + door_list[door_index])
+        door_index = door_index + 1
 
     for k in range(0, len(corridor_list)-2):
         client.manipulation.add_objectprop_to_ind('connectedTo', corridor_list[k], corridor_list[k+1])
-        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[k], door_list[h])
-        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[k+1], door_list[h])
-        print('corridor ' + corridor_list[k] + ' connected to corridor ' + corridor_list[k+1] + ' trough '+ door_list[h])
-        h = h+1
-    
-    for n in range(0, len(corridor_list)-1):
-        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[n], door_list[h])
-        client.manipulation.add_objectprop_to_ind('hasDoor', 'E', door_list[h])
-        print('corridor ' + corridor_list[n] + ' connected to corridor E trough ' + door_list[h])
-        h = h+1
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[k], door_list[door_index])
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridor_list[k+1], door_list[door_index])
+        print('corridor ' + corridor_list[k] + ' connected to corridor ' + corridor_list[k+1] + ' trough '+ door_list[door_index])
+        door_index = door_index + 1
 
     # INITIALIZE ROBOT POSITION
     client.manipulation.add_objectprop_to_ind("isIn", "Robot1", "E")

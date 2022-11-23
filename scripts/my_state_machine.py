@@ -39,6 +39,9 @@ TRANS_RECHARGED = 'recharged'
 LOOP_SLEEP_TIME = 0.3
 
 class LoadOntology(smach.State):
+    """
+    A class to implement the behavior of the decision state of the robot.
+    """
     def __init__(self, interface_helper, behavior_helper):
         State.__init__(self, outcomes = [TRANS_INITIALIZED])
 
@@ -62,8 +65,13 @@ class LoadOntology(smach.State):
 
 class DecideTarget(smach.State):
     """
-    
+    A class to implement the behavior of the decision state of the robot.
+
+    Class constructor, i.e., class initializer. Input parameters are:
+    - `interface_helper`: the helper class invoked to interface with the server
+    - `behavio_hleper`: the helper class invoked to interface with the behavior 
     """
+
     def __init__(self, interface_helper, behavior_helper):
         
         # Get a reference to the interfaces with the other nodes of the architecture.
@@ -118,6 +126,14 @@ class DecideTarget(smach.State):
             rospy.sleep(LOOP_SLEEP_TIME)
 
 class MoveToTarget(smach.State):
+    """
+    A class to implement the behavior of the moving state of the robot.
+
+    Class constructor, i.e., class initializer. Input parameters are:
+    - `interface_helper`: the helper class invoked to interface with the server
+    - `behavio_hleper`: the helper class invoked to interface with the behavior 
+    """
+
     def __init__(self, interface_helper, behavior_helper):
          # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
@@ -170,7 +186,14 @@ class MoveToTarget(smach.State):
             rospy.sleep(LOOP_SLEEP_TIME)
 
 class Recharging(State):
-    # Construct this class, i.e., initialise this state.
+    """
+    A class to implement the behavior of the recharging state of the robot.
+
+    Class constructor, i.e., class initializer. Input parameters are:
+    - `interface_helper`: the helper class invoked to interface with the server
+    - `behavio_hleper`: the helper class invoked to interface with the behavior 
+    """
+
     def __init__(self, interface_helper, behavior_helper):
         # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
