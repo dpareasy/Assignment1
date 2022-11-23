@@ -41,7 +41,19 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * planner.py: It is a dummy implementation of a motion planner;
     * controller.py: It is a dummy implementation of a motion controller.
 
-## Installation and running procedure ##
+## Launching the software ##
+
+This software is based on ROS Noetic.
+
+### Installation ###
+
+Follow these steps to install the software:
+* Clone this repossitory inside your workspace (make sure it is sourced in you .bashrc);
+* Run chmod +x <file_name> for each file inside the scripts folder;
+* Run catkin_make from the root of your workspace.
+* Install xterm by entering the command: `sudo apt install -y xterm`
+
+### Launcher ###
 
 In order to launch the simulation a .lunch file can be used bay using this command into the terminal:
 ```
