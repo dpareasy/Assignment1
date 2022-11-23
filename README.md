@@ -39,3 +39,10 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * planner.py: It is a dummy implementation of a motion planner;
     * controller.py: It is a dummy implementation of a motion controller.
 
+## Installation and running procedure ##
+
+In order to launch the simulation a .lunch file can be used bay using this command into the terminal:
+```
+roslaunch Assignment1 launch_file.launch
+```
+It will launch the aRMOR server and all the nodes that simulate the robot behavior.
