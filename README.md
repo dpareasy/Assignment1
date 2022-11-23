@@ -19,6 +19,8 @@ Reasoning and urgency are managed by the ontology.
 
 ## Project structure ##
 
+### Package list ###
+
 This repository contains a ROS package named Assignment1 that includes the following resources:
 1. `CMakeList.txt`: File to configure this package;
 2. `package.xml`: File to configure this package;
