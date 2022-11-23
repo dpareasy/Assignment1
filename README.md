@@ -20,10 +20,10 @@ Reasoning and urgency are managed by the ontology.
 ## Project structure ##
 
 This repository contains a ROS package named Assignment1 that includes the following resources:
-* `CMakeList.txt`: File to configure this package;
-* `package.xml`: File to configure this package;
-* `launch/`: Contains the configuration to launch this package;
-*       launch_file.launch: it launches armor server and all the nodes used in this simulation.
+1. `CMakeList.txt`: File to configure this package;
+2. `package.xml`: File to configure this package;
+3. `launch/`: Contains the configuration to launch this package;
+    * launch_file.launch: it launches armor server and all the nodes used in this simulation.
 
     
     
