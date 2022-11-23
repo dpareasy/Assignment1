@@ -1,10 +1,25 @@
 #!/usr/bin/env python3
+"""
+.. module:: robot_state
+   :platform: Unix
+   :synopsis: Python module for implementing the robot state
+.. moduleauthor:: Luca Buoncompagni, Davide Leo Parisi davide.parisi1084@gmail.com
+
+ROS node for implementing the robot state. It includes the current position and battery level.
+
+Publishes to: 
+    /state/battery_low the boolean stating if the battery is low or not
+
+Service:
+    /state/get_pose: Get the robot current pose in the simulation
+
+    /state/set_pose: Set the robot current pose in the simulation
+"""
+
 
 import threading
 import random
 import rospy
-# Import constant name defined to structure the architecture.
-from Assignment1 import architecture_name_mapper as anm
 # Import the messages used by services and publishers.
 from std_msgs.msg import Bool
 from Assignment1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
@@ -27,12 +42,12 @@ class RobotState:
         # Initialise randomness, if enabled.
         self._randomness = rospy.get_param('test/random_sense/active', True)
         if self._randomness:
-            self._random_battery_time = rospy.get_param(anm.PARAM_BATTERY_TIME, [15.0, 40.0])
+            self._random_battery_time = rospy.get_param('test/random_sense/battery_time', [15.0, 40.0])
         # Define services.
         rospy.Service('state/get_pose', GetPose, self.get_pose)
         rospy.Service('state/set_pose', SetPose, self.set_pose)
         # Start publisher on a separate thread.
-        th = threading.Thread(target = self._is_battery_low)
+        th = threading.Thread(target = self.A_is_battery_low)
         th.start()
     
     def set_pose(self, request):
@@ -42,21 +57,18 @@ class RobotState:
         as given by the client. This server returns an empty `response`.
 
         Args:
-        request: 
+            request: 
 
         Returns:
-        SetPoseResponse(): an empty response
+            empty (SetPoseResponse): an empty response
+
         """
         if request.pose is not None:
             # Store the new current robot position.
             self._pose = request.pose
             print("Set current robot position")
-            # Log information.
-            #self._print_info(f'Set current robot position through `{anm.SERVER_SET_POSE}` '
-                             #f'as ({self._pose.x}, {self._pose.y}).')
         else:
             print("Cannot set an unspecified robot position")
-            #rospy.logerr(anm.tag_log('Cannot set an unspecified robot position', LOG_TAG))
         # Return an empty response.
         return SetPoseResponse()
 
@@ -67,32 +79,35 @@ class RobotState:
         The `response` returned to the client contains the current robot pose.
 
         Args:
-        response: the response of the server
+            response: the response of the server
 
         Returns:
-        response: the position of the robot
+            response(GetPoseResponse): the position of the robot
+
         """
         # Log information.
         if self._pose is None:
             print("Cannot get an unspecified robot position")
-            #rospy.logerr(anm.tag_log('Cannot get an unspecified robot position', LOG_TAG))
         else:
             print("Get current robot position")
         # Create the response with the robot pose and return it.
         response = GetPoseResponse()
+        """
+        GetPoseResponse(): robot position
+        """
         response.pose = self._pose
         return response
 
-    def _is_battery_low(self):
+    def A_is_battery_low(self):
         """
         Publish changes of battery levels. This method runs on a separate thread.
         """
         # Define a `lathed` publisher to wait for initialisation and publish immediately.
-        publisher = rospy.Publisher(anm.TOPIC_BATTERY_LOW, Bool, queue_size = 1, latch = True)
+        publisher = rospy.Publisher('state/battery_low', Bool, queue_size = 1, latch = True)
         # Publish battery level changes randomly.
-        self._random_battery_notifier(publisher)
+        self.A_random_battery_notifier(publisher)
 
-    def _random_battery_notifier(self, publisher):
+    def A_random_battery_notifier(self, publisher):
         """
         Publish when the battery change state (i.e., high/low) based on a random
         delay within the interval [`self._random_battery_time[0]`, `self._random_battery_time[1]`).
@@ -100,7 +115,8 @@ class RobotState:
         boolean value, i.e., `True`: battery low, `False`: battery high.
 
         Args:
-        publisher: ......
+            publisher(bool): boolean value stating the battery status
+
         """
         delay = 0  # Initialised to 0 just for logging purposes.
         while not rospy.is_shutdown():

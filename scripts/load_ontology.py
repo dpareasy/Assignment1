@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
 """
-..module::load_onotology
-  :platform: Unix
-  :synopsis: Python module for defining function used by the state machine
-..moduleauthor::Davide Leo Parisi <davide.parisi1084@gmail.com>
+.. module:: load_onotology
+   :platform: Unix
+   :synopsis: Python module for defining function used by the state machine
+
+.. moduleauthor:: Davide Leo Parisi <davide.parisi1084@gmail.com>
 
 ROS node for creating the ontology
 """
@@ -34,8 +35,9 @@ def LoadMap():
     Function initializing the environment in which the robot should move.
     This mechanism is generalized in a way in which every envirnoment can be 
     created. The creation of the environment is done via call to armor server.
+    
     """
-
+    # declaration of lists used to store all the individuals
     room_list = []
     door_list = []
     corridor_list = []
@@ -45,6 +47,7 @@ def LoadMap():
     #    rospy.sleep(0.04)
     #    os.system("clear")
 
+    # Input asking the user the number of corridors and rooms for each of them
     corridor_number = int(input('Specify the number of corridors: '))
     room_for_corridors = int(input('Specify the number of rooms for corridors: '))
     room_number = corridor_number*room_for_corridors
@@ -52,12 +55,14 @@ def LoadMap():
     # ADD ALL OUR AXIOMS
     door_number = room_number + 2*corridor_number - 1
 
+    # for cycle for creating all the rooms
     for i in range(0, room_number):
         room_list.append('R'+ str(i+1))
         client.manipulation.add_ind_to_class(room_list[i], "LOCATION")
         client.manipulation.add_dataprop_to_ind("visitedAt", room_list[i], "Long", str(int(time.time())))
         print("Added " + room_list[i] + " to LOCATION")
     
+    # for cycle for creating all the corridors
     for j in range(0,corridor_number):
         corridor_list.append('C' + str(j+1))
         client.manipulation.add_ind_to_class(corridor_list[j], "LOCATION")
@@ -68,13 +73,14 @@ def LoadMap():
         client.manipulation.add_ind_to_class(door_list[d], "DOOR")
         print("Added " + door_list[d] + " to DOOR")
     
-        
+    #creation of the recharging location
     corridor_list.append('E')
     client.manipulation.add_ind_to_class("E", "LOCATION")
     print("Added E to LOCATION")
     client.manipulation.add_objectprop_to_ind("hasDoor", "E", "D6")
     client.manipulation.add_objectprop_to_ind("hasDoor", "E", "D7")
 
+    # list to store all the individuals
     ind_list = room_list + corridor_list + door_list
 
 
@@ -82,6 +88,7 @@ def LoadMap():
     client.manipulation.disjoint_all_ind(ind_list)
     print("All individuals are disjointed")
 
+    # make all the connections between locations by assigning the doors to each location
     n_room_for_corridor = int(len(room_list)/(len(corridor_list)-1))
     door_index = 0
     room_index = 0

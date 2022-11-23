@@ -1,18 +1,26 @@
 #! /usr/bin/env python3
+"""
+.. module:: planner
+  :platform: Unix
+  :synopsis: Python module for implementing the moving behavior
+  
+.. moduleauthor:: Davide Leo Parisi <davide.parisi1084@gmail.com>
+
+ROS node for implementing the reasoning behavior of the robot.
+
+Service:
+    /state/set_pose: Set the robot current pose in the simulation
+    /motion/controller: Control of the robot motion
+"""
 import os
 import random
 import rospy
-# Import constant name defined to structure the architecture.
-from Assignment1 import architecture_name_mapper as anm
 # Import the ActionServer implementation used.
 from actionlib import SimpleActionServer
 # Import custom message, actions and services.
 from Assignment1.msg import ControlFeedback, ControlResult
 from Assignment1.srv import SetPose
 import Assignment1  # This is required to pass the `PlanAction` type for instantiating the `SimpleActionServer`.
-
-# A tag for identifying logs producer.
-LOG_TAG = anm.NODE_CONTROLLER
 
 class ControllingAction(object):
     """
@@ -21,12 +29,11 @@ class ControllingAction(object):
     to reach each point with a random delay. This server updates
     the current robot position stored in the `robot-state` node.
     """
-
     def __init__(self):
         # Get random-based parameters used by this server
-        self._random_motion_time = rospy.get_param(anm.PARAM_CONTROLLER_TIME, [0.1, 2.0])
+        self._random_motion_time = rospy.get_param('test/random_motion_time', [0.1, 2.0])
         # Instantiate and start the action server based on the `SimpleActionServer` class.
-        self._as = SimpleActionServer(anm.ACTION_CONTROLLER,
+        self._as = SimpleActionServer('motion/controller',
                                       Assignment1.msg.ControlAction,
                                       execute_cb=self.execute_callback,
                                       auto_start=False)
@@ -46,17 +53,20 @@ class ControllingAction(object):
         """
         # Check if the provided plan is processable. If not, this service will be aborted.
         if goal is None or goal.via_points is None or len(goal.via_points) == 0:
-            rospy.logerr(anm.tag_log('No via points provided! This service will be aborted!', LOG_TAG))
+            print('No via points provided! This service will be aborted!')
             self._as.set_aborted()
             return
 
         # Construct the feedback and loop for each via point.
         feedback = ControlFeedback()
+        """
+        ControlFeedback: Feedback coming from the control server
+        """
         os.system('clear')
         for point in goal.via_points:
             # Check that the client did not cancel this service.
             if self._as.is_preempt_requested():
-                rospy.loginfo(anm.tag_log('Server has been cancelled by the client!', LOG_TAG))
+                print('Server has been cancelled by the client!')
                 # Actually cancel this service.
                 self._as.set_preempted()
                 return
@@ -74,6 +84,9 @@ class ControllingAction(object):
 
         # Publish the results to the client.
         result = ControlResult()
+        """
+        ControlResult: Result of the computation of the control server
+        """
         result.reached_point = feedback.reached_point
         self._as.set_succeeded(result)
         return  # Succeeded.
@@ -87,16 +100,16 @@ def _set_pose_client(pose):
     pose: point (x and y coordinates)
     """
     # Eventually, wait for the server to be initialised.
-    rospy.wait_for_service(anm.SERVER_SET_POSE)
+    rospy.wait_for_service('state/set_pose')
     try:
         # Call the service and set the current robot position.
-        service = rospy.ServiceProxy(anm.SERVER_SET_POSE, SetPose)
+        service = rospy.ServiceProxy('state/set_pose', SetPose)
         service(pose)  # The `response` is not used.
     except rospy.ServiceException as e:
         print("Server cannot set current robot position")
 
 if __name__ == '__main__':
     # Initialise the node, its action server, and wait.   
-    rospy.init_node(anm.NODE_CONTROLLER, log_level=rospy.INFO)
+    rospy.init_node('controller', log_level=rospy.INFO)
     server = ControllingAction()
     rospy.spin()

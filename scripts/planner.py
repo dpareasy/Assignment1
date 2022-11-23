@@ -1,9 +1,20 @@
 #! /usr/bin/env python3
+"""
+.. module:: planner
+   :platform: Unix
+   :synopsis: Python module for implementing the reasoning behavior
+
+.. moduleauthor:: Luca Buoncompagni, Davide Leo Parisi <davide.parisi1084@gmail.com>
+
+ROS node for implementing the reasoning behavior of the robot.
+
+Service:
+    /state/get_pose: Get the robot current pose in the simulation
+    /motion/planner: 
+"""
 import os
 import random
 import rospy
-# Import constant name defined to structure the architecture.
-from Assignment1 import architecture_name_mapper as anm
 # Import the ActionServer implementation used.
 from actionlib import SimpleActionServer
 # Import custom message, actions and services.
@@ -20,11 +31,11 @@ class PlaningAction(object):
 
     def __init__(self):
         # Get random-based parameters used by this server
-        self._random_plan_points = rospy.get_param(anm.PARAM_PLANNER_POINTS, [2, 8])
-        self._random_plan_time = rospy.get_param(anm.PARAM_PLANNER_TIME, [0.1, 1])
-        self._environment_size = rospy.get_param(anm.PARAM_ENVIRONMENT_SIZE)
+        self._random_plan_points = rospy.get_param('test/random_plan_points', [2, 8])
+        self._random_plan_time = rospy.get_param('test/random_plan_time', [0.1, 1])
+        self._environment_size = rospy.get_param('config/environment_size')
         # Instantiate and start the action server based on the `SimpleActionServer` class.
-        self._as = SimpleActionServer(anm.ACTION_PLANNER, 
+        self._as = SimpleActionServer('motion/planner', 
                                       Assignment1.msg.PlanAction, 
                                       execute_cb=self.execute_callback, 
                                       auto_start=False)
@@ -58,6 +69,9 @@ class PlaningAction(object):
         
         # Initialise the `feedback` with the starting point of the plan.
         feedback = PlanFeedback()
+        """
+        PlanFeedback: feedback coming from the planner server
+        """
         feedback.via_points = []
         feedback.via_points.append(start_point)
         # Publish the feedback and wait to simulate computation.
@@ -75,10 +89,13 @@ class PlaningAction(object):
             if self._as.is_preempt_requested():
                 print('Server has been cancelled by the client!')
                 # Actually cancel this service.
-                self._as.set_preempted()  
+                self._as.set_preempted()
                 return
             # Generate a new random point of the plan.
             new_point = Point()
+            """
+            Point: point of the plan
+            """
             new_point.x = random.uniform(0, self._environment_size[0])
             new_point.y = random.uniform(0, self._environment_size[1])
             feedback.via_points.append(new_point)
@@ -94,6 +111,9 @@ class PlaningAction(object):
 
         # Publish the results to the client.
         result = PlanResult()
+        """
+        PlanResult: result of the planner server computations
+        """
         result.via_points = feedback.via_points
         self._as.set_succeeded(result)
         for point in result.via_points:
@@ -123,7 +143,7 @@ def _get_pose_client():
 
 
 if __name__ == '__main__':
-    # Initialise the node, its action server, and wait.    
-    rospy.init_node(anm.NODE_PLANNER, log_level=rospy.INFO)
+    # Initialise the node, its action server, and wait.
+    rospy.init_node('planner', log_level=rospy.INFO)
     server = PlaningAction()
     rospy.spin()

@@ -1,15 +1,25 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
+"""
+.. module:: my_state_machine
+   :platform: Unix
+   :synopsis: Python module for implementing the Finite State Machine
+
+.. moduleauthor:: Davide Leo Parisi <davide.parisi1084@gmail.com>
+
+ROS node for implementing the Finite State Machine.
+
+Service:
+    /server_name: introspection server for visualization
+"""
 
 import smach
 import rospy
-from pydoc import Helper
 import random
 import smach_ros
 from threading import Lock
 from std_msgs.msg import Bool
 from smach import StateMachine, State
 from load_ontology import LoadMap
-from Assignment1 import architecture_name_mapper as anm
 from interface_helper import InterfaceHelper, BehaviorHelper
 from Assignment1.msg import Point, ControlGoal, PlanGoal
 from armor_client import ArmorClient
@@ -55,7 +65,8 @@ class LoadOntology(smach.State):
 
 
         Returns:
-        TRANS_INITIALIZED(): transition to the STATE_DECISION
+            TRANS_INITIALIZED(str): transition to the STATE_DECISION
+
         """
         LoadMap()
         print("MAP LOADED")
@@ -68,8 +79,10 @@ class DecideTarget(smach.State):
     A class to implement the behavior of the decision state of the robot.
 
     Class constructor, i.e., class initializer. Input parameters are:
-    - `interface_helper`: the helper class invoked to interface with the server
-    - `behavio_hleper`: the helper class invoked to interface with the behavior 
+
+    - `interface_helper`: the helper class invoked to interface with the server.
+
+    - `behavior_hleper`: the helper class invoked to interface with the behavior.
     """
 
     def __init__(self, interface_helper, behavior_helper):
@@ -78,7 +91,7 @@ class DecideTarget(smach.State):
         self._helper = interface_helper
         self._behavior = behavior_helper
         # Get the environment size from ROS parameters.
-        self.environment_size = rospy.get_param(anm.PARAM_ENVIRONMENT_SIZE)
+        self.environment_size = rospy.get_param('config/environment_size')
         State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_DECIDED], output_keys = ['current_pose', 'choice', 'list_of_corridors', 'random_plan'])
 
     def execute(self, userdata):
@@ -92,11 +105,17 @@ class DecideTarget(smach.State):
         parameter is used to use some variables in the other states.
 
         Returns:
-        TRANS_RECHARGING(): transition to the recharging state
-        TRANS_DECIDED(): transition to the moving state
+            TRANS_RECHARGING (str): transition to the recharging state.
+        
+        Returns:
+            TRANS_DECIDED (str): transition to the moving state.
+
         """
         # Define a random point to be reached through some via-points to be planned.
         goal = PlanGoal()
+        """
+        PlanGoal: goal position
+        """
         goal.target = Point(x = random.uniform(0, self.environment_size[0]),
                             y = random.uniform(0, self.environment_size[1]))
         current_pose, choice, list_of_corridors = self._behavior.decide_target()
@@ -130,12 +149,14 @@ class MoveToTarget(smach.State):
     A class to implement the behavior of the moving state of the robot.
 
     Class constructor, i.e., class initializer. Input parameters are:
-    - `interface_helper`: the helper class invoked to interface with the server
-    - `behavio_hleper`: the helper class invoked to interface with the behavior 
+
+    - `interface_helper`: the helper class invoked to interface with the server.
+
+    - `behavior_hleper`: the helper class invoked to interface with the behavior.
     """
 
     def __init__(self, interface_helper, behavior_helper):
-         # Get a reference to the interfaces with the other nodes of the architecture.
+        # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
         self._behavior = behavior_helper
 
@@ -152,13 +173,19 @@ class MoveToTarget(smach.State):
         parameter is used to import parameters from the other states.
         
         Returns:
-        TRANS_RECHARGING(): transition to the recharging state
-        TRANS_MOVED(): transition to the moving state
+            TRANS_RECHARGING(str): transition to the recharging state.
+
+        Returns:
+            TRANS_MOVED(str): transition to the moving state.
+
         """
         # Get the plan to a random position computed by the `PLAN_TO_RANDOM_POSE` state.
         plan = userdata.random_plan
         # Start the action server for moving the robot through the planned via-points.
         goal = ControlGoal(via_points = plan)
+        """
+        ControlGoal: via points to reach the goal 
+        """
         self._helper.controller_client.send_goal(goal)
         current_pose = userdata.current_pose
         choice = userdata.choice
@@ -190,8 +217,10 @@ class Recharging(State):
     A class to implement the behavior of the recharging state of the robot.
 
     Class constructor, i.e., class initializer. Input parameters are:
-    - `interface_helper`: the helper class invoked to interface with the server
-    - `behavio_hleper`: the helper class invoked to interface with the behavior 
+
+    - `interface_helper`: the helper class invoked to interface with the server.
+
+    - `behavior_hleper`: the helper class invoked to interface with the behavior.
     """
 
     def __init__(self, interface_helper, behavior_helper):
@@ -212,7 +241,8 @@ class Recharging(State):
         from the other states.
         
         Returns:
-        TRANS_RECHARGED(): transition to the recharging state
+            TRANS_RECHARGED(str): transition to the recharging state
+
         """
         while not rospy.is_shutdown():  # Wait for stimulus from the other nodes of the architecture.
             # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
@@ -230,14 +260,14 @@ class Recharging(State):
 
 def main():
     """
-    MANCA DA COMMENTARE
+    This function creates the state machine and defines all the transitions.
     """
     rospy.init_node('state_machine', log_level = rospy.INFO)
     # Initialise an helper class to manage the interfaces with the other nodes in the architectures, i.e., it manages external stimulus.
     helper = InterfaceHelper()
     behavior = BehaviorHelper()
     # Get the initial robot pose from ROS parameters.
-    robot_pose_param = rospy.get_param(anm.PARAM_INITIAL_POSE, [0, 0])
+    robot_pose_param = rospy.get_param('state/initial_pose', [0, 0])
     # Initialise robot position in the `robot_state`, as required by the plan anc control action servers.
     helper.init_robot_pose(Point(x = robot_pose_param[0], y = robot_pose_param[1]))
 
