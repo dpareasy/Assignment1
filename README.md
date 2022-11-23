@@ -17,6 +17,14 @@ The moving policy that the robot should hae is the following:
 
 Reasoning and urgency are managed by the ontology.
 
+## Assumptions ##
+
+For simplicity we consider a scenario with the following assumptions:
+* The environment created can be formed by any number of corridors;
+* The number of rooms which a corridor can contain is the same for each corridor;
+* Each i-th corridor is connected with (i-th - 1) and with the recharging location (which is a corridor);
+* The battery can become low at any time;
+
 ## Project structure ##
 
 ### Package list ###
