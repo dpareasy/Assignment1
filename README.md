@@ -16,3 +16,17 @@ The moving policy that the robot should hae is the following:
 * If a reachable room has not been visited for some specified times it should visit it.
 
 Reasoning and urgency are managed by the ontology.
+
+## Project structure ##
+
+This repository contains a ROS package named Assignment1 that includes the following resources:
+* `CMakeList.txt`: File to configure this package;
+* `package.xml`: File to configure this package;
+* `launch/`: Contains the configuration to launch this package
+         * launch_file.launch: it launches armor server and all the nodes used in this simulation.
+
+    
+    
+    
+
+
