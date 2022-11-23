@@ -47,4 +47,4 @@ In order to launch the simulation a .lunch file can be used bay using this comma
 ```
 roslaunch Assignment1 launch_file.launch
 ```
-It will launch the aRMOR server and all the nodes that simulate the robot behavior.
+It will launch the aRMOR server and all the nodes that implement the robot behavior.
