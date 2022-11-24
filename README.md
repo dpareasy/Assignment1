@@ -4,8 +4,8 @@ Parisi Davide Leo 4329668
 
 ## Introduction ##
 
-This repository contains ROS-based software, developed in python language, that simulates a behavioural architecture. The objective is to drive a robot around a particular environment created by manipulations service requests to aRMOR server. In order to not make the transitions between states of the state machine istantaneous, a dummy simulated behavior is implemented using mutexes.
 
+This repository contains ROS-based software, developed in python language, that simulates a behavioural architecture. The objective is to drive a robot around a particular indoor environment created by manipulations service requests to aRMOR server. 
 
 ## About the simulation ##
 
@@ -40,7 +40,7 @@ For simplicity we consider a scenario with the following assumptions:
 
 As stated in the above section, some assumption have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site.
 
-### Possible improvements ###
+## Possible improvements ##
 
 
 ## Project structure ##
@@ -89,7 +89,27 @@ In order to launch the simulation a .lunch file can be used bay using this comma
 ```
 roslaunch Assignment1 launch_file.launch
 ```
-It will launch the aRMOR server and all the nodes that implement the robot behavior. Install xterm to visualize feedback from the nodes launched.
+It will launch the aRMOR server and all the nodes that implement the robot behavior.
+```
+<?xml version="1.0"?>
+<launch>
+    <!-- Run the architecture's component and test it based on random-based stimulus. -->
+
+    <rosparam param="state/initial_pose"> [ 0.0,  0.0] </rosparam>
+    <rosparam param="config/environment_size"> [10.0, 10.0] </rosparam>
+    <rosparam param="test/random_plan_points"> [2, 8] </rosparam>
+    <rosparam param="test/random_plan_time"> [0.2, 0.8] </rosparam>
+    <rosparam param="test/random_motion_time"> [0.1, 1.0] </rosparam>
+
+    <node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService"/>
+    <node pkg = "Assignment1" type = "my_state_machine.py" name = "my_state_machine" output = "screen" launch-prefix="xterm -e"> </node>
+    <node pkg = "Assignment1" type = "robot_state.py" name = "robot_state" output = "screen" launch-prefix="xterm -e"> </node>
+    <node pkg = "Assignment1" type = "planner.py" name = "planner" output = "screen" launch-prefix="xterm -e"> </node>
+    <node pkg = "Assignment1" type = "controller.py" name = "controller" output = "screen" launch-prefix="xterm -e"> </node>		
+</launch>
+```
+
+Install xterm to visualize feedback from the nodes launched.
 
 ## Author and contacts ##
 Author: Davide Leo Parisi
