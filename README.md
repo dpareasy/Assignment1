@@ -12,10 +12,11 @@ This repository contains ROS-based software, developed in python language, that 
 ### Ontology ###
 
 The ontology used in this repository encodes the classes shown in the picture below, where each `LOCATION` can be a `ROOM`, if it has only one `DOOR`, and a `CORRIDOR`, if it has more doors. Each door is associated with a location through the object property `hasDoor`. In addition, each `LOCATION` has the data property `visitedAt`, which represents the more recent timestamp (in seconds) when the robot visited such a location (see figure below). The `ROBOT` class contains only one individual which has several properties like the `isIn` which represent the robot actual position and the `now` property which specify the last time the robot changed its location. If a location has not been visited for a specified amount of thime it become part of the `URGENT`class.
+Visit (link di topological map) for more details.
 
 ### Scenario ###
 
-The scenario involves a surveilling robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. It must wait for receiving all the information to build the topological map before starting surveilling. The robot should start in it's initial position which is also the recharging location. When it moves in a new location it should wait some times for the survey before starting reasoning again for moving in another location. 
+The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information to build the topological map. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit. 
 
 The environment in which the robot moves is developed in a way in which different scenarios can be created under certain assumptions which are presented in the Assumption section.
 
@@ -33,9 +34,9 @@ For simplicity we consider a scenario with the following assumptions:
 * The number of rooms which a corridor can contain is the same for each corridor;
 * Each i-th corridor is connected with (i-th+1) and with the recharging location (which is a corridor);
 * The duration of the battery is 60 seconds;
-* The robot is automatically spowned in the recharging room every time the battery goes low;
+* The robot is automatically spawned in the recharging room every time the battery goes low;
 
-### System limitations ###
+## System limitations ##
 
 As stated in the above section, some assumption have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site.
 
@@ -51,7 +52,7 @@ This repository contains a ROS package named Assignment1 that includes the follo
 2. `package.xml`: File to configure this package;
 3. `launch/`: Contains the configuration to launch this package;
     * launch_file.launch: it launches armor server and all the nodes used in this simulation.
-4. `msg/`: It contains the message exchanged through ROS topics:
+4. `msg/`: It contains the message exchanged through ROS topics
     * Point.msg: It is the message representing a 2D point.
 5. `srv/`: It Contains the definition of each server used by this software:
     * GetPose.srv: It defines the request and response to get the current robot position;
@@ -75,7 +76,10 @@ This software is based on ROS Noetic.
 
 Follow these steps to install the software:
 * Clone this repository inside your workspace (make sure it is sourced in you .bashrc);
+* Follow the stpes of this link for aRMOR installation;
+* Use armor_api for server requests, you can clone it from this repository;
 * Clone arch_skeleton repository which contains the controller and planner server; 
+* Clone in your workspace topological_map repository containing the ontology for this project;
 * Run `chmod +x <file_name>` for each file inside the scripts folder;
 * Run `catkin_make` from the root of your workspace.
 
