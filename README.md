@@ -109,7 +109,10 @@ It will launch the aRMOR server and all the nodes that implement the robot behav
 </launch>
 ```
 
-Install xterm to visualize feedback from the nodes launched.
+Install xterm to visualize feedback from the nodes launched with the following command:
+
+`sudo apt-get -y install xterm`
+
 
 ## Author and contacts ##
 Author: Davide Leo Parisi
