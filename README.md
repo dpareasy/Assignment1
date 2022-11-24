@@ -9,14 +9,22 @@ This repository contains ROS-based software, developed in python language, that 
 
 ## About the simulation ##
 
-### Environment ###
+### Ontology ###
 
-The ontology used in this repository encodes the classes shown in the picture below, where each `LOCATION` can be a `ROOM`, if it has only one `DOOR`, and a `CORRIDOR`, if it has more doors. Each door is associated with a location through the object property `hasDoor`. In addition, each `LOCATION` has the data property `visitedAt`, which represents the more recent timestamp (in seconds) when the robot visited such a location (see figure below). The `ROBOT` class contains only one individual which has several properties like the `isIn` which represent the robot actual position and the `now` property which specify the last time the robot changed its location.
+The ontology used in this repository encodes the classes shown in the picture below, where each `LOCATION` can be a `ROOM`, if it has only one `DOOR`, and a `CORRIDOR`, if it has more doors. Each door is associated with a location through the object property `hasDoor`. In addition, each `LOCATION` has the data property `visitedAt`, which represents the more recent timestamp (in seconds) when the robot visited such a location (see figure below). The `ROBOT` class contains only one individual which has several properties like the `isIn` which represent the robot actual position and the `now` property which specify the last time the robot changed its location. If a location has not been visited for a specified amount of thime it become part of the `URGENT`class.
 
 ### Scenario ###
 
-The scenario involves a surveilling robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. It must wait for receiving all the information to build the topological map before starting surveilling. The robot should start in it's initial position which is also the recharging location. When it moves in a new location it should wait some times before starting reasoning for moving in another location.
-When its battery is low it should move to the recharging position before starting again the above mentioned behavior.
+The scenario involves a surveilling robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. It must wait for receiving all the information to build the topological map before starting surveilling. The robot should start in it's initial position which is also the recharging location. When it moves in a new location it should wait some times for the survey before starting reasoning again for moving in another location. 
+
+The environment in which the robot moves is developed in a way in which different scenarios can be created under certain assumptions which are presented in the Assumption section.
+
+### Requirements ###
+
+The moving policy that the robot should follow is the one presented below:
+* It should mainly stay on corridors;
+* If a reachable room become `URGENT` the robot should visit it;
+* When its battery is low it should move to the recharging position;
 
 ### Assumptions ###
 
@@ -24,16 +32,9 @@ For simplicity we consider a scenario with the following assumptions:
 * The environment created can be formed by any number of corridors;
 * The number of rooms which a corridor can contain is the same for each corridor;
 * Each i-th corridor is connected with (i-th - 1) and with the recharging location (which is a corridor);
-* The duration of the battery is a random value between 40 and 60 seconds;
-* The battery can become low at any time;
+* The duration of the battery is 60 seconds;
 * The robot is automatically spowned in the recharging room every time the battery goes low;
 
-
-### Requirements ###
-
-The moving policy that the robot should follow is the one presented below:
-* It should mainly stay on corridors;
-* If a reachable room has not been visited for some specified amount of times it should visit it;
 
 ## Project structure ##
 
@@ -54,6 +55,7 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * Control.action: It defines the goal, feedback and results concerning motion controlling.
 7. `scripts/`: It contains the implementation of each software components:
     * load_ontology.py: It creates the topological map of the environment;
+    * robot_actions.py: It contains a class to implement the behavior of the robot;
     * my_state_machine.py: It defines the states of the state machine;
     * robot_state.py: It implements the robot state including: current position, and battery level;
     * planner.py: It is a dummy implementation of a motion planner;
