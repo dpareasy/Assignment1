@@ -12,10 +12,11 @@ This repository contains ROS-based software, developed in python language, that 
 ### Ontology ###
 
 The ontology used in this repository encodes the classes shown in the picture below, where each `LOCATION` can be a `ROOM`, if it has only one `DOOR`, and a `CORRIDOR`, if it has more doors. Each door is associated with a location through the object property `hasDoor`. In addition, each `LOCATION` has the data property `visitedAt`, which represents the more recent timestamp (in seconds) when the robot visited such a location (see figure below). The `ROBOT` class contains only one individual which has several properties like the `isIn` which represent the robot actual position and the `now` property which specify the last time the robot changed its location. If a location has not been visited for a specified amount of time it becomes part of the `URGENT`class.
-
+![ontology_class](https://user-images.githubusercontent.com/92155300/204053661-a6faaf81-a48f-4fd7-aa5a-08bf6d7c5ff7.png)
 Visit https://github.com/buoncubi/topological_map for more details.
 
 ### Scenario ###
+
 
 The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information to build the topological map. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit.
 
