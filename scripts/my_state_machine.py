@@ -19,10 +19,12 @@ import smach_ros
 #from threading import Lock
 #from std_msgs.msg import Bool
 from smach import State #StateMachine, State
-from load_ontology import LoadMap
+#from load_ontology import LoadMap
+import os
 import simple_colors
 from interface_helper import InterfaceHelper
 from robot_actions import BehaviorHelper
+from load_ontology import CreateOntology
 from Assignment1.msg import Point, ControlGoal, PlanGoal
 from armor_api.armor_client import ArmorClient
 client = ArmorClient("assignment", "my_ontology") 
@@ -54,7 +56,9 @@ class LoadOntology(smach.State):
     """
     A class to implement the behavior of the decision state of the robot.
     """
-    def __init__(self):
+    def __init__(self, ontology):
+
+        self._ontology = ontology
         State.__init__(self, outcomes = [TRANS_INITIALIZED])
 
     def execute(self, userdata):
@@ -72,7 +76,7 @@ class LoadOntology(smach.State):
             TRANS_INITIALIZED(str): transition to the STATE_DECISION
 
         """
-        LoadMap()
+        self._ontology.LoadMap()
         print("MAP LOADED")
         rospy.sleep(2)
         return TRANS_INITIALIZED
@@ -264,7 +268,8 @@ class Surveying(State):
                 if not self._helper.is_battery_low():
                     self._helper.reset_states()  # Reset the state variable related to the stimulus.
                     print(simple_colors.green("\n\nSURVEYNG...\n\n", ['blink']))
-                    rospy.sleep(3)
+                    rospy.sleep(5)
+                    os.system('clear')
                     return TRANS_SURVEYED
             finally:
                 # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
@@ -326,7 +331,8 @@ def main():
     This function creates the state machine and defines all the transitions. Jere a nested state machine is created
     """
     rospy.init_node('state_machine', log_level = rospy.INFO)
-    # Initialise an helper class to manage the interfaces with the other nodes in the architectures, i.e., it manages external stimulus.
+    # Initialise an classes to manage the interfaces with the other nodes in the architecture.
+    ontology = CreateOntology()
     helper = InterfaceHelper()
     behavior = BehaviorHelper()
     # Get the initial robot pose from ROS parameters.
@@ -337,7 +343,7 @@ def main():
     sm_main = smach.StateMachine([])
     with sm_main:
 
-        smach.StateMachine.add(STATE_INIT, LoadOntology(),
+        smach.StateMachine.add(STATE_INIT, LoadOntology(ontology),
                          transitions = {TRANS_INITIALIZED: STATE_NORMAL})
         
         sm_normal = smach.StateMachine(outcomes=[TRANS_BATTERY_LOW])

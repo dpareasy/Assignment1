@@ -52,10 +52,7 @@ class BehaviorHelper:
             intersection(str): list of the intersection
 
         """
-        intersection = []
-        for element in list1:
-            if element in list2:
-                intersection.append(element)
+        intersection = [value for value in list1 if value in list2]
         return intersection
 
     def clean_strings(self, string_type, list_):
