@@ -16,14 +16,10 @@ Service:
     /state/set_pose: Set the robot current pose in the simulation
 """
 
-
 import threading
-import random
 import rospy
-# Import the messages used by services and publishers.
 from std_msgs.msg import Bool
 from Assignment1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
-
 
 class RobotState:
     """
@@ -39,10 +35,6 @@ class RobotState:
         self._pose = None
         # Initialise battery level.
         self._battery_low = False
-        # Initialise randomness, if enabled.
-        self._randomness = rospy.get_param('test/random_sense/active', True)
-        if self._randomness:
-            self._random_battery_time = rospy.get_param('test/random_sense/battery_time', [15.0, 40.0])
         # Define services.
         rospy.Service('state/get_pose', GetPose, self.get_pose)
         rospy.Service('state/set_pose', SetPose, self.set_pose)
@@ -128,8 +120,7 @@ class RobotState:
             else:
                 print("Robot got fully charged battery after" , delay , "seconds")
             # Wait for simulate battery usage.
-            delay = random.uniform(self._random_battery_time[0], self._random_battery_time[1])
-            #delay = 10
+            delay = 60
             rospy.sleep(delay)
             # Change battery state.
             self._battery_low = not self._battery_low

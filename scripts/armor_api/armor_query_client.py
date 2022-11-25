@@ -6,7 +6,7 @@ Querying commands for Armor Python API --ArmorPy.
 
 import rospy
 #from armor_api.armor_exceptions import ArmorServiceInternalError, ArmorServiceCallError
-from armor_exceptions import ArmorServiceInternalError, ArmorServiceCallError
+from armor_api.armor_exceptions import ArmorServiceInternalError, ArmorServiceCallError
 __author__ = "Alessio Capitanelli"
 __copyright__ = "Copyright 2016, ArmorPy"
 __license__ = "GNU"

@@ -25,9 +25,9 @@ RobotState Module
 .. automodule:: scripts.robot_state
    :members:
 
-InterfaceHelper Module
+RobotActions Module
 ======================
-.. automodule:: scripts.interface_helper
+.. automodule:: scripts.robot_actions
    :members:
 
 Indices and tables

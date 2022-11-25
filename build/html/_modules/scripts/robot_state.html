@@ -69,7 +69,7 @@
 <span class="sd">.. module:: robot_state</span>
 <span class="sd">   :platform: Unix</span>
 <span class="sd">   :synopsis: Python module for implementing the robot state</span>
-<span class="sd">.. moduleauthor:: Davide Leo Parisi davide.parisi1084@gmail.com</span>
+<span class="sd">.. moduleauthor:: Luca Buoncompagni, Davide Leo Parisi davide.parisi1084@gmail.com</span>
 
 <span class="sd">ROS node for implementing the robot state. It includes the current position and battery level.</span>
 
@@ -105,10 +105,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pose</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># Initialise battery level.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_battery_low</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="c1"># Initialise randomness, if enabled.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_randomness</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;test/random_sense/active&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_randomness</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_random_battery_time</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;test/random_sense/battery_time&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">])</span>
         <span class="c1"># Define services.</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;state/get_pose&#39;</span><span class="p">,</span> <span class="n">GetPose</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pose</span><span class="p">)</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;state/set_pose&#39;</span><span class="p">,</span> <span class="n">SetPose</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_pose</span><span class="p">)</span>
@@ -194,8 +190,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Robot got fully charged battery after&quot;</span> <span class="p">,</span> <span class="n">delay</span> <span class="p">,</span> <span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
             <span class="c1"># Wait for simulate battery usage.</span>
-            <span class="n">delay</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_random_battery_time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_battery_time</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="c1">#delay = 10</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="mi">60</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
             <span class="c1"># Change battery state.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_battery_low</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_battery_low</span></div></div>

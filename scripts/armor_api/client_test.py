@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from armor_client import ArmorClient
+from api_armor.armor_client import ArmorClient
 from os.path import dirname, realpath
 
 # INITIALIZE REFERENCE

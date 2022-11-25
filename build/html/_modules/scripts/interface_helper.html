@@ -71,7 +71,7 @@
 <span class="sd">   :platform: Unix</span>
 <span class="sd">   :synopsis: Python module for defining function used by the state machine</span>
 
-<span class="sd">.. moduleauthor:: Davide Leo Parisi &lt;davide.parisi1084@gmail.com&gt;</span>
+<span class="sd">.. moduleauthor:: Luca Buoncompagni, Davide Leo Parisi &lt;davide.parisi1084@gmail.com&gt;</span>
 
 <span class="sd">ROS node for defining the behavior of the state machine</span>
 
@@ -324,190 +324,132 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setting initial robot position&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot set current robot position&quot;</span><span class="p">)</span></div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">class BehaviorHelper:</span>
+<span class="sd">    </span>
 
-<div class="viewcode-block" id="BehaviorHelper"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.BehaviorHelper">[docs]</a><span class="k">class</span> <span class="nc">BehaviorHelper</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class to define the methods used for implementing the behavior of the robot. </span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    def __init__(self):</span>
+<span class="sd">        self.agent = &quot;Robot1&quot;</span>
+<span class="sd">        self.current_position = &quot;isIn&quot;</span>
+<span class="sd">        self.urgent_class = &quot;URGENT&quot;</span>
+<span class="sd">        self.reachable = &quot;canReach&quot;</span>
+<span class="sd">        self.last_visit = &quot;visitedAt&quot;</span>
+<span class="sd">        self.robot_timestamp = &quot;now&quot;</span>
+<span class="sd">        self.charging_location = &quot;E&quot;</span>
+<span class="sd">        self.time_stamps_type = &quot;Long&quot;</span>
+<span class="sd">        self.corridors = &#39;CORRIDOR&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span> <span class="o">=</span> <span class="s2">&quot;Robot1&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_position</span> <span class="o">=</span> <span class="s2">&quot;isIn&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">urgent_class</span> <span class="o">=</span> <span class="s2">&quot;URGENT&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reachable</span> <span class="o">=</span> <span class="s2">&quot;canReach&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span> <span class="o">=</span> <span class="s2">&quot;visitedAt&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">robot_timestamp</span> <span class="o">=</span> <span class="s2">&quot;now&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">charging_location</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_type</span> <span class="o">=</span> <span class="s2">&quot;Long&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">corridors</span> <span class="o">=</span> <span class="s1">&#39;CORRIDOR&#39;</span>
+<span class="sd">        self.urgent = &#39;urgent&#39;</span>
+<span class="sd">        self.corridor = &#39;corridor&#39;</span>
+<span class="sd">        self.robot_position = &#39;robot_position&#39;</span>
+<span class="sd">        self.reachable_destinations = &#39;reachable_destinations&#39;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">urgent</span> <span class="o">=</span> <span class="s1">&#39;urgent&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">corridor</span> <span class="o">=</span> <span class="s1">&#39;corridor&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">robot_position</span> <span class="o">=</span> <span class="s1">&#39;robot_position&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reachable_destinations</span> <span class="o">=</span> <span class="s1">&#39;reachable_destinations&#39;</span>
-
-<div class="viewcode-block" id="BehaviorHelper.inters_b2_lists"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.BehaviorHelper.inters_b2_lists">[docs]</a>    <span class="k">def</span> <span class="nf">inters_b2_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list1</span><span class="p">,</span> <span class="n">list2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Intersection between the urgent rooms and the reacheble rooms.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            list1(str): first list to intersect</span>
-
-<span class="sd">            list2(str): second list to intersect</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            intersection(str): list of the intersection</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">intersection</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">list1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">list2</span><span class="p">:</span>
-                <span class="n">intersection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">intersection</span></div>
-
-<div class="viewcode-block" id="BehaviorHelper.clean_strings"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.BehaviorHelper.clean_strings">[docs]</a>    <span class="k">def</span> <span class="nf">clean_strings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string_type</span><span class="p">,</span> <span class="n">list_</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        clean the strings obtained by the query.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            string_type(int): an integer specifying if the string is obtained from</span>
-<span class="sd">            </span>
-<span class="sd">            list_(str): list of string to be cleaned </span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            list_(str): list of cleaned strings</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">string_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">list_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">list_</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_</span><span class="p">)):</span>
-                    <span class="n">list_</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">list_</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">string_type</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">list_</span> <span class="o">=</span> <span class="n">list_</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">11</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">list_</span></div>
-
-<div class="viewcode-block" id="BehaviorHelper.get_locations"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.BehaviorHelper.get_locations">[docs]</a>    <span class="k">def</span> <span class="nf">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        function for location&#39;s query</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            location(str): a string to select the query to ask</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            location_list(str): list of queried location</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">corridor</span><span class="p">:</span>
-            <span class="n">list_of_corridors</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corridors</span><span class="p">)</span>
-            <span class="n">location_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_of_corridors</span><span class="p">)</span>
-            
-        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">urgent</span><span class="p">:</span>
-            <span class="n">urgent_rooms</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">urgent_class</span><span class="p">)</span>
-            <span class="n">location_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">urgent_rooms</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot_position</span><span class="p">:</span>
-            <span class="n">current_pose</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
-            <span class="n">location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">current_pose</span><span class="p">)</span>
-            <span class="n">location_list</span> <span class="o">=</span> <span class="n">current_pose</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">reachable_destinations</span><span class="p">:</span>
-            <span class="n">possible_destinations</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reachable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
-            <span class="n">location_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">possible_destinations</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">location_list</span></div>
-
-
-<div class="viewcode-block" id="BehaviorHelper.decide_target"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.BehaviorHelper.decide_target">[docs]</a>    <span class="k">def</span> <span class="nf">decide_target</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plan the next robot movement.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            current_pose(str): The current robot position obtained from the ontology</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            target(str): The target position chosen from a list of reachable and urgent locations</span>
+<span class="sd">    def inters_b2_lists(self, list1, list2):</span>
 <span class="sd">        </span>
-<span class="sd">        Returns:</span>
-<span class="sd">            list_of_corridors(str): List of corridors in the map</span>
+<span class="sd">        intersection = []</span>
+<span class="sd">        for element in list1:</span>
+<span class="sd">            if element in list2:</span>
+<span class="sd">                intersection.append(element)</span>
+<span class="sd">        return intersection</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    def clean_strings(self, string_type, list_):</span>
+<span class="sd">       </span>
+<span class="sd">        if string_type == 1:</span>
+<span class="sd">            if len(list_) == 1:</span>
+<span class="sd">                list_[0] = list_[0][32:-1]</span>
+<span class="sd">                </span>
+<span class="sd">            else:</span>
+<span class="sd">                for x in range (len(list_)):</span>
+<span class="sd">                    list_[x] = list_[x][32:-1]</span>
+<span class="sd">        if string_type == 2:</span>
+<span class="sd">            list_ = list_[0][1:-11]</span>
+<span class="sd">        return list_</span>
 
-        <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
-        <span class="n">list_of_corridors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corridor</span><span class="p">)</span>
-        <span class="n">current_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot_position</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;current pose is: [&quot;</span><span class="o">+</span><span class="p">(</span><span class="n">current_pose</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">))</span>
-        <span class="n">possible_destinations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reachable_destinations</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;Possible destinations: [&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">possible_destinations</span><span class="p">)</span> <span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">))</span>
-        <span class="n">urgent_rooms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">urgent</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">red</span><span class="p">(</span><span class="s2">&quot;URGENT ROOMS: [&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span> <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">urgent_rooms</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">))</span>
-        <span class="n">reachable_urgent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inters_b2_lists</span><span class="p">(</span><span class="n">possible_destinations</span><span class="p">,</span> <span class="n">urgent_rooms</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="s2">&quot;URGENT AND REACHABLE LOCATIONS: [&quot;</span><span class="o">+</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reachable_urgent</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">))</span>
-        <span class="c1"># if the list is empty</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">reachable_urgent</span><span class="p">:</span>
-            <span class="c1"># if the list of possible destination </span>
-            <span class="c1"># contains only one element</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_destinations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">target</span> <span class="o">=</span> <span class="n">possible_destinations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">target</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inters_b2_lists</span><span class="p">(</span><span class="n">possible_destinations</span><span class="p">,</span> <span class="n">list_of_corridors</span><span class="p">))</span>
-        <span class="c1"># if chosen_target list is not empty</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># save the first element of the list as the oldest timestamp</span>
-            <span class="n">oldest</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span><span class="p">,</span> <span class="n">reachable_urgent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="c1"># clean the string</span>
-            <span class="n">oldest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">oldest</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reachable_urgent</span><span class="p">)):</span>
-                <span class="n">choice_last_visit</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span><span class="p">,</span> <span class="n">reachable_urgent</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">choice_last_visit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">choice_last_visit</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">choice_last_visit</span> <span class="o">&lt;=</span> <span class="n">oldest</span><span class="p">:</span>
-                    <span class="n">target</span> <span class="o">=</span> <span class="n">reachable_urgent</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;Moving to &quot;</span> <span class="o">+</span> <span class="n">target</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">current_pose</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">list_of_corridors</span></div>
+<span class="sd">    def get_locations(self, location):</span>
+<span class="sd">        </span>
 
+<span class="sd">        if location == self.corridor:</span>
+<span class="sd">            list_of_corridors = client.query.ind_b2_class(self.corridors)</span>
+<span class="sd">            location_list = self.clean_strings(1, list_of_corridors)</span>
+<span class="sd">            </span>
+<span class="sd">        if location == self.urgent:</span>
+<span class="sd">            urgent_rooms = client.query.ind_b2_class(self.urgent_class)</span>
+<span class="sd">            location_list = self.clean_strings(1, urgent_rooms)</span>
 
-<div class="viewcode-block" id="BehaviorHelper.move_to_target"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.BehaviorHelper.move_to_target">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">,</span> <span class="n">current_pose</span><span class="p">,</span> <span class="n">list_of_corridors</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Moving to the target room.</span>
+<span class="sd">        if location == self.robot_position:</span>
+<span class="sd">            current_pose = client.query.objectprop_b2_ind(self.current_position, self.agent)</span>
+<span class="sd">            location = self.clean_strings(1, current_pose)</span>
+<span class="sd">            location_list = current_pose[0]</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            chosen_target(str): The target position chosen from a list of reachable and urgent locations</span>
-<span class="sd">            current_pose(str): The current robot position obtained from the ontology</span>
-<span class="sd">            list_of_corridors(str): List of corridors  in the map</span>
+<span class="sd">        if location == self.reachable_destinations:</span>
+<span class="sd">            possible_destinations = client.query.objectprop_b2_ind(self.reachable, self.agent)</span>
+<span class="sd">            location_list = self.clean_strings(1, possible_destinations)</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">last_visit</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">chosen_target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">list_of_corridors</span><span class="p">:</span>
-            <span class="n">last_visit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">last_visit</span><span class="p">)</span>
-
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">,</span> <span class="n">current_pose</span><span class="p">)</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
-        <span class="n">last_change</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot_timestamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
-        <span class="n">last_change</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">last_change</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;last change was &quot;</span> <span class="o">+</span> <span class="n">last_change</span><span class="p">))</span>
-        <span class="n">current_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
-
-        <span class="k">if</span> <span class="n">chosen_target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">list_of_corridors</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_type</span><span class="p">,</span> <span class="n">current_time</span><span class="p">,</span> <span class="n">last_visit</span><span class="p">)</span>
-
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot_timestamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_type</span><span class="p">,</span> <span class="n">current_time</span><span class="p">,</span> <span class="n">last_change</span><span class="p">)</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;Now the robot is in &quot;</span> <span class="o">+</span> <span class="n">chosen_target</span><span class="p">))</span></div>
+<span class="sd">        return location_list</span>
 
 
-<div class="viewcode-block" id="BehaviorHelper.go_to_recharge"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.BehaviorHelper.go_to_recharge">[docs]</a>    <span class="k">def</span> <span class="nf">go_to_recharge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_location</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Going to charging location.</span>
+<span class="sd">    def decide_target(self):</span>
+<span class="sd">       </span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            current_location(str): The current robot position obtained from the ontology</span>
+<span class="sd">        client.utils.sync_buffered_reasoner()</span>
+<span class="sd">        list_of_corridors = self.get_locations(self.corridor)</span>
+<span class="sd">        current_pose = self.get_locations(self.robot_position)</span>
+<span class="sd">        print(simple_colors.cyan(&quot;current pose is: [&quot;+(current_pose)+&quot;]&quot;))</span>
+<span class="sd">        possible_destinations = self.get_locations(self.reachable_destinations)</span>
+<span class="sd">        print(simple_colors.cyan(&quot;Possible destinations: [&quot; + &quot;, &quot;.join(possible_destinations) +&quot;]&quot;))</span>
+<span class="sd">        urgent_rooms = self.get_locations(self.urgent)</span>
+<span class="sd">        print(simple_colors.red(&quot;URGENT ROOMS: [&quot; + &quot;, &quot; .join(urgent_rooms) + &quot;]&quot;))</span>
+<span class="sd">        reachable_urgent = self.inters_b2_lists(possible_destinations, urgent_rooms)</span>
+<span class="sd">        print(simple_colors.green(&quot;URGENT AND REACHABLE LOCATIONS: [&quot;+&quot;, &quot;.join(reachable_urgent)+&quot;]&quot;))</span>
+<span class="sd">        # if the list is empty</span>
+<span class="sd">        if not reachable_urgent:</span>
+<span class="sd">            # if the list of possible destination </span>
+<span class="sd">            # contains only one element</span>
+<span class="sd">            if len(possible_destinations) == 1:</span>
+<span class="sd">                target = possible_destinations[0]</span>
+<span class="sd">            else:</span>
+<span class="sd">                target = random.choice(self.inters_b2_lists(possible_destinations, list_of_corridors))</span>
+<span class="sd">        # if chosen_target list is not empty</span>
+<span class="sd">        else:</span>
+<span class="sd">            # save the first element of the list as the oldest timestamp</span>
+<span class="sd">            oldest = client.query.dataprop_b2_ind(self.last_visit, reachable_urgent[0])</span>
+<span class="sd">            # clean the string</span>
+<span class="sd">            oldest = self.clean_strings(2, oldest)</span>
+<span class="sd">            for i in range (len(reachable_urgent)):</span>
+<span class="sd">                choice_last_visit = client.query.dataprop_b2_ind(self.last_visit, reachable_urgent[i])</span>
+<span class="sd">                choice_last_visit = self.clean_strings(2, choice_last_visit)</span>
+<span class="sd">                if choice_last_visit &lt;= oldest:</span>
+<span class="sd">                    target = reachable_urgent[i]</span>
+<span class="sd">        print(simple_colors.cyan(&quot;TARGET &quot; + target + &quot; ACQUIRED&quot;))</span>
+<span class="sd">        return current_pose, target, list_of_corridors</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">charging_location</span><span class="p">,</span> <span class="n">current_location</span><span class="p">)</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span></div></div>
+
+<span class="sd">    def move_to_target(self, chosen_target, current_pose, list_of_corridors):</span>
+<span class="sd">        </span>
+<span class="sd">        last_visit = client.query.dataprop_b2_ind(self.last_visit, chosen_target)</span>
+
+<span class="sd">        if chosen_target not in list_of_corridors:</span>
+<span class="sd">            last_visit = self.clean_strings(2, last_visit)</span>
+
+<span class="sd">        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, chosen_target, current_pose)</span>
+<span class="sd">        client.utils.sync_buffered_reasoner()</span>
+<span class="sd">        last_change = client.query.dataprop_b2_ind(self.robot_timestamp, self.agent)</span>
+<span class="sd">        last_change = self.clean_strings(2, last_change)</span>
+<span class="sd">        current_time = str(int(time.time()))</span>
+
+<span class="sd">        if chosen_target not in list_of_corridors:</span>
+<span class="sd">            client.manipulation.replace_dataprop_b2_ind(self.last_visit, chosen_target, self.time_stamps_type, current_time, last_visit)</span>
+
+<span class="sd">        client.manipulation.replace_dataprop_b2_ind(self.robot_timestamp, self.agent, self.time_stamps_type, current_time, last_change)</span>
+<span class="sd">        client.utils.sync_buffered_reasoner()</span>
+<span class="sd">        print(simple_colors.cyan(&quot;Now the robot is in &quot; + chosen_target))</span>
+
+
+<span class="sd">    def go_to_recharge(self, current_location):</span>
+<span class="sd">       </span>
+<span class="sd">        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, self.charging_location, current_location)</span>
+<span class="sd">        client.utils.sync_buffered_reasoner()</span>
+<span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
            </div>

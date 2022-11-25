@@ -79,7 +79,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">rospy</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">realpath</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">ArmorClient</span><span class="p">(</span><span class="s2">&quot;assignment&quot;</span><span class="p">,</span> <span class="s2">&quot;my_ontology&quot;</span><span class="p">)</span>
 
@@ -101,25 +101,43 @@
 <span class="sd">    Function initializing the environment in which the robot should move.</span>
 <span class="sd">    This mechanism is generalized in a way in which every envirnoment can be </span>
 <span class="sd">    created. The creation of the environment is done via call to armor server.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># declaration of lists used to store all the individuals</span>
     <span class="n">room_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">door_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">corridor_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1">#for num in range(1,100):</span>
-    <span class="c1">#    num += 1</span>
-    <span class="c1">#    print(&quot;Loading Map: &quot; + str(num) + &quot;%&quot;)</span>
-    <span class="c1">#    rospy.sleep(0.04)</span>
-    <span class="c1">#    os.system(&quot;clear&quot;)</span>
+    
 
     <span class="c1"># Input asking the user the number of corridors and rooms for each of them</span>
     <span class="n">corridor_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Specify the number of corridors: &#39;</span><span class="p">))</span>
     <span class="n">room_for_corridors</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Specify the number of rooms for corridors: &#39;</span><span class="p">))</span>
     <span class="n">room_number</span> <span class="o">=</span> <span class="n">corridor_number</span><span class="o">*</span><span class="n">room_for_corridors</span>
 
+
+    <span class="c1"># Create the initial position</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_ind_to_class</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;LOCATION&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added E to LOCATION&quot;</span><span class="p">)</span>
+
+    <span class="c1"># INITIALIZE ROBOT POSITION</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s2">&quot;isIn&quot;</span><span class="p">,</span> <span class="s2">&quot;Robot1&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Robot in its initial position!&quot;</span><span class="p">)</span>
+
+
     <span class="c1"># ADD ALL OUR AXIOMS</span>
     <span class="n">door_number</span> <span class="o">=</span> <span class="n">room_number</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">corridor_number</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading Map: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;clear&quot;</span><span class="p">)</span>
 
     <span class="c1"># for cycle for creating all the rooms</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">room_number</span><span class="p">):</span>
@@ -139,12 +157,8 @@
         <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_ind_to_class</span><span class="p">(</span><span class="n">door_list</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="s2">&quot;DOOR&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added &quot;</span> <span class="o">+</span> <span class="n">door_list</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; to DOOR&quot;</span><span class="p">)</span>
     
-    <span class="c1">#creation of the recharging location</span>
+    <span class="c1">#adding the rechargning location as the last element of the list</span>
     <span class="n">corridor_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">)</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_ind_to_class</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;LOCATION&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added E to LOCATION&quot;</span><span class="p">)</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s2">&quot;hasDoor&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;D6&quot;</span><span class="p">)</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s2">&quot;hasDoor&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;D7&quot;</span><span class="p">)</span>
 
     <span class="c1"># list to store all the individuals</span>
     <span class="n">ind_list</span> <span class="o">=</span> <span class="n">room_list</span> <span class="o">+</span> <span class="n">corridor_list</span> <span class="o">+</span> <span class="n">door_list</span>
@@ -158,28 +172,27 @@
     <span class="n">n_room_for_corridor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">room_list</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">corridor_list</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">door_index</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">room_index</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">corridor_list</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># Assigning doors to each location in order to make all the connections</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">corridor_list</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span><span class="c1"># -1 because we don&#39;t consider corridor E in the count (which is the last of the list)</span>
+        <span class="c1"># The number of doors is higher than the number of rooms for this reason we can assign DOOR[i] to ROOM[i].</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_room_for_corridor</span><span class="p">):</span>
             <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">room_list</span><span class="p">[</span><span class="n">room_index</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
             <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;corridor &#39;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; connected to &#39;</span> <span class="o">+</span> <span class="n">room_list</span><span class="p">[</span><span class="n">room_index</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; trough &#39;</span><span class="o">+</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
             <span class="n">door_index</span> <span class="o">=</span> <span class="n">door_index</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">room_index</span> <span class="o">=</span> <span class="n">room_index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c1"># Here a create the connections between E corridor with al the corridors.</span>
         <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
         <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;corridor &#39;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; connected to corridor E trough &#39;</span> <span class="o">+</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
         <span class="n">door_index</span> <span class="o">=</span> <span class="n">door_index</span> <span class="o">+</span> <span class="mi">1</span>
 
+    <span class="c1"># It remains to connect the i-th+1 corridor with the i-th corridor</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">corridor_list</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;connectedTo&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
         <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;corridor &#39;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; connected to corridor &#39;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; trough &#39;</span><span class="o">+</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
         <span class="n">door_index</span> <span class="o">=</span> <span class="n">door_index</span> <span class="o">+</span> <span class="mi">1</span>
-
-    <span class="c1"># INITIALIZE ROBOT POSITION</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s2">&quot;isIn&quot;</span><span class="p">,</span> <span class="s2">&quot;Robot1&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Robot in its initial position!&quot;</span><span class="p">)</span>
 
     <span class="c1"># APPLY CHANGES AND QUERY</span>
     <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">apply_buffered_changes</span><span class="p">()</span>

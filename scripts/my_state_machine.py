@@ -16,33 +16,35 @@ import smach
 import rospy
 import random
 import smach_ros
-from threading import Lock
-from std_msgs.msg import Bool
-from smach import StateMachine, State
+#from threading import Lock
+#from std_msgs.msg import Bool
+from smach import State #StateMachine, State
 from load_ontology import LoadMap
-from interface_helper import InterfaceHelper, BehaviorHelper
+import simple_colors
+from interface_helper import InterfaceHelper
+from robot_actions import BehaviorHelper
 from Assignment1.msg import Point, ControlGoal, PlanGoal
-from armor_client import ArmorClient
+from armor_api.armor_client import ArmorClient
 client = ArmorClient("assignment", "my_ontology") 
 
 #list of states in the machine
 STATE_INIT = 'INITIALIZE_MAP'
 STATE_DECISION = 'DECIDE_LOCATION'
 STATE_MOVING = "MOVING_TO_LOCATION"
-STATE_PLAN_TO_RANDOM_POSE = 'PLAN_TO_RANDOM_POSE'
-STATE_GO_TO_RANDOM_POSE = 'GO_TO_RANDOM_POSE'
 STATE_NORMAL = 'NORMAL'
 STATE_RECHARGING = 'RECHARGING'
+STATE_SURVEY = 'SURVEYING'
+STATE_NORMAL = 'NORMAL'
 
 # list of transition states
 TRANS_INITIALIZED = 'everithing_loaded'
 TRANS_DECIDED = 'target_acquired'
 TRANS_MOVED = 'robot_moved'
 TRANS_BATTERY_LOW = 'battery_low'
-TRANS_PLANNED_TO_RANDOM_POSE = 'planned_to_random_pose'
 TRANS_RECHARGING = 'recharging'
-TRANS_WENT_RANDOM_POSE = 'went_to_random_pose'
 TRANS_RECHARGED = 'recharged'
+TRANS_SURVEYED = 'surveyed'
+TRANS_NORMAL = 'trans_normal'
 
 # Sleeping time (in seconds) of the waiting thread to allow the computations
 # for getting stimulus from the other components of the architecture.
@@ -52,7 +54,7 @@ class LoadOntology(smach.State):
     """
     A class to implement the behavior of the decision state of the robot.
     """
-    def __init__(self, interface_helper, behavior_helper):
+    def __init__(self):
         State.__init__(self, outcomes = [TRANS_INITIALIZED])
 
     def execute(self, userdata):
@@ -63,6 +65,8 @@ class LoadOntology(smach.State):
         The input parameter `userdata` is not used since no data is 
         required from the other states.
 
+        Args:
+            userdata: not used
 
         Returns:
             TRANS_INITIALIZED(str): transition to the STATE_DECISION
@@ -103,6 +107,9 @@ class DecideTarget(smach.State):
         planner server, which is the one responsible of the dummy
         simulation of the way int which the robot decide the target. The `userdata`
         parameter is used to use some variables in the other states.
+
+        Args:
+            userdata: for output_keys
 
         Returns:
             TRANS_RECHARGING (str): transition to the recharging state.
@@ -171,6 +178,9 @@ class MoveToTarget(smach.State):
         server which is the one responsible of the dummy simulation of the 
         movement of the robot from a location to the target. The `userdata`
         parameter is used to import parameters from the other states.
+
+        Args:
+            userdata: for input keys
         
         Returns:
             TRANS_RECHARGING(str): transition to the recharging state.
@@ -212,6 +222,56 @@ class MoveToTarget(smach.State):
             # Wait for a reasonably small amount of time to allow `self._helper` processing stimulus (eventually).
             rospy.sleep(LOOP_SLEEP_TIME)
 
+class Surveying(State):
+    """
+    A class to simulate the location surveying.
+
+    Class constructor, i.e., class initializer. Input parameters are:
+
+    - `interface_helper`: the helper class invoked to interface with the server.
+
+    """
+
+    def __init__(self, interface_helper):
+        # Get a reference to the interfaces with the other nodes of the architecture.
+        self._helper = interface_helper
+        # Initialise this state with possible transitions (i.e., valid outputs of the `execute` function).
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_SURVEYED])
+
+    # Define the function performed each time a transition is such to enter in this state.
+    # Note that the input parameter `userdata` is not used since no data is required from the other states.
+    def execute(self, userdata):
+        """
+        Function responsible of the transition between the 
+        STATE_SURVEY to the STATE_DECISION.
+        It waits a specified amount of thime for the survey of the location and then make tha transition. If the battery is 
+
+        Args:
+            userdata: not used
+
+        Returns:
+            TRANS_RECHARGING(str): transition to the recharging state
+
+        Returns:
+            TRANS_SURVEYED(str): transition to the decision state 
+
+        """
+        while not rospy.is_shutdown():  # Wait for stimulus from the other nodes of the architecture.
+            # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
+            self._helper.mutex.acquire()
+            try:
+                # If the battery is no low anymore take the `charged` transition.
+                if not self._helper.is_battery_low():
+                    self._helper.reset_states()  # Reset the state variable related to the stimulus.
+                    print(simple_colors.green("\n\nSURVEYNG...\n\n", ['blink']))
+                    rospy.sleep(3)
+                    return TRANS_SURVEYED
+            finally:
+                # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
+                self._helper.mutex.release()
+            # Wait for a reasonably small amount of time to allow `self._helper` processing stimulus (eventually).
+            rospy.sleep(LOOP_SLEEP_TIME)
+
 class Recharging(State):
     """
     A class to implement the behavior of the recharging state of the robot.
@@ -239,7 +299,10 @@ class Recharging(State):
         It waits until the battery is fully charged and then it changes state.
         The input parameter `userdata` is not used since no data is required
         from the other states.
-        
+ 
+        Args:
+            userdata: not used
+
         Returns:
             TRANS_RECHARGED(str): transition to the recharging state
 
@@ -260,7 +323,7 @@ class Recharging(State):
 
 def main():
     """
-    This function creates the state machine and defines all the transitions.
+    This function creates the state machine and defines all the transitions. Jere a nested state machine is created
     """
     rospy.init_node('state_machine', log_level = rospy.INFO)
     # Initialise an helper class to manage the interfaces with the other nodes in the architectures, i.e., it manages external stimulus.
@@ -274,16 +337,26 @@ def main():
     sm_main = smach.StateMachine([])
     with sm_main:
 
-        smach.StateMachine.add(STATE_INIT, LoadOntology(helper, behavior),
-                         transitions = {TRANS_INITIALIZED: STATE_DECISION})
-        smach.StateMachine.add(STATE_DECISION, DecideTarget(helper, behavior),
-                         transitions = {TRANS_RECHARGING : STATE_RECHARGING,
-                                        TRANS_DECIDED: STATE_MOVING})
-        smach.StateMachine.add(STATE_MOVING, MoveToTarget(helper, behavior),
-                         transitions = {TRANS_RECHARGING : STATE_RECHARGING,
-                                        TRANS_MOVED: STATE_DECISION})
+        smach.StateMachine.add(STATE_INIT, LoadOntology(),
+                         transitions = {TRANS_INITIALIZED: STATE_NORMAL})
+        
+        sm_normal = smach.StateMachine(outcomes=[TRANS_BATTERY_LOW])
+
+        with sm_normal:
+            smach.StateMachine.add(STATE_DECISION, DecideTarget(helper, behavior),
+                            transitions = {TRANS_RECHARGING : TRANS_BATTERY_LOW,
+                                            TRANS_DECIDED: STATE_MOVING})
+            smach.StateMachine.add(STATE_MOVING, MoveToTarget(helper, behavior),
+                            transitions = {TRANS_RECHARGING : TRANS_BATTERY_LOW,
+                                            TRANS_MOVED: STATE_SURVEY})
+            smach.StateMachine.add(STATE_SURVEY, Surveying(helper),
+                            transitions = {TRANS_RECHARGING : TRANS_BATTERY_LOW,
+                                            TRANS_SURVEYED: STATE_DECISION})
+        smach.StateMachine.add(STATE_NORMAL, sm_normal,
+                         transitions={TRANS_BATTERY_LOW: STATE_RECHARGING})
+            
         smach.StateMachine.add(STATE_RECHARGING, Recharging(helper, behavior),
-                         transitions = {TRANS_RECHARGED: STATE_DECISION})
+                            transitions = {TRANS_RECHARGED: STATE_NORMAL})
     # Create and start the introspection server for visualization
     sis = smach_ros.IntrospectionServer('server_name', sm_main, '/SM_ROOT')
     sis.start()
