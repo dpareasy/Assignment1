@@ -10,7 +10,7 @@ This repository contains ROS-based software, developed in python language, that 
 
 The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information to build the topological map. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit.
 
-The environment in which the robot moves is developed in a way in which different scenarios can be created even if only under certain assumptions which are presented in [Assumptions](#Assumptions). 
+The environment in which the robot moves is developed in a way in which different scenarios can be created even if only under certain [Assumptions](#Assumptions). 
 
 ### Requirements ###
 
@@ -113,7 +113,7 @@ sudo apt-get -y install xterm
 
 ## System limitations ##
 
-As stated in [Assumptions](#Assumptions)., some assumptions have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Moreover, it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made is that the number of rooms is equal for each corridor.
+As stated in [Assumptions](#Assumptions), some assumptions have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Moreover, it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made is that the number of rooms is equal for each corridor.
 
 ## Possible improvements ##
 
