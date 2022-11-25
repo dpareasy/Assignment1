@@ -15,7 +15,7 @@ The ontology used in this repository encodes the classes shown in the picture be
 
 ![ontology_class](https://user-images.githubusercontent.com/92155300/204053661-a6faaf81-a48f-4fd7-aa5a-08bf6d7c5ff7.png)
 
-Visit https://github.com/buoncubi/topological_map for more details.
+Visit [topological_map](https://github.com/buoncubi/topological_map) for more details.
 
 ### Scenario ###
 
@@ -84,9 +84,9 @@ This software is based on ROS Noetic.
 Follow these steps to install the software:
 * Clone this repository inside your workspace (make sure it is sourced in you .bashrc);
 * Follow the stpes of this link for aRMOR installation;
-* Use armor_api for server requests, you can clone it in your workspace from this repository https://github.com/EmaroLab/armor_py_api;
-* Clone inside your workspace the repository in this link https://github.com/buoncubi/arch_skeleton which contains the controller and planner server; 
-* Clone inside your workspace the repository in this link https://github.com/buoncubi/topological_map containing the ontology for this project;
+* Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, you can clone it in your workspace from this repository ;
+* Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the controller and planner server; 
+* Clone inside your workspace [topological_map](https://github.com/buoncubi/topological_map) containing the ontology for this project;
 * Run `chmod +x <file_name>` for each file inside the scripts folder;
 * Run `catkin_make` from the root of your workspace.
 
