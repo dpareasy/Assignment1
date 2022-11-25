@@ -24,16 +24,9 @@ class BehaviorHelper:
     """
 
     def __init__(self):
+        
         self.agent = "Robot1"
-        self.current_position = "isIn"
-        self.urgent_class = "URGENT"
-        self.reachable = "canReach"
-        self.last_visit = "visitedAt"
-        self.robot_timestamp = "now"
         self.charging_location = "E"
-        self.time_stamps_type = "Long"
-        self.corridors = 'CORRIDOR'
-
         self.urgent = 'urgent'
         self.corridor = 'corridor'
         self.robot_position = 'robot_position'
@@ -92,20 +85,20 @@ class BehaviorHelper:
         """
 
         if location == self.corridor:
-            list_of_corridors = client.query.ind_b2_class(self.corridors)
+            list_of_corridors = client.query.ind_b2_class('CORRIDOR')
             location_list = self.clean_strings(1, list_of_corridors)
             
         if location == self.urgent:
-            urgent_rooms = client.query.ind_b2_class(self.urgent_class)
+            urgent_rooms = client.query.ind_b2_class('URGENT')
             location_list = self.clean_strings(1, urgent_rooms)
 
         if location == self.robot_position:
-            current_pose = client.query.objectprop_b2_ind(self.current_position, self.agent)
+            current_pose = client.query.objectprop_b2_ind('isIn', self.agent)
             location = self.clean_strings(1, current_pose)
             location_list = current_pose[0]
 
         if location == self.reachable_destinations:
-            possible_destinations = client.query.objectprop_b2_ind(self.reachable, self.agent)
+            possible_destinations = client.query.objectprop_b2_ind('canReach', self.agent)
             location_list = self.clean_strings(1, possible_destinations)
 
         return location_list
@@ -147,11 +140,11 @@ class BehaviorHelper:
         # if chosen_target list is not empty
         else:
             # save the first element of the list as the oldest timestamp
-            oldest = client.query.dataprop_b2_ind(self.last_visit, reachable_urgent[0])
+            oldest = client.query.dataprop_b2_ind('visitedAt', reachable_urgent[0])
             # clean the string
             oldest = self.clean_strings(2, oldest)
             for i in range (len(reachable_urgent)):
-                choice_last_visit = client.query.dataprop_b2_ind(self.last_visit, reachable_urgent[i])
+                choice_last_visit = client.query.dataprop_b2_ind('visitedAt', reachable_urgent[i])
                 choice_last_visit = self.clean_strings(2, choice_last_visit)
                 if choice_last_visit <= oldest:
                     target = reachable_urgent[i]
@@ -169,21 +162,21 @@ class BehaviorHelper:
             list_of_corridors(str): List of corridors  in the map
 
         """
-        last_visit = client.query.dataprop_b2_ind(self.last_visit, chosen_target)
+        last_visit = client.query.dataprop_b2_ind('visitedAt', chosen_target)
 
         if chosen_target not in list_of_corridors:
             last_visit = self.clean_strings(2, last_visit)
 
-        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, chosen_target, current_pose)
+        client.manipulation.replace_objectprop_b2_ind('isIn', self.agent, chosen_target, current_pose)
         client.utils.sync_buffered_reasoner()
-        last_change = client.query.dataprop_b2_ind(self.robot_timestamp, self.agent)
+        last_change = client.query.dataprop_b2_ind('now', self.agent)
         last_change = self.clean_strings(2, last_change)
         current_time = str(int(time.time()))
 
         if chosen_target not in list_of_corridors:
-            client.manipulation.replace_dataprop_b2_ind(self.last_visit, chosen_target, self.time_stamps_type, current_time, last_visit)
+            client.manipulation.replace_dataprop_b2_ind('visitedAt', chosen_target, 'Long', current_time, last_visit)
 
-        client.manipulation.replace_dataprop_b2_ind(self.robot_timestamp, self.agent, self.time_stamps_type, current_time, last_change)
+        client.manipulation.replace_dataprop_b2_ind('now', self.agent, 'Long', current_time, last_change)
         client.utils.sync_buffered_reasoner()
         print(simple_colors.magenta("\n\nNow the robot is in " + chosen_target + "\n\n"))
 
@@ -196,5 +189,5 @@ class BehaviorHelper:
             current_location(str): The current robot position obtained from the ontology
 
         """
-        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, self.charging_location, current_location)
+        client.manipulation.replace_objectprop_b2_ind('isIn', self.agent, self.charging_location, current_location)
         client.utils.sync_buffered_reasoner()

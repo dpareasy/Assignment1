@@ -11,8 +11,8 @@ This repository contains ROS-based software, developed in python language, that 
 
 ### Ontology ###
 
-The ontology used in this repository encodes the classes shown in the picture below, where each `LOCATION` can be a `ROOM`, if it has only one `DOOR`, and a `CORRIDOR`, if it has more doors. Each door is associated with a location through the object property `hasDoor`. In addition, each `LOCATION` has the data property `visitedAt`, which represents the more recent timestamp (in seconds) when the robot visited such a location (see figure below). The `ROBOT` class contains only one individual which has several properties like the `isIn` which represent the robot actual position and the `now` property which specify the last time the robot changed its location. If a location has not been visited for a specified amount of thime it become part of the `URGENT`class.
-Visit (link di topological map) for more details.
+The ontology used in this repository encodes the classes shown in the picture below, where each `LOCATION` can be a `ROOM`, if it has only one `DOOR`, and a `CORRIDOR`, if it has more doors. Each door is associated with a location through the object property `hasDoor`. In addition, each `LOCATION` has the data property `visitedAt`, which represents the more recent timestamp (in seconds) when the robot visited such a location (see figure below). The `ROBOT` class contains only one individual which has several properties like the `isIn` which represent the robot actual position and the `now` property which specify the last time the robot changed its location. If a location has not been visited for a specified amount of time it becomes part of the `URGENT`class.
+Visit https://github.com/buoncubi/topological_map for more details.
 
 ### Scenario ###
 
@@ -40,7 +40,7 @@ For simplicity we consider a scenario with the following assumptions:
 
 ## System limitations ##
 
-As stated in the above section, some assumptions have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. It is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made is that the number of rooms is equal for each corridor.
+As stated in the above section, some assumptions have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Moreover, it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made is that the number of rooms is equal for each corridor.
 
 ## Possible improvements ##
 
@@ -67,8 +67,6 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * robot_actions.py: It contains a class to implement the behavior of the robot;
     * my_state_machine.py: It defines the states of the state machine;
     * robot_state.py: It implements the robot state including: current position, and battery level;
-    * planner.py: It is a dummy implementation of a motion planner;
-    * controller.py: It is a dummy implementation of a motion controller.
 
 ## Launching the software ##
 
@@ -80,8 +78,8 @@ Follow these steps to install the software:
 * Clone this repository inside your workspace (make sure it is sourced in you .bashrc);
 * Follow the stpes of this link for aRMOR installation;
 * Use armor_api for server requests, you can clone it from this repository;
-* Clone arch_skeleton repository which contains the controller and planner server; 
-* Clone in your workspace topological_map repository containing the ontology for this project;
+* Clone inside your workspace the repository in this link https://github.com/buoncubi/arch_skeleton which contains the controller and planner server; 
+* Clone inside your workspace the repository in this link https://github.com/buoncubi/topological_map containing the ontology for this project;
 * Run `chmod +x <file_name>` for each file inside the scripts folder;
 * Run `catkin_make` from the root of your workspace.
 

@@ -117,10 +117,11 @@ class RobotState:
             # Log state.
             if self._battery_low:
                 print("Robot got low battery after" , delay , "seconds")
+                delay = 10
             else:
                 print("Robot got fully charged battery after" , delay , "seconds")
+                delay = 60
             # Wait for simulate battery usage.
-            delay = 60
             rospy.sleep(delay)
             # Change battery state.
             self._battery_low = not self._battery_low
