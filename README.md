@@ -64,7 +64,7 @@ The figure below represent the structure of the Finite State Machine.
 ![smach](https://user-images.githubusercontent.com/92155300/204056867-88b33dd0-3f09-4bea-8fbf-265921ca48a1.png)
 
 
-## Launching the software ##
+## Installation & Running ##
 
 This software is based on ROS Noetic.
 
