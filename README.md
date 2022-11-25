@@ -12,11 +12,12 @@ This repository contains ROS-based software, developed in python language, that 
 ### Ontology ###
 
 The ontology used in this repository encodes the classes shown in the picture below, where each `LOCATION` can be a `ROOM`, if it has only one `DOOR`, and a `CORRIDOR`, if it has more doors. Each door is associated with a location through the object property `hasDoor`. In addition, each `LOCATION` has the data property `visitedAt`, which represents the more recent timestamp (in seconds) when the robot visited such a location (see figure below). The `ROBOT` class contains only one individual which has several properties like the `isIn` which represent the robot actual position and the `now` property which specify the last time the robot changed its location. If a location has not been visited for a specified amount of time it becomes part of the `URGENT`class.
+
 Visit https://github.com/buoncubi/topological_map for more details.
 
 ### Scenario ###
 
-The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information to build the topological map. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit. 
+The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information to build the topological map. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit.
 
 The environment in which the robot moves is developed in a way in which different scenarios can be created even if only under certain assumptions which are presented in the "Assumptions" section.
 
@@ -104,8 +105,8 @@ It will launch the aRMOR server and all the nodes that implement the robot behav
     <node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService"/>
     <node pkg = "Assignment1" type = "my_state_machine.py" name = "my_state_machine" output = "screen" launch-prefix="xterm -e"> </node>
     <node pkg = "Assignment1" type = "robot_state.py" name = "robot_state" output = "screen" launch-prefix="xterm -e"> </node>
-    <node pkg = "Assignment1" type = "planner.py" name = "planner" output = "screen" launch-prefix="xterm -e"> </node>
-    <node pkg = "Assignment1" type = "controller.py" name = "controller" output = "screen" launch-prefix="xterm -e"> </node>		
+    <node pkg = "arch_skeleton" type = "planner.py" name = "planner" output = "screen" launch-prefix="xterm -e"> </node>
+    <node pkg = "arch_skeleton" type = "controller.py" name = "controller" output = "screen" launch-prefix="xterm -e"> </node>		
 </launch>
 ```
 
