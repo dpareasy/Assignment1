@@ -23,14 +23,14 @@ The scenario involves a surveying robot deployed in a indoor environmnet. It's o
 
 The environment in which the robot moves is developed in a way in which different scenarios can be created even if only under certain assumptions which are presented in the "Assumptions" section.
 
-### Requirements ###
+#### Requirements ####
 
 The moving policy that the robot should follow is the one presented below:
 * It should mainly stay on corridors;
 * If a reachable room become `URGENT` the robot should visit it;
 * When its battery is low it should move to the recharging position;
 
-### Assumptions ###
+#### Assumptions ####
 
 For simplicity we consider a scenario with the following assumptions:
 * The environment created can be formed by any number of corridors;
@@ -40,6 +40,9 @@ For simplicity we consider a scenario with the following assumptions:
 * The robot is automatically spawned in the recharging room every time the battery goes low;
 * The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms';
 * If there are no urgent rooms the robot is forced to move around corridors;
+
+
+## Project structure ##
 
 ### Package list ###
 
@@ -62,8 +65,6 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * my_state_machine.py: It defines the states of the state machine;
     * robot_state.py: It implements the robot state including: current position, and battery level;
 
-
-## Project structure ##
 
 ### The software architecture ###
 
