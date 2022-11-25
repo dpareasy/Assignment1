@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-    <!-- Run the architecture's component and test it based on random-based stimulus. -->
-
     <rosparam param="state/initial_pose"> [ 0.0,  0.0] </rosparam>
     <rosparam param="config/environment_size"> [10.0, 10.0] </rosparam>
     <rosparam param="test/random_plan_points"> [2, 8] </rosparam>
@@ -11,6 +9,6 @@
     <node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService"/>
     <node pkg = "Assignment1" type = "my_state_machine.py" name = "my_state_machine" output = "screen" launch-prefix="xterm -e"> </node>
     <node pkg = "Assignment1" type = "robot_state.py" name = "robot_state" output = "screen" launch-prefix="xterm -e"> </node>
-    <node pkg = "arch_skeleton" type = "planner.py" name = "planner" output = "screen" launch-prefix="xterm -e"> </node>
-    <node pkg = "arch_skeleton" type = "controller.py" name = "controller" output = "screen" launch-prefix="xterm -e"> </node>		
+    <node pkg = "Assignment1" type = "planner.py" name = "planner" output = "screen" launch-prefix="xterm -e"> </node>
+    <node pkg = "Assignment1" type = "controller.py" name = "controller" output = "screen" launch-prefix="xterm -e"> </node>		
 </launch>

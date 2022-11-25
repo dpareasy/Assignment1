@@ -72,6 +72,12 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * my_state_machine.py: It defines the states of the state machine;
     * robot_state.py: It implements the robot state including: current position, and battery level;
 
+### The software architecture ###
+
+### The Finite State Machine ###
+
+The figure below represent the structure of the Finite State Machine.
+
 ## Launching the software ##
 
 This software is based on ROS Noetic.
@@ -81,7 +87,7 @@ This software is based on ROS Noetic.
 Follow these steps to install the software:
 * Clone this repository inside your workspace (make sure it is sourced in you .bashrc);
 * Follow the stpes of this link for aRMOR installation;
-* Use armor_api for server requests, you can clone it from this repository;
+* Use armor_api for server requests, you can clone it in your workspace from this repository https://github.com/EmaroLab/armor_py_api;
 * Clone inside your workspace the repository in this link https://github.com/buoncubi/arch_skeleton which contains the controller and planner server; 
 * Clone inside your workspace the repository in this link https://github.com/buoncubi/topological_map containing the ontology for this project;
 * Run `chmod +x <file_name>` for each file inside the scripts folder;
@@ -89,7 +95,7 @@ Follow these steps to install the software:
 
 ### Launcher ###
 
-In order to launch the simulation a .lunch file can be used bay using this command into the terminal:
+In order to launch the simulation a .lunch file can be used by copying this command into the terminal:
 ```
 roslaunch Assignment1 launch_file.launch
 ```
@@ -97,7 +103,6 @@ It will launch the aRMOR server and all the nodes that implement the robot behav
 ```
 <?xml version="1.0"?>
 <launch>
-    <!-- Run the architecture's component and test it based on random-based stimulus. -->
 
     <rosparam param="state/initial_pose"> [ 0.0,  0.0] </rosparam>
     <rosparam param="config/environment_size"> [10.0, 10.0] </rosparam>
