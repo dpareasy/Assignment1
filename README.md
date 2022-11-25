@@ -18,8 +18,6 @@ Visit https://github.com/buoncubi/topological_map for more details.
 
 The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information to build the topological map. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit.
 
-![ontology_class](https://user-images.githubusercontent.com/92155300/204049440-88721328-9c2b-4fce-96ce-817b21cf1284.png)
-
 The environment in which the robot moves is developed in a way in which different scenarios can be created even if only under certain assumptions which are presented in the "Assumptions" section.
 
 ### Requirements ###
@@ -122,6 +120,6 @@ sudo apt-get -y install xterm
 Author: Davide Leo Parisi
 
 Contacts:
-* personal email: davie.parisi1084@gmail.com
+* personal email: davide.parisi1084@gmail.com
 * institutional email: s4329668@studenti.unige.it
 
