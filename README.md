@@ -18,7 +18,7 @@ Visit (link di topological map) for more details.
 
 The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information to build the topological map. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit. 
 
-The environment in which the robot moves is developed in a way in which different scenarios can be created under certain assumptions which are presented in the Assumption section.
+The environment in which the robot moves is developed in a way in which different scenarios can be created even if only under certain assumptions which are presented in the "Assumptions" section.
 
 ### Requirements ###
 
@@ -32,13 +32,15 @@ The moving policy that the robot should follow is the one presented below:
 For simplicity we consider a scenario with the following assumptions:
 * The environment created can be formed by any number of corridors;
 * The number of rooms which a corridor can contain is the same for each corridor;
-* Each i-th corridor is connected with (i-th+1) and with the recharging location (which is a corridor);
-* The duration of the battery is 60 seconds;
+* Corridor(i) is only connected to corridor(i+1) and to the recharging location (which is a corridor);
+* The duration of the robot's battery is 60 seconds;
 * The robot is automatically spawned in the recharging room every time the battery goes low;
+* The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms';
+* If there are no urgent rooms the robot is forced to move around corridors;
 
 ## System limitations ##
 
-As stated in the above section, some assumption have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site.
+As stated in the above section, some assumptions have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. It is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made is that the number of rooms is equal for each corridor.
 
 ## Possible improvements ##
 
@@ -122,3 +124,4 @@ Author: Davide Leo Parisi
 Contacts:
 * personal email: davie.parisi1084@gmail.com
 * institutional email: s4329668@studenti.unige.it
+
