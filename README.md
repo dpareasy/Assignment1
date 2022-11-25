@@ -121,6 +121,6 @@ sudo apt-get -y install xterm
 Author: Davide Leo Parisi
 
 Contacts:
-* personal email: davie.parisi1084@gmail.com
+* personal email: davide.parisi1084@gmail.com
 * institutional email: s4329668@studenti.unige.it
 
