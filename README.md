@@ -127,7 +127,7 @@ This software is based on ROS Noetic.
 Follow these steps to install the software:
 1. Clone this repository inside your workspace (make sure it is sourced in you .bashrc);
 2. Follow the steps for [aRMOR](https://github.com/EmaroLab/armor/issues/7) installation;
-3. Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, you can clone it in your workspace from this repository ;
+3. Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, you can clone it in your workspace;
 4. Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the controller and planner server; 
 5. Clone inside your workspace [topological_map](https://github.com/buoncubi/topological_map) containing the ontology for this project;
 6. Run `chmod +x <file_name>` for each file inside the scripts folder;
