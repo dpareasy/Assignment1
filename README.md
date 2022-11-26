@@ -57,7 +57,7 @@ The figure shows a hierachical finite state machine made of the following states
     * *DECIDE_LOCATION*: This is the state in which the robot decide the location to reach.
     * *MOVING_TO_LOCATION*: This is the state in which the robot move to the target location.
     * *SURVEYING*: This is the state in which the robot takes some times to survey the location.
-3. *RECHARGING*: This is the state in which the robot charge it's battery.
+3. *RECHARGING*: This is the state in which the robot charge its battery.
 
 ## Project structure ##
 
