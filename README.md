@@ -9,7 +9,7 @@ Contacts:
 
 ## Introduction ##
 
-This repository contains ROS-based software, developed in python language, that implements the simulation of a surveillance robot. To this purpose it is used [topological_map.owl](https://github.com/buoncubi/topological_map) ontology , which creates an indoor environment with a robot for the surveillance.
+This repository contains ROS-based software, developed in python language, that implements the simulation of a surveillance robot. To this purpose it is used [topological_map.owl](https://github.com/buoncubi/topological_map/blob/main/topological_map.owl) ontology , which creates an indoor environment with a robot for the surveillance.
 
 The software uses a Smach state machine and build the ontology with aRMOR server using [armor_api](https://github.com/EmaroLab/armor_py_api).
 
@@ -135,7 +135,7 @@ Follow these steps to install the software:
 1. Clone this repository inside your workspace (make sure it is sourced in you .bashrc);
 2. Follow the steps for [aRMOR](https://github.com/EmaroLab/armor/issues/7) installation;
 3. Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, you can clone it in your workspace;
-4. Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the controller and planner server; 
+4. Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the [controller.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) and [planner.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) server; 
 5. Clone inside your workspace [topological_map](https://github.com/buoncubi/topological_map) containing the ontology for this project;
 6. Run `chmod +x <file_name>` for each file inside the scripts folder;
 7. Run `catkin_make` from the root of your workspace.
