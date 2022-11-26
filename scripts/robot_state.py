@@ -19,6 +19,8 @@ Service:
 import threading
 import rospy
 from std_msgs.msg import Bool
+from interface_helper import InterfaceHelper
+from Assignment1.msg import Point
 from Assignment1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
 
 class RobotState:
@@ -127,7 +129,14 @@ class RobotState:
             self._battery_low = not self._battery_low
 
 if __name__ == "__main__":
-    # Instantiate the node manager class and wait.
+    """
+    Initialize the robot position in [0,0]. init_robot_pose() function will make the request to the controller server
+    """
     RobotState()
+    helper = InterfaceHelper()
+    # Get the initial robot pose from ROS parameters.
+    robot_pose_param = rospy.get_param('state/initial_pose', [0, 0])
+    # Initialise robot position in the `robot_state`, as required by the plan anc control action servers.
+    helper.init_robot_pose(Point(x = robot_pose_param[0], y = robot_pose_param[1]))
     rospy.spin()
 

@@ -335,12 +335,8 @@ def main():
     ontology = CreateMap()
     helper = InterfaceHelper()
     behavior = BehaviorHelper()
-    # Get the initial robot pose from ROS parameters.
-    robot_pose_param = rospy.get_param('state/initial_pose', [0, 0])
-    # Initialise robot position in the `robot_state`, as required by the plan anc control action servers.
-    helper.init_robot_pose(Point(x = robot_pose_param[0], y = robot_pose_param[1]))
-
     sm_main = smach.StateMachine([])
+    
     with sm_main:
 
         smach.StateMachine.add(STATE_INIT, LoadOntology(ontology),

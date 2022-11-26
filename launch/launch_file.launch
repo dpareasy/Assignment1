@@ -9,6 +9,6 @@
     <node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService"/>
     <node pkg = "Assignment1" type = "state_machine.py" name = "state_machine" output = "screen" launch-prefix="xterm -e"> </node>
     <node pkg = "Assignment1" type = "robot_state.py" name = "robot_state" output = "screen" launch-prefix="xterm -e"> </node>
-    <node pkg = "Assignment1" type = "planner.py" name = "planner" output = "screen" launch-prefix="xterm -e"> </node>
-    <node pkg = "Assignment1" type = "controller.py" name = "controller" output = "screen" launch-prefix="xterm -e"> </node>		
+    <node pkg = "arch_skeleton" type = "planner.py" name = "planner" output = "screen" launch-prefix="xterm -e"> </node>
+    <node pkg = "arch_skeleton" type = "controller.py" name = "controller" output = "screen" launch-prefix="xterm -e"> </node>		
 </launch>

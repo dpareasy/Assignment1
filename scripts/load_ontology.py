@@ -174,3 +174,4 @@ class CreateMap:
         # APPLY CHANGES AND QUERY
         client.utils.apply_buffered_changes()
         client.utils.sync_buffered_reasoner()
+
