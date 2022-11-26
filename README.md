@@ -149,6 +149,29 @@ You can finde a complete description of these two nodes in [arch_skeleton](https
 
 ### ROS parameters ###
 
+This software requires the following ROS parameters.
+ 
+ - `config/environment_size`: It represents the environment boundaries as a list of two float
+   numbers, i.e., `[x_max, y_max]`. The environment will have the `x`-th coordinate spanning
+   in the interval `[0, x_max)`, while the `y`-th coordinate in `[0, y_max)`.
+
+ - `state/initial_pose`: It represents the initial robot pose as a list of two float numbers, 
+   i.e., `[x, y]`. This pose should be within the `environmet_size`.
+
+ - `test/random_plan_points`: It represents the number of via points in a plan, and it should be
+   a list of two integer numbers `[min_n, max_n]`. A random value within such an interval will be
+   chosen to simulate plans of different lengths.
+
+ - `test/random_plan_time`: It represents the time required to compute the next via point of the 
+   plan, and it should be a list of two float numbers, i.e., `[min_time, max_time]` in seconds. 
+   A random value within such an interval will be chosen to simulate the time required to 
+   compute the next via points.
+
+ - `test/random_motion_time`: It represents the time required to reach the next via point, and 
+   it should be a list of two float numbers, i.e., `[min_time, max_time]` in seconds. A random
+   value within such an interval will be chosen to simulate the time required to reach the next 
+   via points. 
+
 ## Installation & Running ##
 
 This software is based on ROS Noetic.
