@@ -98,6 +98,9 @@ The following figure represents an example of the `state_machine` node terminal 
 
 ![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
 
+https://user-images.githubusercontent.com/92155300/204110267-87420cf6-f939-47e3-9d60-c8cf122fa9d1.mp4
+
+
 
 ### The `robot_actions` Node ###
 
