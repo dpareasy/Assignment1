@@ -73,7 +73,7 @@ This repository contains a ROS package named Assignment1 that includes the follo
 
 ## Software components ###
 
-### The `state_machine` node ###
+### The `state_machine` Node ###
 
 This node defines the Finite State Machine of the architecture and manages the transitions between all the states.
 The exectuion functions of each state relies on the class `helper` of the `helper_interface` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, on the class `behavior` of the `robot_actions` module and on the class `ontology` of the `load_ontology` module of this repostory.
@@ -82,7 +82,7 @@ The following figure represents an example of the `state_machine` node terminal 
 
 ![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
 
-### The `robot_actions` node ###
+### The `robot_actions` Node ###
 
 This node defines the `BehaviorHelper` class which defines the methods for helping the robot in reasoning, moving to location and moving to recharge position. The methods of this class are used inside the execute function of the states of the state machine.
 
@@ -110,10 +110,11 @@ def move_to_target():
 
 ```
 
-### The `load_ontology` module ###
+### The `load_ontology` Node ###
 
+This node defines the `CreateMap` class which is used in the Finite State Machine to pass to the robot all the information for moving around the environmnet. The environment is created through manipulations on the [topological_map.owl](https://github.com/buoncubi/topological_map) ontology with the help of the `ArmorClient` class defined in [armor_api](https://github.com/EmaroLab/armor_py_api).
 
-### The `controller` and `planner` modules ###
+### The `controller` and `planner` Nodes ###
 
 You can finde a complete description in [arch_skeleton](https://github.com/buoncubi/arch_skeleton).
 
