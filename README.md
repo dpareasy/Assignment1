@@ -78,9 +78,37 @@ This repository contains a ROS package named Assignment1 that includes the follo
 This node defines the Finite State Machine of the architecture and manages the transitions between all the states.
 The exectuion functions of each state relies on the class `helper` of the `helper_interface` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, on the class `behavior` of the `robot_actions` module and on the class `ontology` of the `load_ontology` module of this repostory.
 
-The following figure represent an example of the `state_machine` node terminal which shows the various transitions between states.
+The following figure represents an example of the `state_machine` node terminal which shows the various transitions between states.
 
 ![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
+
+### The `robot_actions` node ###
+
+This node defines the `BehaviorHelper` class which defines the methods for helping the robot in reasoning, moving to location and moving to recharge position. The methods of this class are used inside the execute function of the states of the state machine.
+
+#### `decide_target` function ####
+```
+def decide_target():
+   get actual robot position
+   get reachable destinations
+   get urgent locations
+   intersect reachable destination with urgent locations
+   if empty list:
+      move trhough corridors
+   else:
+      choose the most urgent room
+
+```
+
+#### `move_to_target` function ####
+```
+def move_to_target():
+   move the robot in the new position
+   if new position is a room:
+      update location timestamps     
+   update robot timestamps   
+
+```
 
 ## Installation & Running ##
 
