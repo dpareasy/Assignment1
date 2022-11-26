@@ -162,9 +162,10 @@ class BehaviorHelper:
             list_of_corridors(str): List of corridors  in the map
 
         """
-        last_visit = client.query.dataprop_b2_ind('visitedAt', chosen_target)
+        
 
         if chosen_target not in list_of_corridors:
+            last_visit = client.query.dataprop_b2_ind('visitedAt', chosen_target)
             last_visit = self.clean_strings(2, last_visit)
 
         client.manipulation.replace_objectprop_b2_ind('isIn', self.agent, chosen_target, current_pose)
@@ -178,7 +179,7 @@ class BehaviorHelper:
 
         client.manipulation.replace_dataprop_b2_ind('now', self.agent, 'Long', current_time, last_change)
         client.utils.sync_buffered_reasoner()
-        print(simple_colors.magenta("\n\nNow the robot is in " + chosen_target + "\n\n"))
+        print(simple_colors.magenta("\n\nRobot in " + chosen_target + "\n\n"))
 
 
     def go_to_recharge(self, current_location):

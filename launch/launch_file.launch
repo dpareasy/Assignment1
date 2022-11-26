@@ -7,7 +7,7 @@
     <rosparam param="test/random_motion_time"> [0.1, 1.0] </rosparam>
 
     <node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService"/>
-    <node pkg = "Assignment1" type = "my_state_machine.py" name = "my_state_machine" output = "screen" launch-prefix="xterm -e"> </node>
+    <node pkg = "Assignment1" type = "state_machine.py" name = "state_machine" output = "screen" launch-prefix="xterm -e"> </node>
     <node pkg = "Assignment1" type = "robot_state.py" name = "robot_state" output = "screen" launch-prefix="xterm -e"> </node>
     <node pkg = "Assignment1" type = "planner.py" name = "planner" output = "screen" launch-prefix="xterm -e"> </node>
     <node pkg = "Assignment1" type = "controller.py" name = "controller" output = "screen" launch-prefix="xterm -e"> </node>		

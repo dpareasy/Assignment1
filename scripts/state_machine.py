@@ -24,7 +24,7 @@ import os
 import simple_colors
 from interface_helper import InterfaceHelper
 from robot_actions import BehaviorHelper
-from load_ontology import CreateOntology
+from load_ontology import CreateMap
 from Assignment1.msg import Point, ControlGoal, PlanGoal
 from armor_api.armor_client import ArmorClient
 client = ArmorClient("assignment", "my_ontology") 
@@ -269,7 +269,7 @@ class Surveying(State):
                     self._helper.reset_states()  # Reset the state variable related to the stimulus.
                     print(simple_colors.green("\n\nSURVEYNG...\n\n", ['blink']))
                     rospy.sleep(5)
-                    os.system('clear')
+                    #os.system('clear')
                     return TRANS_SURVEYED
             finally:
                 # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
@@ -332,7 +332,7 @@ def main():
     """
     rospy.init_node('state_machine', log_level = rospy.INFO)
     # Initialise an classes to manage the interfaces with the other nodes in the architecture.
-    ontology = CreateOntology()
+    ontology = CreateMap()
     helper = InterfaceHelper()
     behavior = BehaviorHelper()
     # Get the initial robot pose from ROS parameters.

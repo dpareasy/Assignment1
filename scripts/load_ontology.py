@@ -18,7 +18,7 @@ from os.path import dirname, realpath
 
 client = ArmorClient("assignment", "my_ontology")
 
-class CreateOntology:
+class CreateMap:
 
     def __init(self):
         print()
