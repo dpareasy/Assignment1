@@ -4,15 +4,17 @@ Parisi Davide Leo 4329668
 
 ## Introduction ##
 
-This repository contains ROS-based software, developed in python language, that uses [topological_map.owl](https://github.com/buoncubi/topological_map) ontology to create an indoor environment and a mobile robot for surveillance purposes. 
+This repository contains ROS-based software, developed in python language, that implements the simulation of a surveillance robot. To this purpose it is used [topological_map.owl](https://github.com/buoncubi/topological_map) ontology , which creates an indoor environment with a robot for the surveillance.
+
+The software uses a Smach state machine and build the ontology with aRMOR server using [armor_api](https://github.com/EmaroLab/armor_py_api).
 
 ## Scenario ##
 
-The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information to build the topological map. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit.
+The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information about the environment. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit. 
 
 The environment in which the robot moves is developed in a way in which different scenarios can be created even if only under certain [Assumptions](#Assumptions). 
 
-### Requirements ###
+### Policy ###
 
 The moving policy that the robot should follow is the one presented below:
 * It should mainly stay on corridors;
@@ -22,13 +24,26 @@ The moving policy that the robot should follow is the one presented below:
 ### Assumptions ###
 
 For simplicity we consider a scenario with the following assumptions:
+* The robot moves in a 2D environment with no obstacles;
 * The environment created can be formed by any number of corridors;
 * The number of rooms which a corridor can contain is the same for each corridor;
-* Corridor(i) is only connected to corridor(i+1) and to the recharging location (which is a corridor);
+* Corridor(i) is connected to corridor(i+1) and to the recharging location (which is a corridor);
 * The duration of the robot's battery is 60 seconds;
 * The robot is automatically spawned in the recharging room every time the battery goes low;
 * The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms';
 * If there are no urgent rooms the robot is forced to move around corridors;
+
+## Software architecture ##
+
+Given the scenario presented above the software is developed as follow.
+
+### Components diagram ###
+
+### The Finite State Machine ###
+
+The figure below represent the structure of the Finite State Machine.
+
+![smach](https://user-images.githubusercontent.com/92155300/204056867-88b33dd0-3f09-4bea-8fbf-265921ca48a1.png)
 
 
 ## Project structure ##
@@ -54,15 +69,18 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * my_state_machine.py: It defines the states of the state machine;
     * robot_state.py: It implements the robot state including: current position, and battery level;
 
+### Dependencies ###
 
-### The software architecture ###
+## Software components ###
 
-### The Finite State Machine ###
+### The `state_machine` node ###
 
-The figure below represent the structure of the Finite State Machine.
+This node defines the Finite State Machine of the architecture and manages the transitions between all the states.
+The exectuion functions of each state relies on the class `helper` of the `helper_interface` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, on the class `behavior` of the `robot_actions` module and on the class `ontology` of the `load_ontology` module of this repostory.
 
-![smach](https://user-images.githubusercontent.com/92155300/204056867-88b33dd0-3f09-4bea-8fbf-265921ca48a1.png)
+The following figure represent an example of the `state_machine` node terminal which shows the various transitions between states.
 
+![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
 
 ## Installation & Running ##
 
