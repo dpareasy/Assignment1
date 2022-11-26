@@ -81,11 +81,16 @@ This repository contains a ROS package named Assignment1 that includes the follo
 ### The `state_machine` Node ###
 
 This node defines the Finite State Machine of the architecture and manages the transitions between all the states.
-The exectuion functions of each state relies on the class `helper` of the `helper_interface` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, on the class `behavior` of the `robot_actions` module and on the class `ontology` of the `load_ontology` module of this repostory.
+
+![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
+
+It relies on three different classes:
+* The class `helper` of the `interface_helper` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, which manages all the interactions with planner and controller.
+* The class `behavior` of the `robot_actions` module, which manages the interactions with the aRMOR server (i.e. robot position, reachable locations, urgency ecc.)
+* The class `ontology` of the `load_ontology` module of this repostory, which manages the initialisation of the map.
 
 The following figure represents an example of the `state_machine` node terminal which shows the various transitions between states.
 
-![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
 
 ### The `robot_actions` Node ###
 
@@ -118,6 +123,17 @@ def move_to_target():
 ### The `load_ontology` Node ###
 
 This node defines the `CreateMap` class used in the  `STATE_INIT` of the Finite State Machine, to pass to the robot all the information for the indoor movement. Such an environment is created through manipulations on the [topological_map.owl](https://github.com/buoncubi/topological_map) ontology with the help of the `ArmorClient` class defined in [armor_api](https://github.com/EmaroLab/armor_py_api).
+
+### The `robot_state` Node ###
+
+This node implements two different servers:
+* The `state/get_pose`. 
+* The `state/set_pose`
+The first requires nothing and returns a `Point` which is the actual position of the robot, while the second requires a `Point` to be set and returns nothing. This node also get the robot initial position as a parameter and calls the `init_robot_pose` function, defined inside the `interface_helper`, which make the request for the controller server.
+
+A publisher, the `state/battery_low`, is also implemented here. It is a `Boolean` publisher which has two possible states:
+* Low battery: `True`is published.
+* Charged: `False` is published.
 
 ### The `controller` and `planner` Nodes ###
 
