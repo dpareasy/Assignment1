@@ -1,6 +1,11 @@
 # Assignment1
 
-Parisi Davide Leo 4329668 
+Author: Davide Leo Parisi
+
+Contacts:
+* personal email: davide.parisi1084@gmail.com
+* institutional email: s4329668@studenti.unige.it
+
 
 ## Introduction ##
 
@@ -170,11 +175,4 @@ sudo apt-get -y install xterm
 As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Moreover, it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made is that the number of rooms is equal for each corridor.
 
 ## Possible improvements ##
-
-## Author and contacts ##
-Author: Davide Leo Parisi
-
-Contacts:
-* personal email: davide.parisi1084@gmail.com
-* institutional email: s4329668@studenti.unige.it
 
