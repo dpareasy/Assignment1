@@ -110,6 +110,13 @@ def move_to_target():
 
 ```
 
+### The `load_ontology` module ###
+
+
+### The `controller` and `planner` modules ###
+
+You can finde a complete description in [arch_skeleton](https://github.com/buoncubi/arch_skeleton).
+
 ## Installation & Running ##
 
 This software is based on ROS Noetic.
