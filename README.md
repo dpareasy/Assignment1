@@ -86,7 +86,7 @@ The following figure represents an example of the `state_machine` node terminal 
 
 This node defines the `BehaviorHelper` class which defines the methods for helping the robot in reasoning, moving to location and moving to recharge position. The methods of this class are used inside the execute function of the states of the state machine.
 
-#### `decide_target` function ####
+#### The `decide_target` function ####
 ```
 def decide_target():
    get actual robot position
@@ -100,7 +100,7 @@ def decide_target():
 
 ```
 
-#### `move_to_target` function ####
+#### The `move_to_target` function ####
 ```
 def move_to_target():
    move the robot in the new position
