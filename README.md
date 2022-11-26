@@ -193,7 +193,7 @@ Follow these steps to install the software:
 As regardin the third point, the developer have encountered some issues with the function `disj_inds_of_class(self, class_name)` of [armor_manipilation_client.py](https://github.com/EmaroLab/armor_py_api/blob/main/scripts/armor_api/armor_manipulation_client.py). To fix this problem a new function have been created:
 
 
-```
+```python
 def disjoint_all_ind(self, ind_list):
         try:
             res = self._client.call('DISJOINT', 'IND','', ind_list)
