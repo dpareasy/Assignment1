@@ -123,6 +123,8 @@ This node defines the `CreateMap` class used in the  `STATE_INIT` of the Finite 
 
 You can finde a complete description in [arch_skeleton](https://github.com/buoncubi/arch_skeleton).
 
+### ROS parameters ###
+
 ## Installation & Running ##
 
 This software is based on ROS Noetic.
