@@ -9,15 +9,14 @@ Contacts:
 
 ## Introduction ##
 
-This repository contains ROS-based software, developed in python language, that implements the simulation of a surveillance robot. To this purpose it is used [topological_map.owl](https://github.com/buoncubi/topological_map/blob/main/topological_map.owl) ontology , which creates an indoor environment with a robot for the surveillance.
+This repository contains a ROS-based software, developed in python language, that implements the behavior of a surveillance robot. To this purpose it is used [topological_map.owl](https://github.com/buoncubi/topological_map/blob/main/topological_map.owl) ontology , which creates the indoor environment for the simulation.
 
 The software uses a Smach state machine and build the ontology with aRMOR server using [armor_api](https://github.com/EmaroLab/armor_py_api).
 
 ## Scenario ##
 
-The scenario involves a surveying robot deployed in a indoor environmnet. It's objective is to visit different locations and stay there for some times. Before starting moving around the map it must wait for receiving all the information about the environment. The robot should start in it's initial position which is also the recharging location. Any time it  enters a room, the robot should check it for some times before starting reasoning again to choose the next location to visit. 
+The scenario involves a surveying robot deployed in a indoor environmnet. Its purpose is to move through the different locations of the building and spend some times inside before starting reasoning to decide the next room to visit. Before starting moving around the environment the robot must wait until receiving all the information about the map. Any time the battery goes down the robot moves to the recharging location which is the initial position.
 
-The environment in which the robot moves is developed in a way in which different scenarios can be created even if only under certain [Assumptions](#Assumptions). 
 
 ### Policy ###
 
@@ -28,13 +27,12 @@ The moving policy that the robot should follow is the one presented below:
 
 ### Assumptions ###
 
-For simplicity we consider a scenario with the following assumptions:
+For simplicity following assumptions have been considered:
 * The robot moves in a 2D environment with no obstacles;
 * The environment created can be formed by any number of corridors;
-* The number of rooms which a corridor can contain is the same for each corridor;
+* All the corridors contain the same number of rooms;
 * Corridor(i) is connected to corridor(i+1) and to the recharging location (which is a corridor);
-* The duration of the robot's battery is 60 seconds;
-* The robot is automatically spawned in the recharging room every time the battery goes low;
+* The robot is automatically spawned in the recharging location every time the battery goes low;
 * The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms';
 * If there are no urgent rooms the robot is forced to move around corridors;
 
@@ -46,18 +44,18 @@ Given the scenario presented above the software is developed as follow.
 
 ### The Finite State Machine ###
 
-The figure below represent the structure of the Finite State Machine.
+Hereafter the structure of the Finite State Machine.
 
 ![smach](https://user-images.githubusercontent.com/92155300/204056867-88b33dd0-3f09-4bea-8fbf-265921ca48a1.png)
 
 
-The figure shows a hierachical finite state machine made of the following states:
-1. *INITIALIZE_MAP*: This is the state in which the robot get all the information about the map of the environment.
+The figure shows a hierachical Finite State Machine made of the following states:
+1. *INITIALIZE_MAP*: The state in which the robot build the map of the environment.
 2. *NORMAL*: composed of three other states:
-    * *DECIDE_LOCATION*: This is the state in which the robot decide the location to reach.
-    * *MOVING_TO_LOCATION*: This is the state in which the robot move to the target location.
-    * *SURVEYING*: This is the state in which the robot takes some times to survey the location.
-3. *RECHARGING*: This is the state in which the robot charge its battery.
+    * *DECIDE_LOCATION*: The state in which the robot decides the location to reach.
+    * *MOVING_TO_LOCATION*: The state in which the robot moves until reaching the target location.
+    * *SURVEYING*: The state in which the robot takes some times to survey the location.
+3. *RECHARGING*: The state in which the robot charges its battery.
 
 ## Project structure ##
 
@@ -79,7 +77,7 @@ This repository contains a ROS package named Assignment1 that includes the follo
 7. `scripts/`: It contains the implementation of each software components:
     * load_ontology.py: It creates the topological map of the environment;
     * robot_actions.py: It contains a class to implement the behavior of the robot;
-    * my_state_machine.py: It defines the states of the state machine;
+    * state_machine.py: It defines the states of the state machine;
     * robot_state.py: It implements the robot state including: current position, and battery level;
 
 ### Dependencies ###
@@ -90,19 +88,22 @@ This repository contains a ROS package named Assignment1 that includes the follo
 
 This node defines the Finite State Machine of the architecture and manages the transitions between all the states.
 
-![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
 
 It relies on three different classes:
-* The class `helper` of the `interface_helper` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, which manages all the interactions with planner and controller.
-* The class `behavior` of the `robot_actions` module, which manages the interactions with the aRMOR server (i.e. robot position, reachable locations, urgency ecc.)
-* The class `ontology` of the `load_ontology` module, which manages the initialisation of the map.
+* The class `InterfaceHelper` of the `interface_helper` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, which manages all the interactions with [planner](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py).
+* The class `BehaviorHelper` of the `robot_actions` module, which manages the interactions with the aRMOR server (i.e. robot position, reachable locations, urgency ecc.)
+* The class `CreateOntology` of the `load_ontology` module, which manages the initialisation of the map.
 
 The following figure represents an example of the `state_machine` node terminal which shows the various transitions between states.
+
+![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
 
 
 ### The `robot_actions` Node ###
 
-This node defines the `BehaviorHelper` class which defines the methods for helping the robot in reasoning, moving to location and moving to recharge position. The methods of this class are used inside the execute function of the states of the state machine.
+This node defines the `BehaviorHelper` class which defines the methods for making the robot reason, move to location and move to recharging position. This node uses the class `ArmorClient` to make request to the aRMOR server for all the manipulations and queries nedded for making the robot perform its actions.
+
+Here the reasoning and moving function pseudocode is shown.
 
 #### The `decide_target` function ####
 ```
@@ -132,16 +133,18 @@ def move_to_target():
 
 This node defines the `CreateMap` class used in the  `STATE_INIT` of the Finite State Machine, to pass to the robot all the information for the indoor movement. Such an environment is created through manipulations on the [topological_map.owl](https://github.com/buoncubi/topological_map) ontology with the help of the `ArmorClient` class defined in [armor_api](https://github.com/EmaroLab/armor_py_api).
 
+The function asks the user some information to build the environment which is developed in such a way that different scenarios can be created, even if only under certain [Assumptions](#Assumptions). 
+
 ### The `robot_state` Node ###
 
 This node implements two different servers:
 * The `state/get_pose`. 
 * The `state/set_pose`
-The first requires nothing and returns a `Point` which is the actual position of the robot, while the second requires a `Point` to be set and returns nothing. This node also get the robot initial position as a parameter and calls the `init_robot_pose` function, defined inside the `interface_helper`, which make the request for the controller server.
+The first requires nothing and returns a `Point` which is the actual position of the robot, while the second requires a `Point` to be set and returns nothing. This node also get the robot initial position as a parameter and calls the `init_robot_pose` function, defined inside the `interface_helper`, which makes the request for the controller server.
 
 A publisher, the `state/battery_low`, is also implemented here. It is a `Boolean` publisher which has two possible states:
-* Low battery: `True`is published.
-* Charged: `False` is published.
+* Low battery: if `True`is published.
+* Charged: if `False` is published.
 
 ### The `controller` and `planner` Nodes ###
 
@@ -186,6 +189,25 @@ Follow these steps to install the software:
 5. Clone inside your workspace [topological_map](https://github.com/buoncubi/topological_map) containing the ontology for this project;
 6. Run `chmod +x <file_name>` for each file inside the scripts folder;
 7. Run `catkin_make` from the root of your workspace.
+
+As regardin the third point, the developer have encountered some issues with the function `disj_inds_of_class(self, class_name)` of [armor_manipilation_client.py](https://github.com/EmaroLab/armor_py_api/blob/main/scripts/armor_api/armor_manipulation_client.py). To fix this problem a new function have been created:
+
+
+```
+def disjoint_all_ind(self, ind_list):
+        try:
+            res = self._client.call('DISJOINT', 'IND','', ind_list)
+
+        except rospy.ROSException:
+            raise ArmorServiceCallError("Cannot reach ARMOR client: Timeout Expired. Check if ARMOR is running.")
+
+        if res.success:
+            return res.is_consistent
+        else:
+            raise ArmorServiceInternalError(res.error_description, res.exit_code)
+```
+
+Copy this function inside `armor_manipulation_client.py` after having cloned the package inside your workspace.
 
 ### Launcher ###
 
