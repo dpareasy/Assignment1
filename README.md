@@ -112,7 +112,7 @@ def move_to_target():
 
 ### The `load_ontology` Node ###
 
-This node defines the `CreateMap` class which is used in the Finite State Machine to pass to the robot all the information for moving around the environmnet. The environment is created through manipulations on the [topological_map.owl](https://github.com/buoncubi/topological_map) ontology with the help of the `ArmorClient` class defined in [armor_api](https://github.com/EmaroLab/armor_py_api).
+This node defines the `CreateMap` class used in the  `STATE_INIT` of the Finite State Machine, to pass to the robot all the information for the indoor movement. Such an environment is created through manipulations on the [topological_map.owl](https://github.com/buoncubi/topological_map) ontology with the help of the `ArmorClient` class defined in [armor_api](https://github.com/EmaroLab/armor_py_api).
 
 ### The `controller` and `planner` Nodes ###
 
