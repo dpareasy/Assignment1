@@ -51,6 +51,14 @@ The figure below represent the structure of the Finite State Machine.
 ![smach](https://user-images.githubusercontent.com/92155300/204056867-88b33dd0-3f09-4bea-8fbf-265921ca48a1.png)
 
 
+The figure shows a hierachical finite state machine made of the following states:
+1. *INITIALIZE_MAP*: This is the state in which the robot get all the information about the map of the environment.
+2. *NORMAL*: composed of three other states:
+    * *DECIDE_LOCATION*: This is the state in which the robot decide the location to reach.
+    * *MOVING_TO_LOCATION*: This is the state in which the robot move to the target location.
+    * *SURVEYING*: This is the state in which the robot takes some times to survey the location.
+3. *RECHARGING*: This is the state in which the robot charge it's battery.
+
 ## Project structure ##
 
 ### Package list ###
@@ -87,7 +95,7 @@ This node defines the Finite State Machine of the architecture and manages the t
 It relies on three different classes:
 * The class `helper` of the `interface_helper` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, which manages all the interactions with planner and controller.
 * The class `behavior` of the `robot_actions` module, which manages the interactions with the aRMOR server (i.e. robot position, reachable locations, urgency ecc.)
-* The class `ontology` of the `load_ontology` module of this repostory, which manages the initialisation of the map.
+* The class `ontology` of the `load_ontology` module, which manages the initialisation of the map.
 
 The following figure represents an example of the `state_machine` node terminal which shows the various transitions between states.
 
@@ -137,7 +145,7 @@ A publisher, the `state/battery_low`, is also implemented here. It is a `Boolean
 
 ### The `controller` and `planner` Nodes ###
 
-You can finde a complete description in [arch_skeleton](https://github.com/buoncubi/arch_skeleton).
+You can finde a complete description of these two nodes in [arch_skeleton](https://github.com/buoncubi/arch_skeleton).
 
 ### ROS parameters ###
 
