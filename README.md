@@ -33,6 +33,7 @@ For simplicity following assumptions have been considered:
 * All the corridors contain the same number of rooms;
 * Corridor(i) is connected to corridor(i+1) and to the recharging location (which is a corridor);
 * The robot is automatically spawned in the recharging location every time the battery goes low;
+* If the battery becomes low during the survey of a location, the robot finishes the task and then meves to the recharging location;
 * The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms';
 * If there are no urgent rooms the robot is forced to move around corridors;
 
