@@ -16,6 +16,7 @@ import smach
 import rospy
 import random
 import smach_ros
+import time
 #from threading import Lock
 #from std_msgs.msg import Bool
 from smach import State #StateMachine, State
@@ -171,7 +172,7 @@ class MoveToTarget(smach.State):
         self._helper = interface_helper
         self._behavior = behavior_helper
 
-        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose', 'choice', 'list_of_corridors'])
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_MOVED], input_keys = [ "random_plan",'current_pose', 'choice', 'list_of_corridors'], output_keys = ['current_pose'])
 
     def execute(self, userdata):
         """
@@ -217,8 +218,7 @@ class MoveToTarget(smach.State):
                 # If the controller finishes its computation, then take the `went_random_pose` transition, which is related to the `repeat` transition.
                 if self._helper.controller_client.is_done():
                     self._behavior.move_to_target(choice, current_pose, list_of_corridors)
-                    #actual_position = client.query.objectprop_b2_ind("isIn", "Robot1")
-                    #print(actual_position)
+                    userdata.current_pose = choice
                     return TRANS_MOVED
             finally:
                 # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
@@ -236,11 +236,12 @@ class Surveying(State):
 
     """
 
-    def __init__(self, interface_helper):
+    def __init__(self, interface_helper, behavior_helper):
         # Get a reference to the interfaces with the other nodes of the architecture.
         self._helper = interface_helper
+        self._behavior = behavior_helper
         # Initialise this state with possible transitions (i.e., valid outputs of the `execute` function).
-        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_SURVEYED])
+        State.__init__(self, outcomes = [TRANS_RECHARGING, TRANS_SURVEYED], input_keys = ['current_pose'])
 
     # Define the function performed each time a transition is such to enter in this state.
     # Note that the input parameter `userdata` is not used since no data is required from the other states.
@@ -260,20 +261,25 @@ class Surveying(State):
             TRANS_SURVEYED(str): transition to the decision state 
 
         """
-        while not rospy.is_shutdown():  # Wait for stimulus from the other nodes of the architecture.
-            # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
-            self._helper.mutex.acquire()
-            try:
-                # If the battery is no low anymore take the `charged` transition.
-                if not self._helper.is_battery_low():
-                    self._helper.reset_states()  # Reset the state variable related to the stimulus.
-                    print(simple_colors.green("\n\nSURVEYNG...\n\n", ['blink']))
-                    rospy.sleep(5)
-                    #os.system('clear')
-                    return TRANS_SURVEYED
-            finally:
-                # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
-                self._helper.mutex.release()
+        current_pose = userdata.current_pose
+        timer = 0
+        while (not rospy.is_shutdown()):  # Wait for stimulus from the other nodes of the architecture.
+            
+            while(timer != 500) and (not self._helper.is_battery_low()):
+                self._helper.mutex.acquire()
+                # Acquire the mutex to assure data consistencies with the ROS subscription threads managed by `self._helper`.
+                timer = timer + 1
+                time.sleep(0.01)
+                try:
+                    if self._helper.is_battery_low():  # Higher priority
+                        self._behavior.go_to_recharge(current_pose)
+                        return TRANS_RECHARGING
+                    
+                    if timer == 500:
+                        return TRANS_SURVEYED
+                finally:
+                    # Release the mutex to unblock the `self._helper` subscription threads if they are waiting.
+                    self._helper.mutex.release()
             # Wait for a reasonably small amount of time to allow `self._helper` processing stimulus (eventually).
             rospy.sleep(LOOP_SLEEP_TIME)
 
@@ -351,7 +357,7 @@ def main():
             smach.StateMachine.add(STATE_MOVING, MoveToTarget(helper, behavior),
                             transitions = {TRANS_RECHARGING : TRANS_BATTERY_LOW,
                                             TRANS_MOVED: STATE_SURVEY})
-            smach.StateMachine.add(STATE_SURVEY, Surveying(helper),
+            smach.StateMachine.add(STATE_SURVEY, Surveying(helper, behavior),
                             transitions = {TRANS_RECHARGING : TRANS_BATTERY_LOW,
                                             TRANS_SURVEYED: STATE_DECISION})
         smach.StateMachine.add(STATE_NORMAL, sm_normal,

@@ -33,7 +33,6 @@ For simplicity following assumptions have been considered:
 * All the corridors contain the same number of rooms;
 * Corridor(i) is connected to corridor(i+1) and to the recharging location (which is a corridor);
 * The robot is automatically spawned in the recharging location every time the battery goes low;
-* If the battery becomes low during the survey of a location, the robot finishes the task and then meves to the recharging location;
 * The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms';
 * If there are no urgent rooms the robot is forced to move around corridors;
 
@@ -255,7 +254,7 @@ sudo apt-get -y install xterm
 
 ## System limitations ##
 
-As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Moreover, if the battery runs low during the surveying state the robot finishes the task instead of moving to the recharging zone. Another limitation is that it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made by the author is that the number of rooms is equal for each corridor.
+As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Another limitation is that it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made by the author is that the number of rooms is equal for each corridor.
 
 ## Possible improvements ##
 
