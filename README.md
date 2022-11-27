@@ -49,7 +49,10 @@ In the figure below is presente the sequence diagram of the architecture
 ![sequence_diagram2](https://user-images.githubusercontent.com/92155300/204143099-dbe686ee-22e9-4f66-960e-0e046f2b49ba.png)
 
 
-As can be seen from the above image, the state machine waits until the whole map has been built
+As can be seen from the above image, the state machine waits until the whole map has been built.
+Every time the robot needs to change location the `state_machine` make the request to armor server for queries, reasoning and manipulations.
+
+The `robot_state` node is always working and warn the FSM every time the battery changes state.
 
 ### The Finite State Machine ###
 
