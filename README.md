@@ -110,6 +110,9 @@ The following figure represents an example of the `state_machine` node terminal 
 
 ![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
 
+
+A video showing the transition between states is presented below.
+
 https://user-images.githubusercontent.com/92155300/204129148-e2371c3d-3a2e-49e7-aa8c-c68b78763a5b.mp4
 
 
@@ -219,7 +222,7 @@ def disjoint_all_ind(self, ind_list):
         else:
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
 ```
-Where `id_list` is the list of all the individuals of the ontology.
+Where `ind_list` is the list of all the individuals of the ontology.
 Copy this function inside `armor_manipulation_client.py` after having cloned the package inside your workspace.
 
 ### Launcher ###
@@ -260,3 +263,10 @@ As stated in [Assumptions](#Assumptions), some hypothesis have been made to simp
 
 ## Possible improvements ##
 
+The ideas for possible improvements come from the previous section:
+
+1. An importat improvement, which will make the simulation more realistic, is the implementation a method to bring the robot safe to the recharging location, by following the best path connecting its actual position and the recharging location.
+
+2. As regarding the creation of the map, it could be useful to implement a code which make the user able to create any possible environment. Note that the developer chose this solution for simplicity, since it wasn't a requirement for the project.
+
+2. As already mentioned in [System limitations](#system-limitations) an other improvement could be the implementation of a reasoning system about the next location to visit, if no urgent rooms are detected. This could be done by driving the decision by assigning to corridors an hihger probability than rooms.
