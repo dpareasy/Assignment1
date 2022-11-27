@@ -98,6 +98,10 @@ The following figure represents an example of the `state_machine` node terminal 
 
 ![state_machine_transitions](https://user-images.githubusercontent.com/92155300/204084546-4e3bb3e9-8910-454e-b1d9-296cc32cab04.png)
 
+https://user-images.githubusercontent.com/92155300/204129148-e2371c3d-3a2e-49e7-aa8c-c68b78763a5b.mp4
+
+
+
 ### The `robot_actions` Node ###
 
 This node defines the `BehaviorHelper` class which defines the methods for making the robot reason, move to location and move to recharging position. This node uses the class `ArmorClient` to make request to the aRMOR server for all the manipulations and queries nedded for making the robot perform its actions.
