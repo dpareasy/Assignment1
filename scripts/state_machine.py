@@ -248,11 +248,12 @@ class Surveying(State):
     def execute(self, userdata):
         """
         Function responsible of the transition between the 
-        STATE_SURVEY to the STATE_DECISION.
-        It waits a specified amount of thime for the survey of the location and then make tha transition. If the battery is 
+        STATE_SURVEY to the STATE_DECISION. It waits a specified amount of time 
+        for the survey of the location and then make tha transition. If the
+        battery is low it suddenly goes to the STATE_RECHARGING
 
         Args:
-            userdata: not used
+            userdata: take input from the STATE_MOVING
 
         Returns:
             TRANS_RECHARGING(str): transition to the recharging state
