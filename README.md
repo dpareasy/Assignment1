@@ -43,6 +43,13 @@ Given the scenario presented above the software is developed as follow.
 
 ### Components diagram ###
 
+### Sequence diagram ###
+
+In the figure below is presente the sequence diagram of the architecture
+
+![sequence_diagram](https://user-images.githubusercontent.com/92155300/204132186-6b968e18-f537-4d8b-ac87-34f86a7a6382.png)
+
+
 ### The Finite State Machine ###
 
 Hereafter the structure of the Finite State Machine.
