@@ -192,15 +192,13 @@ This software requires the following ROS parameters.
 
 ## Installation & Running ##
 
-This software is based on ROS Noetic.
-
 ### Installation ###
 
 Follow these steps to install the software:
-1. Clone this repository inside your workspace (make sure it is sourced in you .bashrc);
+1. Clone this repository inside your workspace (make sure it is sourced in your .bashrc);
 2. Follow the steps for [aRMOR](https://github.com/EmaroLab/armor/issues/7) installation;
 3. Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, you can clone it in your workspace;
-4. Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the [controller.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) and [planner.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) server; 
+4. Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the [controller.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) and [planner.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) server used by this package; 
 5. Clone inside your workspace [topological_map](https://github.com/buoncubi/topological_map) containing the ontology for this project;
 6. Run `chmod +x <file_name>` for each file inside the scripts folder;
 7. Run `catkin_make` from the root of your workspace.
@@ -221,7 +219,7 @@ def disjoint_all_ind(self, ind_list):
         else:
             raise ArmorServiceInternalError(res.error_description, res.exit_code)
 ```
-
+Where `id_list` is the list of all the individuals of the ontology.
 Copy this function inside `armor_manipulation_client.py` after having cloned the package inside your workspace.
 
 ### Launcher ###
@@ -258,7 +256,7 @@ sudo apt-get -y install xterm
 
 ## System limitations ##
 
-As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Another limitation is that it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made by the author is that the number of rooms is equal for each corridor. Moreover, the robot is forced to visit corridors if there are no urgent rooms during the reasoning, instead of being able to visit both assigning an hihger probability to corridors. This decision is based on the fact that the urgency threshold is so low that even from the second iteration of the simulation, all the rooms become `urgent` and the robot starts visiting them.
+As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Another limitation is that it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made by the author is that the number of rooms is equal for each corridor. Moreover, the robot is forced to visit corridors if there are no urgent rooms during the reasoning instead of being able to visit both assigning an hihger probability to corridors. This decision is based on the fact that the urgency threshold is so low that even from the second iteration of the simulation, all the rooms become `urgent` and the robot starts visiting them.
 
 ## Possible improvements ##
 
