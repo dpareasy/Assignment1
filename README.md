@@ -46,7 +46,8 @@ Given the scenario presented above the software is developed as follow.
 
 In the figure below is presente the sequence diagram of the architecture
 
-![sequence_diagram](https://user-images.githubusercontent.com/92155300/204132186-6b968e18-f537-4d8b-ac87-34f86a7a6382.png)
+![sequence_diagram2](https://user-images.githubusercontent.com/92155300/204143099-dbe686ee-22e9-4f66-960e-0e046f2b49ba.png)
+
 
 As can be seen from the above image, the state machine waits until the whole map has been built
 
