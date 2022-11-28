@@ -42,6 +42,8 @@ Given the scenario presented above the software is developed as follow.
 
 ### Components diagram ###
 
+![UML](https://user-images.githubusercontent.com/92155300/204273176-71f6ef7b-03b5-48cd-8c0d-b2f95d7fe892.png)
+
 ### Sequence diagram ###
 
 In the figure below is presente the sequence diagram of the architecture.
