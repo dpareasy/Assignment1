@@ -48,7 +48,7 @@ Given the scenario presented above the software is developed as follow.
 
 In the figure below the whole software architecture is presented.
 
-![UML](https://user-images.githubusercontent.com/92155300/204332874-0d9a1983-ce54-49de-9901-9b57fcc840c6.png)
+![UML](https://user-images.githubusercontent.com/92155300/204352782-d2ae8b70-3570-413b-8d90-ff3e25ceb542.png)
 
 
 It is important to remark that the communications between the state_machine and the other servers are managed by two different helper classes:
