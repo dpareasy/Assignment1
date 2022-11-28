@@ -107,7 +107,7 @@ This repository contains a ROS package named Assignment1 that includes the follo
 This node defines the Finite State Machine of the architecture and manages the transitions between all the states.
 
 It relies on three different classes:
-* The class `InterfaceHelper` of the `interface_helper` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified in this repository to fit to this purpose It manages all the interactions with [planner](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) servers.
+* The class `InterfaceHelper` of the `interface_helper` module, developed by [Luca Buoncompagni](https://github.com/buoncubi) in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified in this repository to fit to this purpose It manages all the interactions with [planner](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) servers.
 * The class `BehaviorHelper` of the `robot_actions` module, which manages the interactions with the aRMOR server (i.e. robot position, reachable locations, urgency ecc.)
 * The class `CreateOntology` of the `load_ontology` module, which manages the initialisation of the map.
 
