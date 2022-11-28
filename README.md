@@ -11,34 +11,34 @@ Contacts:
 
 This repository contains a ROS-based software, developed in python language, that implements the behavior of a surveillance robot. To this purpose it is used [topological_map.owl](https://github.com/buoncubi/topological_map/blob/main/topological_map.owl) ontology , which creates the indoor environment for the simulation.
 
-The software uses a Smach state machine and build the ontology with aRMOR server using [armor_api](https://github.com/EmaroLab/armor_py_api).
+The software uses a Smach state machine and builds the ontology with aRMOR server using [armor_api](https://github.com/EmaroLab/armor_py_api).
 
 ## System's Features ##
 
 ### Scenario ###
 ![environment](https://user-images.githubusercontent.com/92155300/204328875-8f3529e6-f970-4634-bbe2-08476acd3461.png)
 
-The scenario involves a surveying robot deployed in the indoor environmnet presented in the above image. Its aim is to move between the locations of the map and stay there for a while, for surveillance purposes, before starting reasoning to decide the next room to visit. Before starting moving around the environment the robot must wait until receiving all the information about the environment.
+The scenario involves a surveying robot deployed in the indoor environmnet presented in the image above. Its aim is to move between the locations of the map and stay there for a while for surveillance purposes, before starting reasoning to decide the next room to visit. Before starting moving around the environment the robot must wait until receiving all the information about the environment.
 
 Any time the battery goes down the robot moves to the recharging location which is the initial position and waits until the battery is charged.
 
 ### Policy ###
 
 The moving policy that the robot should follow is the one presented below:
-* It should mainly stay on corridors;
-* If a reachable room become `URGENT` the robot should visit it;
-* When its battery becomes low it should move to the recharging position;
+* It should mainly stay on corridors.
+* If a reachable room becomes `URGENT` the robot should visit it.
+* When its battery becomes low it should move to the recharging position.
 
 ### Assumptions ###
 
 For the development of the software, the following assumptions have been considered:
-* The robot moves in a 2D environment with no obstacles;
-* The environment created can be formed by any number of corridors;
-* All the corridors contain the same number of rooms;
-* Corridor(i) is connected to corridor(i+1) and to the recharging location (which is a corridor);
-* The robot is automatically spawned in the recharging location every time the battery becomes low;
-* The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms';
-* If there are no urgent rooms the robot is forced to move around corridors;
+* The robot moves in a 2D environment with no obstacles.
+* The environment created can be formed by any number of corridors.
+* All the corridors contain the same number of rooms.
+* Corridor(i) is connected to corridor(i+1) and to the recharging location (which is a corridor).
+* The robot is automatically spawned in the recharging location every time the battery becomes low.
+* The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms'.
+* If there are no urgent rooms the robot is forced to move around corridors.
 
 ## Software architecture ##
 
@@ -46,7 +46,7 @@ Given the scenario presented above the software is developed as follow.
 
 ### Components diagram ###
 
-In the figure below is presented the whole software architecture.
+In the figure below the whole software architecture is presented.
 
 ![UML](https://user-images.githubusercontent.com/92155300/204332874-0d9a1983-ce54-49de-9901-9b57fcc840c6.png)
 
@@ -57,11 +57,11 @@ It is important to remark that the communications between the state_machine and 
 
 ### Sequence diagram ###
 
-In the figure below is presented the sequence diagram of the architecture.
+In the figure below the sequence diagram of the architecture is presented.
 
 ![sequence_diagram](https://user-images.githubusercontent.com/92155300/204271986-275e1ea1-7f17-4fba-90eb-ef32579a3ad7.png)
 
-As can be seen from the above image, the `state_machine` waits until the whole map has been built. It also makes requests to the aRMOR server every time the robot needs to reason about the next location to visit or to move in another location.
+As can be seen from the image above, the `state_machine` waits until the whole map has been built. It also makes requests to the aRMOR server every time the robot needs to reason about the next location to visit or to move in another location.
 
 The `robot_state` node is always working and warns the FSM every time the battery changes state.
 
@@ -73,7 +73,7 @@ Hereafter the structure of the Finite State Machine is presented.
 
 
 The figure shows a hierachical Finite State Machine made of the following states:
-1. **INITIALIZE_MAP**: The state in which the robot build the map of the environment.
+1. **INITIALIZE_MAP**: The state in which the robot loads the map of the environment.
 2. **NORMAL**: composed of three other states:
     * **DECIDE_LOCATION**: The state in which the robot decides the location to reach.
     * **MOVING_TO_LOCATION**: The state in which the robot moves until reaching the target location.
@@ -91,7 +91,7 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * project_launch.launch: it launches armor server and all the nodes used in this simulation.
 4. `msg/`: It contains the message exchanged through ROS topics:
     * Point.msg: It is the message representing a 2D point.
-5. `srv/`: It Contains the definition of each server used by this software:
+5. `srv/`: It contains the definition of each server used by this software:
     * GetPose.srv: It defines the request and response to get the current robot position.
     * SetPose.srv: It defines the request and response to set the current robot position.
 6. `action/`: It contains the definition of each action server used by this software:
@@ -101,7 +101,7 @@ This repository contains a ROS package named Assignment1 that includes the follo
     * load_ontology.py: It creates the topological map of the environment.
     * robot_actions.py: It contains a class to implement the behavior of the robot.
     * state_machine.py: It defines the states of the state machine.
-    * robot_state.py: It implements the robot state including: current position, and battery level;
+    * robot_state.py: It implements the robot state including: current position, and battery level.
 
 ## Software components ###
 
@@ -110,8 +110,8 @@ This repository contains a ROS package named Assignment1 that includes the follo
 This node defines the Finite State Machine of the architecture and manages the transitions between all the states.
 
 It relies on three different classes:
-* The class `InterfaceHelper` of the `interface_helper` module, developed by [Luca Buoncompagni](https://github.com/buoncubi) in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified in this repository to fit to this purpose It manages all the interactions with [planner](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) servers.
-* The class `BehaviorHelper` of the `robot_actions` module, which manages the interactions with the aRMOR server (i.e. robot position, reachable locations, urgency ecc.)
+* The class `InterfaceHelper` of the `interface_helper` module, developed by [Luca Buoncompagni](https://github.com/buoncubi) in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified in this repository to fit to this purpose. It manages all the interactions with [planner](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) servers.
+* The class `BehaviorHelper` of the `robot_actions` module, which manages the interactions with the aRMOR server (i.e. robot position, reachable locations, urgency ecc.).
 * The class `CreateOntology` of the `load_ontology` module, which manages the initialisation of the map.
 
 The following figure represents an example of the `state_machine` node terminal which shows the various transitions between states.
@@ -126,13 +126,13 @@ https://user-images.githubusercontent.com/92155300/204129148-e2371c3d-3a2e-49e7-
 As can bee seen from the video:
 
 * On the **top left** the software asks the user to set the number of corridors and rooms as an input to create the topological map. Then all the robot starts moving around the environment and all transitions between the states of the fsm are monitored.
-Is it possible to notice that if there are urgent rooms the robot chooses one of the reachable based on which is the most urgent, otherwise it moves through corridors.
+It is possible to notice that if there are urgent rooms the robot chooses one of the reachable based on which is the most urgent, otherwise it moves through corridors.
 
-* On the **bottom left** all the feedbacks coming from the `robot_state.py` are shown (i.e. battery low, battery fully charged, ste position and get position).
+* On the **bottom left** all the feedbacks coming from the `robot_state.py` are shown (i.e. battery low, battery fully charged, set position and get position).
 
 * On the **top right** all the viapoints that the planner creates for building the path.
 
-* On the **bottom right** the controller notify robot's current position.
+* On the **bottom right** the controller notifies robot's current position.
 
 ### The `robot_actions` Node ###
 
@@ -174,8 +174,9 @@ The function asks the user some information to build the environment, which is d
 
 This node implements two different servers:
 * The `state/get_pose`. 
-* The `state/set_pose`
-The first requires nothing and returns a `Point` which is the actual position of the robot, while the second requires a `Point` to be set and returns nothing. This node also get the robot initial position as a parameter and calls the `init_robot_pose` function, defined inside the `interface_helper`, which makes the request for the controller server.
+* The `state/set_pose`.
+
+The first requires nothing and returns a `Point` which is the actual position of the robot, while the second requires a `Point` to be set and returns nothing. This node also gets the robot initial position as a parameter and calls the `init_robot_pose` function, defined inside the `interface_helper`, which makes the request for the controller server.
 
 A publisher, the `state/battery_low`, is also implemented here. It is a `Boolean` publisher which has two possible states:
 * Low battery: if `True`is published.
@@ -284,17 +285,17 @@ sudo apt-get -y install xterm
 
 ## System limitations ##
 
-As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Another limitation is that it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made by the author is that the number of rooms is equal for each corridor. Moreover, instead of being able to visit both corridors and rooms, the robot is forced to visit corridors if there are no urgent rooms during the reasoning state. The reason is that the robot shuold mainly stay on corridors if no argent rooms are detected. This decision is based on the fact that the `urgency` threshold is so low that even from the second iteration of the simulation, all the rooms become `urgent` and the robot starts visiting them.
+As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Another limitation is that it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made by the author is that the number of rooms is equal for each corridor. Moreover, instead of being able to visit both corridors and rooms, the robot is forced to visit corridors if there are no urgent rooms during the reasoning state. The reason is that the robot should mainly stay on corridors if no argent rooms are detected. This decision is based on the fact that the `urgency` threshold is so low that even from the second iteration of the simulation, all the rooms become `urgent` and the robot starts visiting them.
 
 ## Possible improvements ##
 
 The ideas for possible improvements come from the previous section:
 
-1. An importat improvement, which will make the simulation more realistic, is the implementation a method to bring the robot to the recharging location by following the best path which connects its actual position with the recharging location.
+1. An important improvement, which will makes the simulation more realistic, is the implementation of a method to bring the robot to the recharging location by following the best path which connects its actual position with the recharging location.
 
 2. As regarding the creation of the map, it could be useful to implement a code which make the user able to create any possible environment. Note that the developer chose this solution for simplicity, since it wasn't a requirement of the project.
 
-2. As already mentioned in [System limitations](#system-limitations) an other improvement could be the implementation of a reasoning system for the decision of the next location to visit if no urgent rooms occurs. This can be achieved by assigning a higher probability to corridors than to rooms, so that the robot is more likely to move through corridors.
+2. As already mentioned in [System limitations](#system-limitations) an other improvement could be the implementation of a reasoning system for the decision of the next location to visit if no urgent rooms occur. This can be achieved by assigning a higher probability to corridors than to rooms, so that the robot is more likely to move through corridors.
 
 ## Documentation ##
 
