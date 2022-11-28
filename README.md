@@ -270,3 +270,7 @@ The ideas for possible improvements come from the previous section:
 2. As regarding the creation of the map, it could be useful to implement a code which make the user able to create any possible environment. Note that the developer chose this solution for simplicity, since it wasn't a requirement for the project.
 
 2. As already mentioned in [System limitations](#system-limitations) an other improvement could be the implementation of a reasoning system about the next location to visit, if no urgent rooms are detected. This could be done by driving the decision by assigning to corridors an hihger probability than rooms.
+
+## Documentation ##
+
+You can find the whole documentation [here](https://dpareasy.github.io/Assignment1/)
