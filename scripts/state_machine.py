@@ -103,7 +103,7 @@ class DecideTarget(smach.State):
         planner server to obtain the path to follow.
 
         Args:
-            userdata: used for output_keys to STATE_MOVING to pass data to the other states.
+            userdata: used for output_keys to pass data to the other states.
 
         Returns:
             TRANS_RECHARGING (str): transition to STATE_RECHARGING.
@@ -166,7 +166,7 @@ class MoveToTarget(smach.State):
         server which is the one responsible of the movement.
 
         Args:
-            userdata: for input_keys from STATE_DECISION and output_keys to STATE_SURVEY
+            userdata: for input_keys and output_keys to get data and pass data.
         
         Returns:
             TRANS_RECHARGING(str): transition to the STATE_RECHARGING.
@@ -209,7 +209,7 @@ class MoveToTarget(smach.State):
 
 class Surveying(State):
     """
-    A class to simulate the surveillance action of the robot.
+    A class to implement the surveillance action of the robot, when it is inside a location.
     """
 
     def __init__(self, interface_helper, behavior_helper):
@@ -229,7 +229,7 @@ class Surveying(State):
         battery is low it suddenly goes to the STATE_RECHARGING
 
         Args:
-            userdata: take input from the STATE_MOVING. 
+            userdata: for input_keys to get data from the other states. 
 
         Returns:
             TRANS_RECHARGING(str): transition to STATE_RECHARGING.

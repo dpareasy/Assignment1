@@ -60,7 +60,7 @@ class ActionClientHelper:
         Start the action server with a new `goal`. Note this call is not blocking (i.e., asynchronous performed).
 
         Args:
-            goal(Point): Goal point
+            goal(Point): Goal point.
 
         """
         # A new goal can be given to the action server only if it is not running. This simplification implies that
@@ -103,7 +103,7 @@ class ActionClientHelper:
         This function is called when the action server send some `feedback` back to the client.
 
         Args:
-            feedback: feedbacks from the action servers
+            feedback: feedbacks from the action servers.
 
         """
         # Acquire the mutex to synchronise the computation concerning the `feedback` message with the other nodes of the architecture.
@@ -122,9 +122,9 @@ class ActionClientHelper:
         computation, i.e., it provides a `done` message.
 
         Args:
-            status(str): status
+            status: status.
 
-            results(str): results from the action servers
+            results: results from the action servers.
 
         """
         # Acquire the mutex to synchronise the computation concerning the `done` message with the other nodes of the architecture.
@@ -145,8 +145,8 @@ class ActionClientHelper:
         Get `True` if the action server finished is computation, or `False` otherwise.
         Note that use this method should do it in a `self._mutex` safe manner.
 
-        Results:
-            bool: If the reasoner has finished its calculations.
+        Returns:
+            bool: `True` if the reasoner has finished its calculations, `False` otherwise.
 
         """
         return self._is_done
@@ -167,9 +167,7 @@ class ActionClientHelper:
         Get the results of the action server, if any, or `None` and return this value.
 
         Returns:
-            str: Some results have arrived, None otherwise.
-        Returns:
-            None: No results arrived
+            self.results: Some results have arrived, None otherwise.
 
         """
         if self._is_done:
@@ -203,6 +201,7 @@ class InterfaceHelper:
         """
         Reset the stimulus, which are stored as states variable fo this class.
         This function assumes that no states of the Finite State Machine run concurrently.
+
         """
         self._battery_low = False
         self._start_interaction = False
@@ -230,7 +229,7 @@ class InterfaceHelper:
         synchronization  with the threads involving the subscribers and action clients.
 
         Returns:
-            bool: `True` if the battery is low, `False` otherwise
+            bool: `True` if the battery is low, `False` otherwise.
 
         """
         return self._battery_low
@@ -238,6 +237,12 @@ class InterfaceHelper:
     # Update the current robot pose stored in the `robot-state` node.
     @staticmethod
     def init_robot_pose(point):
+        """
+        Function that initialise the robot position. It calls the server for initialising the robot position inside the environment.
+
+        Args:
+            point(Point): robot initial position.
+        """
         # Eventually, wait for the server to be initialised.
         rospy.wait_for_service('state/set_pose')
         try:

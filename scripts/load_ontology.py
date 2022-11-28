@@ -84,12 +84,6 @@ class CreateMap:
         Function initializing the environment in which the robot should move.
         This mechanism is generalized in a way in which many envirnoments can be 
         created. The creation of the environment is done via call to armor server.
-
-        Args:
-            None
-
-        Returns:
-            None
         
         """
         # declaration of lists used to store all the individuals
