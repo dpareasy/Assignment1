@@ -64,8 +64,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for scripts.robot_actions</h1><div class="highlight"><pre>
-<span></span>
-<span class="c1"># Import ROS libraries.</span>
+<span></span><span class="ch">#! /usr/bin/env python3</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. module:: robot_actions</span>
 <span class="sd">   :platform: Unix</span>
@@ -75,6 +75,7 @@
 
 <span class="sd">ROS node for implementing the Robot behavior.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Import ROS libraries.</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">simple_colors</span>
@@ -89,16 +90,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
         <span class="bp">self</span><span class="o">.</span><span class="n">agent</span> <span class="o">=</span> <span class="s2">&quot;Robot1&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_position</span> <span class="o">=</span> <span class="s2">&quot;isIn&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">urgent_class</span> <span class="o">=</span> <span class="s2">&quot;URGENT&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reachable</span> <span class="o">=</span> <span class="s2">&quot;canReach&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span> <span class="o">=</span> <span class="s2">&quot;visitedAt&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">robot_timestamp</span> <span class="o">=</span> <span class="s2">&quot;now&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">charging_location</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_type</span> <span class="o">=</span> <span class="s2">&quot;Long&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">corridors</span> <span class="o">=</span> <span class="s1">&#39;CORRIDOR&#39;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">urgent</span> <span class="o">=</span> <span class="s1">&#39;urgent&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">corridor</span> <span class="o">=</span> <span class="s1">&#39;corridor&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">robot_position</span> <span class="o">=</span> <span class="s1">&#39;robot_position&#39;</span>
@@ -117,10 +111,7 @@
 <span class="sd">            intersection(str): list of the intersection</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">intersection</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">list1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">list2</span><span class="p">:</span>
-                <span class="n">intersection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="n">intersection</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list1</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">list2</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">intersection</span></div>
 
 <div class="viewcode-block" id="BehaviorHelper.clean_strings"><a class="viewcode-back" href="../../index.html#scripts.robot_actions.BehaviorHelper.clean_strings">[docs]</a>    <span class="k">def</span> <span class="nf">clean_strings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string_type</span><span class="p">,</span> <span class="n">list_</span><span class="p">):</span>
@@ -160,20 +151,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">corridor</span><span class="p">:</span>
-            <span class="n">list_of_corridors</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corridors</span><span class="p">)</span>
+            <span class="n">list_of_corridors</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="s1">&#39;CORRIDOR&#39;</span><span class="p">)</span>
             <span class="n">location_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_of_corridors</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">urgent</span><span class="p">:</span>
-            <span class="n">urgent_rooms</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">urgent_class</span><span class="p">)</span>
+            <span class="n">urgent_rooms</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="s1">&#39;URGENT&#39;</span><span class="p">)</span>
             <span class="n">location_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">urgent_rooms</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot_position</span><span class="p">:</span>
-            <span class="n">current_pose</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
+            <span class="n">current_pose</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
             <span class="n">location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">current_pose</span><span class="p">)</span>
             <span class="n">location_list</span> <span class="o">=</span> <span class="n">current_pose</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">reachable_destinations</span><span class="p">:</span>
-            <span class="n">possible_destinations</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reachable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
+            <span class="n">possible_destinations</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;canReach&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
             <span class="n">location_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">possible_destinations</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">location_list</span></div>
@@ -197,11 +188,11 @@
         <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
         <span class="n">list_of_corridors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corridor</span><span class="p">)</span>
         <span class="n">current_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot_position</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;current pose is: [&quot;</span><span class="o">+</span><span class="p">(</span><span class="n">current_pose</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">current pose is: [&quot;</span><span class="o">+</span><span class="p">(</span><span class="n">current_pose</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">))</span>
         <span class="n">possible_destinations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reachable_destinations</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;Possible destinations: [&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">possible_destinations</span><span class="p">)</span> <span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="s2">&quot;Possible destinations: [&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">possible_destinations</span><span class="p">)</span> <span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">))</span>
         <span class="n">urgent_rooms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">urgent</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">red</span><span class="p">(</span><span class="s2">&quot;URGENT ROOMS: [&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span> <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">urgent_rooms</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="s2">&quot;URGENT ROOMS: [&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span> <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">urgent_rooms</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">))</span>
         <span class="n">reachable_urgent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inters_b2_lists</span><span class="p">(</span><span class="n">possible_destinations</span><span class="p">,</span> <span class="n">urgent_rooms</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="s2">&quot;URGENT AND REACHABLE LOCATIONS: [&quot;</span><span class="o">+</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reachable_urgent</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;]&quot;</span><span class="p">))</span>
         <span class="c1"># if the list is empty</span>
@@ -215,15 +206,15 @@
         <span class="c1"># if chosen_target list is not empty</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># save the first element of the list as the oldest timestamp</span>
-            <span class="n">oldest</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span><span class="p">,</span> <span class="n">reachable_urgent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">oldest</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;visitedAt&#39;</span><span class="p">,</span> <span class="n">reachable_urgent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="c1"># clean the string</span>
             <span class="n">oldest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">oldest</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reachable_urgent</span><span class="p">)):</span>
-                <span class="n">choice_last_visit</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span><span class="p">,</span> <span class="n">reachable_urgent</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">choice_last_visit</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;visitedAt&#39;</span><span class="p">,</span> <span class="n">reachable_urgent</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="n">choice_last_visit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">choice_last_visit</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">choice_last_visit</span> <span class="o">&lt;=</span> <span class="n">oldest</span><span class="p">:</span>
                     <span class="n">target</span> <span class="o">=</span> <span class="n">reachable_urgent</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;TARGET &quot;</span> <span class="o">+</span> <span class="n">target</span> <span class="o">+</span> <span class="s2">&quot; ACQUIRED&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="s2">&quot;TARGET &quot;</span> <span class="o">+</span> <span class="n">target</span> <span class="o">+</span> <span class="s2">&quot; ACQUIRED</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">current_pose</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">list_of_corridors</span></div>
 
 
@@ -237,23 +228,24 @@
 <span class="sd">            list_of_corridors(str): List of corridors  in the map</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">last_visit</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">)</span>
+        
 
         <span class="k">if</span> <span class="n">chosen_target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">list_of_corridors</span><span class="p">:</span>
+            <span class="n">last_visit</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;visitedAt&#39;</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">)</span>
             <span class="n">last_visit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">last_visit</span><span class="p">)</span>
 
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">,</span> <span class="n">current_pose</span><span class="p">)</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">,</span> <span class="n">current_pose</span><span class="p">)</span>
         <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
-        <span class="n">last_change</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot_timestamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
+        <span class="n">last_change</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">)</span>
         <span class="n">last_change</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_strings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">last_change</span><span class="p">)</span>
         <span class="n">current_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
 
         <span class="k">if</span> <span class="n">chosen_target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">list_of_corridors</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_visit</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_type</span><span class="p">,</span> <span class="n">current_time</span><span class="p">,</span> <span class="n">last_visit</span><span class="p">)</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;visitedAt&#39;</span><span class="p">,</span> <span class="n">chosen_target</span><span class="p">,</span> <span class="s1">&#39;Long&#39;</span><span class="p">,</span> <span class="n">current_time</span><span class="p">,</span> <span class="n">last_visit</span><span class="p">)</span>
 
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot_timestamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_type</span><span class="p">,</span> <span class="n">current_time</span><span class="p">,</span> <span class="n">last_change</span><span class="p">)</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="s1">&#39;Long&#39;</span><span class="p">,</span> <span class="n">current_time</span><span class="p">,</span> <span class="n">last_change</span><span class="p">)</span>
         <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">cyan</span><span class="p">(</span><span class="s2">&quot;Now the robot is in &quot;</span> <span class="o">+</span> <span class="n">chosen_target</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="n">simple_colors</span><span class="o">.</span><span class="n">magenta</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Robot in &quot;</span> <span class="o">+</span> <span class="n">chosen_target</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="BehaviorHelper.go_to_recharge"><a class="viewcode-back" href="../../index.html#scripts.robot_actions.BehaviorHelper.go_to_recharge">[docs]</a>    <span class="k">def</span> <span class="nf">go_to_recharge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_location</span><span class="p">):</span>
@@ -264,7 +256,7 @@
 <span class="sd">            current_location(str): The current robot position obtained from the ontology</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">charging_location</span><span class="p">,</span> <span class="n">current_location</span><span class="p">)</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">charging_location</span><span class="p">,</span> <span class="n">current_location</span><span class="p">)</span>
         <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span></div></div>
 </pre></div>
 

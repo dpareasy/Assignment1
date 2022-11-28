@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts.load_ontology &mdash; Assignment1 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Assignment1
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Assignment1</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scripts.load_ontology</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scripts.load_ontology</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: load_onotology</span>
+<span class="sd">   :platform: Unix</span>
+<span class="sd">   :synopsis: Python module for defining function used by the state machine</span>
+
+<span class="sd">.. moduleauthor:: Davide Leo Parisi &lt;davide.parisi1084@gmail.com&gt;</span>
+
+<span class="sd">ROS node for creating the ontology</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Import the armor client class</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">realpath</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">ArmorClient</span><span class="p">(</span><span class="s2">&quot;assignment&quot;</span><span class="p">,</span> <span class="s2">&quot;my_ontology&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CreateMap"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap">[docs]</a><span class="k">class</span> <span class="nc">CreateMap</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class contains all the method used to create the topological map</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+    <span class="c1">#def LoadMap():</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="c1"># Put the path of the file.owl</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/../../topological_map/&quot;</span>
+
+    <span class="c1"># Initializing with buffered manipulation and reasoning</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">load_ref_from_file</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;topological_map.owl&quot;</span><span class="p">,</span> <span class="s2">&quot;http://bnc/exp-rob-lab/2022-23&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;PELLET&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">mount_on_ref</span><span class="p">()</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">set_log_to_terminal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># check if a value is an integer</span>
+<div class="viewcode-block" id="CreateMap.not_int"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap.not_int">[docs]</a>    <span class="k">def</span> <span class="nf">not_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function checking if the value is an integer or not</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: input value</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            1: if not an int</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            0: if an int</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+    <span class="c1"># check if the input is an integer number </span>
+<div class="viewcode-block" id="CreateMap.get_input"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap.get_input">[docs]</a>    <span class="k">def</span> <span class="nf">get_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function checking if the value taken as input is an integer</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            location(int): 0 if corrdiors are request, 1 if rooms rea request</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            number(int): An integern number</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_int</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Enter the number of corridors: &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_int</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Enter the number of room for each corridor: &#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CreateMap.LoadMap"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap.LoadMap">[docs]</a>    <span class="k">def</span> <span class="nf">LoadMap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function initializing the environment in which the robot should move.</span>
+<span class="sd">        This mechanism is generalized in a way in which every envirnoment can be </span>
+<span class="sd">        created. The creation of the environment is done via call to armor server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># declaration of lists used to store all the individuals</span>
+        <span class="n">room_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">door_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">corridor_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Input asking the user the number of corridors and rooms for each of them</span>
+        <span class="c1">#corridor_number = int(input(&#39;Specify the number of corridors: &#39;))</span>
+        <span class="c1">#room_for_corridors = int(input(&#39;Specify the number of rooms for corridors: &#39;))</span>
+        <span class="n">corridor_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">room_for_corridors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">room_number</span> <span class="o">=</span> <span class="n">corridor_number</span><span class="o">*</span><span class="n">room_for_corridors</span>
+
+        <span class="c1"># Create the initial position</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_ind_to_class</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;LOCATION&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added E to LOCATION&quot;</span><span class="p">)</span>
+
+        <span class="c1"># INITIALIZE ROBOT POSITION</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s2">&quot;isIn&quot;</span><span class="p">,</span> <span class="s2">&quot;Robot1&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Robot in its initial position!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># ADD ALL OUR AXIOMS</span>
+        <span class="n">door_number</span> <span class="o">=</span> <span class="n">room_number</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">corridor_number</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">):</span>
+            <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading Map: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;clear&quot;</span><span class="p">)</span>
+
+        <span class="c1"># for cycle for creating all the rooms</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">room_number</span><span class="p">):</span>
+            <span class="n">room_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_ind_to_class</span><span class="p">(</span><span class="n">room_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;LOCATION&quot;</span><span class="p">)</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_dataprop_to_ind</span><span class="p">(</span><span class="s2">&quot;visitedAt&quot;</span><span class="p">,</span> <span class="n">room_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;Long&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added &quot;</span> <span class="o">+</span> <span class="n">room_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; to LOCATION&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># for cycle for creating all the corridors</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">corridor_number</span><span class="p">):</span>
+            <span class="n">corridor_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;C&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_ind_to_class</span><span class="p">(</span><span class="n">corridor_list</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="s2">&quot;LOCATION&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added &quot;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; to LOCATION&quot;</span><span class="p">)</span>
+
+        <span class="c1"># for cycle for creating all the doors</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">door_number</span><span class="p">):</span>
+            <span class="n">door_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;D&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_ind_to_class</span><span class="p">(</span><span class="n">door_list</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="s2">&quot;DOOR&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added &quot;</span> <span class="o">+</span> <span class="n">door_list</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; to DOOR&quot;</span><span class="p">)</span>
+
+        <span class="c1"># list to store all the individuals</span>
+        <span class="n">ind_list</span> <span class="o">=</span> <span class="n">room_list</span> <span class="o">+</span> <span class="n">corridor_list</span> <span class="o">+</span> <span class="n">door_list</span>
+        <span class="c1"># Add corridor E to the list of individuals</span>
+        <span class="n">ind_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;E&#39;</span><span class="p">)</span>
+
+        <span class="c1"># DISJOINT OF THE INDIVIDUALS OF THE CLASSES</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">disjoint_all_ind</span><span class="p">(</span><span class="n">ind_list</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All individuals are disjointed&quot;</span><span class="p">)</span>
+
+        <span class="c1"># make all the connections between locations by assigning the doors to each location</span>
+        <span class="n">door_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">room_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Assigning doors to each location in order to make all the connections</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">corridor_number</span><span class="p">):</span>
+            <span class="c1"># The number of doors is higher than the number of rooms for this reason we can assign DOOR[i] to ROOM[i].</span>
+            <span class="c1"># Here we make also the connections between each corridor with the rooms</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">room_for_corridors</span><span class="p">):</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">room_list</span><span class="p">[</span><span class="n">room_index</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;corridor &#39;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; connected to &#39;</span> <span class="o">+</span> <span class="n">room_list</span><span class="p">[</span><span class="n">room_index</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; trough &#39;</span><span class="o">+</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+                <span class="n">door_index</span> <span class="o">=</span> <span class="n">door_index</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">room_index</span> <span class="o">=</span> <span class="n">room_index</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="c1"># Here a create the connections between each corridor with corridor E.</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;corridor &#39;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; connected to corridor E trough &#39;</span> <span class="o">+</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+            <span class="n">door_index</span> <span class="o">=</span> <span class="n">door_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># It remains to connect the corridor[i+1] with corridor[i] for all the corridors</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">corridor_number</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;corridor &#39;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; connected to corridor &#39;</span> <span class="o">+</span> <span class="n">corridor_list</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; trough &#39;</span><span class="o">+</span> <span class="n">door_list</span><span class="p">[</span><span class="n">door_index</span><span class="p">])</span>
+            <span class="n">door_index</span> <span class="o">=</span> <span class="n">door_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># APPLY CHANGES AND QUERY</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">apply_buffered_changes</span><span class="p">()</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Davide Leo Parisi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

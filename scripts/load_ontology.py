@@ -19,8 +19,11 @@ from os.path import dirname, realpath
 client = ArmorClient("assignment", "my_ontology")
 
 class CreateMap:
+    """
+    This class contains all the method used to create the topological map
+    """
 
-    def __init(self):
+    def __init__(self):
         print()
 
     #def LoadMap():
@@ -37,7 +40,7 @@ class CreateMap:
     # check if a value is an integer
     def not_int(self,value):
         """
-        check if the value is an integer or not
+        Function checking if the value is an integer or not
 
         Args:
             value: input value
@@ -45,6 +48,7 @@ class CreateMap:
         Returns:
             1: if not an int
 
+        Returns:
             0: if an int
 
         """
@@ -58,7 +62,7 @@ class CreateMap:
     # check if the input is an integer number 
     def get_input(self, location):
         """
-        Function that check if the value taken as input is an integer
+        Function checking if the value taken as input is an integer
 
         Args:
             location(int): 0 if corrdiors are request, 1 if rooms rea request

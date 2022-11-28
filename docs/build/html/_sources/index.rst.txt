@@ -17,7 +17,7 @@ LoadOntology Module
 
 StateMachine Module
 ===================
-.. automodule:: scripts.my_state_machine
+.. automodule:: scripts.state_machine
    :members:
 
 RobotState Module

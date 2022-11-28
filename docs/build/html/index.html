@@ -41,31 +41,36 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">Welcome to Assignment1’s documentation!</a></li>
 <li><a class="reference internal" href="#module-scripts.load_ontology">LoadOntology Module</a><ul>
-<li><a class="reference internal" href="#scripts.load_ontology.LoadMap"><code class="docutils literal notranslate"><span class="pre">LoadMap()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.load_ontology.CreateMap"><code class="docutils literal notranslate"><span class="pre">CreateMap</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.load_ontology.CreateMap.LoadMap"><code class="docutils literal notranslate"><span class="pre">CreateMap.LoadMap()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.load_ontology.CreateMap.get_input"><code class="docutils literal notranslate"><span class="pre">CreateMap.get_input()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.load_ontology.CreateMap.not_int"><code class="docutils literal notranslate"><span class="pre">CreateMap.not_int()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-scripts.my_state_machine">StateMachine Module</a><ul>
-<li><a class="reference internal" href="#scripts.my_state_machine.DecideTarget"><code class="docutils literal notranslate"><span class="pre">DecideTarget</span></code></a><ul>
-<li><a class="reference internal" href="#scripts.my_state_machine.DecideTarget.execute"><code class="docutils literal notranslate"><span class="pre">DecideTarget.execute()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#scripts.my_state_machine.LoadOntology"><code class="docutils literal notranslate"><span class="pre">LoadOntology</span></code></a><ul>
-<li><a class="reference internal" href="#scripts.my_state_machine.LoadOntology.execute"><code class="docutils literal notranslate"><span class="pre">LoadOntology.execute()</span></code></a></li>
+<li><a class="reference internal" href="#module-scripts.state_machine">StateMachine Module</a><ul>
+<li><a class="reference internal" href="#scripts.state_machine.DecideTarget"><code class="docutils literal notranslate"><span class="pre">DecideTarget</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.state_machine.DecideTarget.execute"><code class="docutils literal notranslate"><span class="pre">DecideTarget.execute()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#scripts.my_state_machine.MoveToTarget"><code class="docutils literal notranslate"><span class="pre">MoveToTarget</span></code></a><ul>
-<li><a class="reference internal" href="#scripts.my_state_machine.MoveToTarget.execute"><code class="docutils literal notranslate"><span class="pre">MoveToTarget.execute()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.state_machine.LoadOntology"><code class="docutils literal notranslate"><span class="pre">LoadOntology</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.state_machine.LoadOntology.execute"><code class="docutils literal notranslate"><span class="pre">LoadOntology.execute()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#scripts.my_state_machine.Recharging"><code class="docutils literal notranslate"><span class="pre">Recharging</span></code></a><ul>
-<li><a class="reference internal" href="#scripts.my_state_machine.Recharging.execute"><code class="docutils literal notranslate"><span class="pre">Recharging.execute()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.state_machine.MoveToTarget"><code class="docutils literal notranslate"><span class="pre">MoveToTarget</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.state_machine.MoveToTarget.execute"><code class="docutils literal notranslate"><span class="pre">MoveToTarget.execute()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#scripts.my_state_machine.Surveying"><code class="docutils literal notranslate"><span class="pre">Surveying</span></code></a><ul>
-<li><a class="reference internal" href="#scripts.my_state_machine.Surveying.execute"><code class="docutils literal notranslate"><span class="pre">Surveying.execute()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.state_machine.Recharging"><code class="docutils literal notranslate"><span class="pre">Recharging</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.state_machine.Recharging.execute"><code class="docutils literal notranslate"><span class="pre">Recharging.execute()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#scripts.my_state_machine.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.state_machine.Surveying"><code class="docutils literal notranslate"><span class="pre">Surveying</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.state_machine.Surveying.execute"><code class="docutils literal notranslate"><span class="pre">Surveying.execute()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#scripts.state_machine.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-scripts.robot_state">RobotState Module</a><ul>
@@ -125,9 +130,13 @@
 <div class="section" id="module-scripts.load_ontology">
 <span id="loadontology-module"></span><h1>LoadOntology Module<a class="headerlink" href="#module-scripts.load_ontology" title="Permalink to this heading"></a></h1>
 <span class="target" id="module-load_onotology"></span><p>ROS node for creating the ontology</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="scripts.load_ontology.LoadMap">
-<span class="sig-prename descclassname"><span class="pre">scripts.load_ontology.</span></span><span class="sig-name descname"><span class="pre">LoadMap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#LoadMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.LoadMap" title="Permalink to this definition"></a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.load_ontology.CreateMap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.load_ontology.</span></span><span class="sig-name descname"><span class="pre">CreateMap</span></span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap" title="Permalink to this definition"></a></dt>
+<dd><p>This class contains all the method used to create the topological map</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.load_ontology.CreateMap.LoadMap">
+<span class="sig-name descname"><span class="pre">LoadMap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap.LoadMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap.LoadMap" title="Permalink to this definition"></a></dt>
 <dd><p>Function initializing the environment in which the robot should move.
 This mechanism is generalized in a way in which every envirnoment can be
 created. The creation of the environment is done via call to armor server.</p>
@@ -141,17 +150,59 @@ created. The creation of the environment is done via call to armor server.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.load_ontology.CreateMap.get_input">
+<span class="sig-name descname"><span class="pre">get_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap.get_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap.get_input" title="Permalink to this definition"></a></dt>
+<dd><p>Function checking if the value taken as input is an integer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – 0 if corrdiors are request, 1 if rooms rea request</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An integern number</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>number(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.load_ontology.CreateMap.not_int">
+<span class="sig-name descname"><span class="pre">not_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap.not_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap.not_int" title="Permalink to this definition"></a></dt>
+<dd><p>Function checking if the value is an integer or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – input value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if not an int</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if an int</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>0</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="module-scripts.my_state_machine">
-<span id="statemachine-module"></span><h1>StateMachine Module<a class="headerlink" href="#module-scripts.my_state_machine" title="Permalink to this heading"></a></h1>
+<div class="section" id="module-scripts.state_machine">
+<span id="statemachine-module"></span><h1>StateMachine Module<a class="headerlink" href="#module-scripts.state_machine" title="Permalink to this heading"></a></h1>
 <span class="target" id="module-my_state_machine"></span><p>ROS node for implementing the Finite State Machine.</p>
 <dl class="simple">
 <dt>Service:</dt><dd><p>/server_name: introspection server for visualization</p>
 </dd>
 </dl>
 <dl class="py class">
-<dt class="sig sig-object py" id="scripts.my_state_machine.DecideTarget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.my_state_machine.</span></span><span class="sig-name descname"><span class="pre">DecideTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#DecideTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.DecideTarget" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.DecideTarget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">DecideTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#DecideTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.DecideTarget" title="Permalink to this definition"></a></dt>
 <dd><p>A class to implement the behavior of the decision state of the robot.</p>
 <p>Class constructor, i.e., class initializer. Input parameters are:</p>
 <ul class="simple">
@@ -159,8 +210,8 @@ created. The creation of the environment is done via call to armor server.</p>
 <li><p><cite>behavior_hleper</cite>: the helper class invoked to interface with the behavior.</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="scripts.my_state_machine.DecideTarget.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#DecideTarget.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.DecideTarget.execute" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.DecideTarget.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#DecideTarget.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.DecideTarget.execute" title="Permalink to this definition"></a></dt>
 <dd><p>Function responsible of the transition between the
 STATE_DECISION and the STATE_RECHARGING or STATE_MOVING.
 The function will call several functions responsible of
@@ -190,12 +241,13 @@ parameter is used to use some variables in the other states.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="scripts.my_state_machine.LoadOntology">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.my_state_machine.</span></span><span class="sig-name descname"><span class="pre">LoadOntology</span></span><a class="reference internal" href="_modules/scripts/my_state_machine.html#LoadOntology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.LoadOntology" title="Permalink to this definition"></a></dt>
-<dd><p>A class to implement the behavior of the decision state of the robot.</p>
+<dt class="sig sig-object py" id="scripts.state_machine.LoadOntology">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">LoadOntology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ontology</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#LoadOntology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.LoadOntology" title="Permalink to this definition"></a></dt>
+<dd><p>A class to implement the behavior of the decision state of the robot.
+PICCOLO CHECK</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="scripts.my_state_machine.LoadOntology.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#LoadOntology.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.LoadOntology.execute" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.LoadOntology.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#LoadOntology.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.LoadOntology.execute" title="Permalink to this definition"></a></dt>
 <dd><p>Function responsible of the loading of the
 environment. It calls the LoadMap() function which
 is the one responsible of the creation of the environment.
@@ -217,8 +269,8 @@ required from the other states.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="scripts.my_state_machine.MoveToTarget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.my_state_machine.</span></span><span class="sig-name descname"><span class="pre">MoveToTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#MoveToTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.MoveToTarget" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.MoveToTarget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">MoveToTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#MoveToTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.MoveToTarget" title="Permalink to this definition"></a></dt>
 <dd><p>A class to implement the behavior of the moving state of the robot.</p>
 <p>Class constructor, i.e., class initializer. Input parameters are:</p>
 <ul class="simple">
@@ -226,8 +278,8 @@ required from the other states.</p>
 <li><p><cite>behavior_hleper</cite>: the helper class invoked to interface with the behavior.</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="scripts.my_state_machine.MoveToTarget.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#MoveToTarget.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.MoveToTarget.execute" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.MoveToTarget.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#MoveToTarget.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.MoveToTarget.execute" title="Permalink to this definition"></a></dt>
 <dd><p>Function responsible of the transition between the
 STATE_MOVING and the STATE_RECHARGING or STATE_DECISION.
 The function will call several functions responsible of
@@ -257,8 +309,8 @@ parameter is used to import parameters from the other states.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="scripts.my_state_machine.Recharging">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.my_state_machine.</span></span><span class="sig-name descname"><span class="pre">Recharging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#Recharging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.Recharging" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.Recharging">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">Recharging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#Recharging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.Recharging" title="Permalink to this definition"></a></dt>
 <dd><p>A class to implement the behavior of the recharging state of the robot.</p>
 <p>Class constructor, i.e., class initializer. Input parameters are:</p>
 <ul class="simple">
@@ -266,8 +318,8 @@ parameter is used to import parameters from the other states.</p>
 <li><p><cite>behavior_hleper</cite>: the helper class invoked to interface with the behavior.</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="scripts.my_state_machine.Recharging.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#Recharging.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.Recharging.execute" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.Recharging.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#Recharging.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.Recharging.execute" title="Permalink to this definition"></a></dt>
 <dd><p>Function responsible of the transition between the
 STATE_RECHARGING to the STATE_DECISION.
 It waits until the battery is fully charged and then it changes state.
@@ -289,22 +341,23 @@ from the other states.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="scripts.my_state_machine.Surveying">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.my_state_machine.</span></span><span class="sig-name descname"><span class="pre">Surveying</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#Surveying"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.Surveying" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.Surveying">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">Surveying</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#Surveying"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.Surveying" title="Permalink to this definition"></a></dt>
 <dd><p>A class to simulate the location surveying.</p>
 <p>Class constructor, i.e., class initializer. Input parameters are:</p>
 <ul class="simple">
 <li><p><cite>interface_helper</cite>: the helper class invoked to interface with the server.</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="scripts.my_state_machine.Surveying.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#Surveying.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.Surveying.execute" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.state_machine.Surveying.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#Surveying.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.Surveying.execute" title="Permalink to this definition"></a></dt>
 <dd><p>Function responsible of the transition between the
-STATE_SURVEY to the STATE_DECISION.
-It waits a specified amount of thime for the survey of the location and then make tha transition. If the battery is</p>
+STATE_SURVEY to the STATE_DECISION. It waits a specified amount of time
+for the survey of the location and then make tha transition. If the
+battery is low it suddenly goes to the STATE_RECHARGING</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>userdata</strong> – not used</p>
+<dd class="field-odd"><p><strong>userdata</strong> – take input from the STATE_MOVING</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>transition to the recharging state</p>
@@ -324,9 +377,9 @@ It waits a specified amount of thime for the survey of the location and then mak
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="scripts.my_state_machine.main">
-<span class="sig-prename descclassname"><span class="pre">scripts.my_state_machine.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/my_state_machine.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.my_state_machine.main" title="Permalink to this definition"></a></dt>
-<dd><p>This function creates the state machine and defines all the transitions.</p>
+<dt class="sig sig-object py" id="scripts.state_machine.main">
+<span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.main" title="Permalink to this definition"></a></dt>
+<dd><p>This function creates the state machine and defines all the transitions. Jere a nested state machine is created</p>
 </dd></dl>
 
 </div>
