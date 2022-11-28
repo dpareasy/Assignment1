@@ -19,7 +19,7 @@ The software uses a Smach state machine and build the ontology with aRMOR server
 
 ![environment](https://user-images.githubusercontent.com/92155300/204328061-7a97fd44-0774-4a88-a939-0634dbf2645c.png)
 
-The scenario involves a surveying robot deployed in the indoor environmnet presented in the image above. Its aim is to move between the locations of the map and stay there for a while, for surveillance purposes, before starting reasoning to decide the next room to visit. Before starting moving around the environment the robot must wait until receiving all the information about the environment.
+The scenario involves a surveying robot deployed in the indoor environmnet presented in the above image. Its aim is to move between the locations of the map and stay there for a while, for surveillance purposes, before starting reasoning to decide the next room to visit. Before starting moving around the environment the robot must wait until receiving all the information about the environment.
 
 Any time the battery goes down the robot moves to the recharging location which is the initial position and waits until the battery is charged.
 
