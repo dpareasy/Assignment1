@@ -213,8 +213,8 @@ This software requires the following ROS parameters.
 
 Follow these steps to install the software:
 1. Clone this repository inside your workspace (make sure it is sourced in your .bashrc).
-2. Follow the steps for [aRMOR](https://github.com/EmaroLab/armor/issues/7) installation.
-3. Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, you can clone it in your workspace.
+2. Follow the steps for [aRMOR](https://github.com/EmaroLab/armor/issues/7) and [Smach-ROS](http://wiki.ros.org/smach/Tutorials/Getting%20Started) installation.
+3. Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, clone the repository in your workspace.
 4. Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the [controller.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) and [planner.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) server used by this package.
 5. Clone inside your workspace the [topological_map](https://github.com/buoncubi/topological_map) repository containing the ontology for this project.
 6. Run `chmod +x <file_name>` for each file inside the scripts folder.
