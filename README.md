@@ -42,6 +42,11 @@ Given the scenario presented above the software is developed as follow.
 
 ### Components diagram ###
 
+In the figure below is presented the whole software architecture.
+It is important to remark that the communications between the state_machine and the other servers are managed by two different helper classes:
+* `BehaviorHelper`: communication with aRMOR server;
+* `InterfaceHelper`: communication with planner and controller;
+
 ![UML](https://user-images.githubusercontent.com/92155300/204273176-71f6ef7b-03b5-48cd-8c0d-b2f95d7fe892.png)
 
 ### Sequence diagram ###
@@ -64,7 +69,7 @@ Hereafter the structure of the Finite State Machine.
 
 The figure shows a hierachical Finite State Machine made of the following states:
 1. **INITIALIZE_MAP**: The state in which the robot build the map of the environment.
-2. *NORMAL*: composed of three other states:
+2. **NORMAL**: composed of three other states:
     * **DECIDE_LOCATION**: The state in which the robot decides the location to reach.
     * **MOVING_TO_LOCATION**: The state in which the robot moves until reaching the target location.
     * **SURVEYING**: The state in which the robot takes some times to survey the location.
