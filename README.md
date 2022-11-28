@@ -46,8 +46,7 @@ Given the scenario presented above the software is developed as follow.
 
 In the figure below is presente the sequence diagram of the architecture.
 
-![sequence_diagram2](https://user-images.githubusercontent.com/92155300/204143099-dbe686ee-22e9-4f66-960e-0e046f2b49ba.png)
-
+![sequence_diagram](https://user-images.githubusercontent.com/92155300/204271986-275e1ea1-7f17-4fba-90eb-ef32579a3ad7.png)
 
 As can be seen from the above image, the state machine waits until the whole map has been built.
 Every time the robot needs to change location the `state_machine` make the request to armor server for queries, reasoning and manipulations.
