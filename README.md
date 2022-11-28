@@ -114,7 +114,16 @@ A video showing the transition between states is presented below.
 
 https://user-images.githubusercontent.com/92155300/204129148-e2371c3d-3a2e-49e7-aa8c-c68b78763a5b.mp4
 
+As can bee seen from the video:
 
+* On the *top left* the software asks the user to set the number of corridors and rooms as an input to create the topological map. Then all the robot starts moving around the environment and all transitions between the states of the fsm are monitored.
+Is it possible to notice that if there are urgent rooms the robot chooses one of the reachable based on which is the most urgent, otherwise it moves through corridors.
+
+* On the *bottom left* all the feedbacks coming from the `robot_state.py` are shown (i.e. battery low, battery fully charged, ste position and get position).
+
+* On the *top right* all the viapoints that the planner creates for building the path.
+
+* On the *bottom right* the controller notify robot's current position.
 
 ### The `robot_actions` Node ###
 
