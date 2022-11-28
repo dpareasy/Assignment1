@@ -15,7 +15,9 @@ The software uses a Smach state machine and build the ontology with aRMOR server
 
 ## Scenario ##
 
-The scenario involves a surveying robot deployed in a indoor environmnet. Its purpose is to move through the different locations of the building and spend some times inside before starting reasoning to decide the next room to visit. Before starting moving around the environment the robot must wait until receiving all the information about the map. Any time the battery goes down the robot moves to the recharging location which is the initial position.
+The scenario involves a surveying robot deployed in a indoor environmnet. Its aim is to move between the locations of the map and stay there for a while, for surveillance purposes, before starting reasoning to decide the next room to visit. Before starting moving around the environment the robot must wait until receiving all the information about the environment.
+
+Any time the battery goes down the robot moves to the recharging location which is the initial position and waits until the battery is charged.
 
 
 ### Policy ###
@@ -23,16 +25,16 @@ The scenario involves a surveying robot deployed in a indoor environmnet. Its pu
 The moving policy that the robot should follow is the one presented below:
 * It should mainly stay on corridors;
 * If a reachable room become `URGENT` the robot should visit it;
-* When its battery is low it should move to the recharging position;
+* When its battery becomes low it should move to the recharging position;
 
 ### Assumptions ###
 
-For simplicity following assumptions have been considered:
+For the development of the software, the following assumptions have been considered:
 * The robot moves in a 2D environment with no obstacles;
 * The environment created can be formed by any number of corridors;
 * All the corridors contain the same number of rooms;
 * Corridor(i) is connected to corridor(i+1) and to the recharging location (which is a corridor);
-* The robot is automatically spawned in the recharging location every time the battery goes low;
+* The robot is automatically spawned in the recharging location every time the battery becomes low;
 * The corridors' timestamps `visitedAt` are not considered since their urgency requirement are different from rooms';
 * If there are no urgent rooms the robot is forced to move around corridors;
 
@@ -43,26 +45,26 @@ Given the scenario presented above the software is developed as follow.
 ### Components diagram ###
 
 In the figure below is presented the whole software architecture.
-It is important to remark that the communications between the state_machine and the other servers are managed by two different helper classes:
-* `BehaviorHelper`: communication with aRMOR server;
-* `InterfaceHelper`: communication with planner and controller;
 
 ![UML](https://user-images.githubusercontent.com/92155300/204273176-71f6ef7b-03b5-48cd-8c0d-b2f95d7fe892.png)
 
+It is important to remark that the communications between the state_machine and the other servers are managed by two different helper classes:
+* `BehaviorHelper`: communication with aRMOR server.
+* `InterfaceHelper`: communication with planner and controller.
+
 ### Sequence diagram ###
 
-In the figure below is presente the sequence diagram of the architecture.
+In the figure below is presented the sequence diagram of the architecture.
 
 ![sequence_diagram](https://user-images.githubusercontent.com/92155300/204271986-275e1ea1-7f17-4fba-90eb-ef32579a3ad7.png)
 
-As can be seen from the above image, the state machine waits until the whole map has been built.
-Every time the robot needs to change location the `state_machine` make the request to armor server for queries, reasoning and manipulations.
+As can be seen from the above image, the `state_machine` waits until the whole map has been built. It also makes requests to the aRMOR server every time the robot needs to reason about the next location to visit or to move in another location.
 
-The `robot_state` node is always working and warn the FSM every time the battery changes state.
+The `robot_state` node is always working and warns the FSM every time the battery changes state.
 
 ### The Finite State Machine ###
 
-Hereafter the structure of the Finite State Machine.
+Hereafter the structure of the Finite State Machine is presented.
 
 ![smach](https://user-images.githubusercontent.com/92155300/204056867-88b33dd0-3f09-4bea-8fbf-265921ca48a1.png)
 
@@ -80,25 +82,23 @@ The figure shows a hierachical Finite State Machine made of the following states
 ### Package list ###
 
 This repository contains a ROS package named Assignment1 that includes the following resources:
-1. `CMakeList.txt`: File to configure this package;
-2. `package.xml`: File to configure this package;
-3. `launch/`: Contains the configuration to launch this package;
-    * launch_file.launch: it launches armor server and all the nodes used in this simulation.
-4. `msg/`: It contains the message exchanged through ROS topics
+1. `CMakeList.txt`: File to configure this package.
+2. `package.xml`: File to configure this package.
+3. `launch/`: Contains the configuration to launch this package:
+    * project_launch.launch: it launches armor server and all the nodes used in this simulation.
+4. `msg/`: It contains the message exchanged through ROS topics:
     * Point.msg: It is the message representing a 2D point.
 5. `srv/`: It Contains the definition of each server used by this software:
-    * GetPose.srv: It defines the request and response to get the current robot position;
+    * GetPose.srv: It defines the request and response to get the current robot position.
     * SetPose.srv: It defines the request and response to set the current robot position.
 6. `action/`: It contains the definition of each action server used by this software:
-    * Plan.action: It defines the goal, feedback and results concerning motion planning;
+    * Plan.action: It defines the goal, feedback and results concerning motion planning.
     * Control.action: It defines the goal, feedback and results concerning motion controlling.
 7. `scripts/`: It contains the implementation of each software components:
-    * load_ontology.py: It creates the topological map of the environment;
-    * robot_actions.py: It contains a class to implement the behavior of the robot;
-    * state_machine.py: It defines the states of the state machine;
+    * load_ontology.py: It creates the topological map of the environment.
+    * robot_actions.py: It contains a class to implement the behavior of the robot.
+    * state_machine.py: It defines the states of the state machine.
     * robot_state.py: It implements the robot state including: current position, and battery level;
-
-### Dependencies ###
 
 ## Software components ###
 
@@ -106,9 +106,8 @@ This repository contains a ROS package named Assignment1 that includes the follo
 
 This node defines the Finite State Machine of the architecture and manages the transitions between all the states.
 
-
 It relies on three different classes:
-* The class `InterfaceHelper` of the `interface_helper` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified to fit to this purpose, which manages all the interactions with [planner](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py).
+* The class `InterfaceHelper` of the `interface_helper` module, developed by Luca Buoncompagni in [arch_skeleton](https://github.com/buoncubi/arch_skeleton) and modified in this repository to fit to this purpose It manages all the interactions with [planner](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) servers.
 * The class `BehaviorHelper` of the `robot_actions` module, which manages the interactions with the aRMOR server (i.e. robot position, reachable locations, urgency ecc.)
 * The class `CreateOntology` of the `load_ontology` module, which manages the initialisation of the map.
 
@@ -134,9 +133,9 @@ Is it possible to notice that if there are urgent rooms the robot chooses one of
 
 ### The `robot_actions` Node ###
 
-This node defines the `BehaviorHelper` class which defines the methods for making the robot reason, move to location and move to recharging position. This node uses the class `ArmorClient` to make request to the aRMOR server for all the manipulations and queries nedded for making the robot perform its actions.
+This node defines the `BehaviorHelper` class which defines the methods that implements the robot reasoning and moving. This node uses the class `ArmorClient` to make request to the aRMOR server for all the manipulations and queries needed for making the robot perform its actions.
 
-Here the reasoning and moving function pseudocode is shown.
+Here the reasoning and moving function's pseudocode is shown.
 
 #### The `decide_target` function ####
 ```
@@ -164,9 +163,9 @@ def move_to_target():
 
 ### The `load_ontology` Node ###
 
-This node defines the `CreateMap` class used in the  `STATE_INIT` of the Finite State Machine, to pass to the robot all the information for the indoor movement. Such an environment is created through manipulations on the [topological_map.owl](https://github.com/buoncubi/topological_map) ontology with the help of the `ArmorClient` class defined in [armor_api](https://github.com/EmaroLab/armor_py_api).
+This node defines the `CreateMap` class used in the  `STATE_INIT` of the Finite State Machine, to pass to the robot all the information for moving around the environment. Such an environment is created through manipulations on the [topological_map.owl](https://github.com/buoncubi/topological_map) ontology with the help of the `ArmorClient` class, defined in [armor_api](https://github.com/EmaroLab/armor_py_api).
 
-The function asks the user some information to build the environment which is developed in such a way that different scenarios can be created, even if only under certain [Assumptions](#Assumptions). 
+The function asks the user some information to build the environment, which is developed in such a way that different scenarios can be created, even if only under certain [Assumptions](#Assumptions). 
 
 ### The `robot_state` Node ###
 
@@ -181,7 +180,7 @@ A publisher, the `state/battery_low`, is also implemented here. It is a `Boolean
 
 ### The `controller` and `planner` Nodes ###
 
-You can finde a complete description of these two nodes in [arch_skeleton](https://github.com/buoncubi/arch_skeleton).
+You can find a complete description of these two nodes in [arch_skeleton](https://github.com/buoncubi/arch_skeleton).
 
 ### ROS parameters ###
 
@@ -213,12 +212,12 @@ This software requires the following ROS parameters.
 ### Installation ###
 
 Follow these steps to install the software:
-1. Clone this repository inside your workspace (make sure it is sourced in your .bashrc);
-2. Follow the steps for [aRMOR](https://github.com/EmaroLab/armor/issues/7) installation;
-3. Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, you can clone it in your workspace;
-4. Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the [controller.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) and [planner.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) server used by this package; 
-5. Clone inside your workspace [topological_map](https://github.com/buoncubi/topological_map) containing the ontology for this project;
-6. Run `chmod +x <file_name>` for each file inside the scripts folder;
+1. Clone this repository inside your workspace (make sure it is sourced in your .bashrc).
+2. Follow the steps for [aRMOR](https://github.com/EmaroLab/armor/issues/7) installation.
+3. Use [armor_api](https://github.com/EmaroLab/armor_py_api) for server requests, you can clone it in your workspace.
+4. Clone inside your workspace [arch_skeleton](https://github.com/buoncubi/arch_skeleton) which contains the [controller.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) and [planner.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) server used by this package.
+5. Clone inside your workspace the [topological_map](https://github.com/buoncubi/topological_map) repository containing the ontology for this project.
+6. Run `chmod +x <file_name>` for each file inside the scripts folder.
 7. Run `catkin_make` from the root of your workspace.
 8. Install `simple_colors` by copying the following line on your terminal:
 
@@ -226,7 +225,7 @@ Follow these steps to install the software:
 pip install simple-colors
 ```
 
-As regardin the third point, the developer have encountered some issues with the function `disj_inds_of_class(self, class_name)` of [armor_manipilation_client.py](https://github.com/EmaroLab/armor_py_api/blob/main/scripts/armor_api/armor_manipulation_client.py). To fix this problem a new function have been created:
+As regarding the third point, the developer has encountered some issues with the function `disj_inds_of_class(self, class_name)` of [armor_manipilation_client.py](https://github.com/EmaroLab/armor_py_api/blob/main/scripts/armor_api). To fix this problem a new function have been created:
 
 
 ```python
@@ -247,11 +246,14 @@ Copy this function inside `armor_manipulation_client.py` after having cloned the
 
 ### Launcher ###
 
-In order to launch the simulation a .lunch file can be used by copying this command into the terminal:
+In order to launch the simulation a `.lunch` file can be used by copying this command into the terminal:
+
 ```
-roslaunch Assignment1 launch_file.launch
+roslaunch Assignment1 project_launch.launch
 ```
+
 It will launch the aRMOR server and all the nodes that implement the robot behavior.
+
 ```
 <?xml version="1.0"?>
 <launch>
@@ -279,7 +281,7 @@ sudo apt-get -y install xterm
 
 ## System limitations ##
 
-As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Another limitation is that it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made by the author is that the number of rooms is equal for each corridor. Moreover, the robot is forced to visit corridors if there are no urgent rooms during the reasoning instead of being able to visit both assigning an hihger probability to corridors. This decision is based on the fact that the urgency threshold is so low that even from the second iteration of the simulation, all the rooms become `urgent` and the robot starts visiting them.
+As stated in [Assumptions](#Assumptions), some hypothesis have been made to simplify the development of the simulation. First of all, when the battery goes down the robot is automatically spowned in the recarging room instead of searching for the best path which connects it to the recharging site. Another limitation is that it is not possible to create any type of environment, indeed the number of rooms is strictly related to the number of corridors, since the main hypothesis made by the author is that the number of rooms is equal for each corridor. Moreover, instead of being able to visit both corridors and rooms, the robot is forced to visit corridors if there are no urgent rooms during the reasoning state. The reason is that the robot shuold mainly stay on corridors if no argent rooms are detected. This decision is based on the fact that the `urgency` threshold is so low that even from the second iteration of the simulation, all the rooms become `urgent` and the robot starts visiting them.
 
 ## Possible improvements ##
 
