@@ -63,12 +63,12 @@ Hereafter the structure of the Finite State Machine.
 
 
 The figure shows a hierachical Finite State Machine made of the following states:
-1. *INITIALIZE_MAP*: The state in which the robot build the map of the environment.
+1. **INITIALIZE_MAP**: The state in which the robot build the map of the environment.
 2. *NORMAL*: composed of three other states:
-    * *DECIDE_LOCATION*: The state in which the robot decides the location to reach.
-    * *MOVING_TO_LOCATION*: The state in which the robot moves until reaching the target location.
-    * *SURVEYING*: The state in which the robot takes some times to survey the location.
-3. *RECHARGING*: The state in which the robot charges its battery.
+    * **DECIDE_LOCATION**: The state in which the robot decides the location to reach.
+    * **MOVING_TO_LOCATION**: The state in which the robot moves until reaching the target location.
+    * **SURVEYING**: The state in which the robot takes some times to survey the location.
+3. **RECHARGING**: The state in which the robot charges its battery.
 
 ## Project structure ##
 
