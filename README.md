@@ -48,7 +48,8 @@ Given the scenario presented above the software is developed as follow.
 
 In the figure below is presented the whole software architecture.
 
-![UML](https://user-images.githubusercontent.com/92155300/204273176-71f6ef7b-03b5-48cd-8c0d-b2f95d7fe892.png)
+![UML](https://user-images.githubusercontent.com/92155300/204332874-0d9a1983-ce54-49de-9901-9b57fcc840c6.png)
+
 
 It is important to remark that the communications between the state_machine and the other servers are managed by two different helper classes:
 * `BehaviorHelper`: communication with aRMOR server.
