@@ -225,7 +225,7 @@ Follow these steps to install the software:
 pip install simple-colors
 ```
 
-As regarding the third point, the developer has encountered some issues with the function `disj_inds_of_class(self, class_name)` of [armor_manipulation_client.py](https://github.com/EmaroLab/armor_py_api/blob/main). To fix this problem a new function have been created:
+As regarding the third point, the developer has encountered some issues with the function `disj_inds_of_class(self, class_name)` of [armor_manipulation_client.py](https://github.com/EmaroLab/armor_py_api). To fix this problem a new function have been created:
 
 
 ```python
