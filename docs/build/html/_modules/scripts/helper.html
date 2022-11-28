@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scripts.interface_helper &mdash; Assignment1 1.0 documentation</title>
+  <title>scripts.helper &mdash; Assignment1 1.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -54,7 +54,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">scripts.interface_helper</li>
+      <li class="breadcrumb-item active">scripts.helper</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -63,7 +63,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for scripts.interface_helper</h1><div class="highlight"><pre>
+  <h1>Source code for scripts.helper</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -76,20 +76,20 @@
 <span class="sd">ROS node for defining the behavior of the state machine</span>
 
 <span class="sd">Subscribes to:</span>
-<span class="sd">    /state/battery_low where the robot_state publishes the battery status</span>
+<span class="sd">    /state/battery_low: where the robot_state publishes the battery status.</span>
+
+<span class="sd">Service:</span>
+<span class="sd">    /state/set_pose: set the current position.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># Import ROS libraries.</span>
 <span class="kn">import</span> <span class="nn">rospy</span>
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">simple_colors</span>
 <span class="kn">from</span> <span class="nn">actionlib</span> <span class="kn">import</span> <span class="n">SimpleActionClient</span>
 
 <span class="c1"># Import mutex to manage synchronization among ROS-based threads (i.e., node loop and subscribers)</span>
 <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
-<span class="kn">from</span> <span class="nn">armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
 
 <span class="c1"># Import ROS-based messages.</span>
 <span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">Bool</span>
@@ -98,21 +98,10 @@
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">ArmorClient</span><span class="p">(</span><span class="s2">&quot;assignment&quot;</span><span class="p">,</span> <span class="s2">&quot;my_ontology&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ActionClientHelper"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.ActionClientHelper">[docs]</a><span class="k">class</span> <span class="nc">ActionClientHelper</span><span class="p">:</span>
+<div class="viewcode-block" id="ActionClientHelper"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper">[docs]</a><span class="k">class</span> <span class="nc">ActionClientHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to simplify the implementation of a client for ROS action servers. It is used by the `InterfaceHelper` class.</span>
 
-<span class="sd">    Class constructor, i.e., class initializer. Input parameters are:</span>
-
-<span class="sd">    - `service_name`: it is the name of the server that will be invoked by this client.</span>
-
-<span class="sd">    - `action_type`: it is the message type that the server will exchange.</span>
-
-<span class="sd">    - `done_callback`: it is the name of the function called when the action server completed its computation. If this parameter is not set (i.e., set to `None`), then only the `self._done_callback` function will be called when the server completes its computation.</span>
-
-<span class="sd">    - `feedback_callback`: it is the name of the function called when the action server sends a feedback message. If this parameter is not set (i.e., set to `None`), then only the `self._feedback_callback` functions will be called when the server sends a feedback message.</span>
-
-<span class="sd">    - `mutex`: it is a `Lock` object synchronised with the `done_callback` and `feedback_callback`. If it is not set (i.e., set to `None`), then a new mutex instance is considered. Set this variable if you want to extends the synchronization with other classes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_name</span><span class="p">,</span> <span class="n">action_type</span><span class="p">,</span> <span class="n">done_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">feedback_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mutex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Initialise the state of this client, i.e.,  `_is_running`, `_is_done`, and `_results`.</span>
@@ -132,7 +121,7 @@
         <span class="c1"># Wait for the action server to be alive.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">wait_for_server</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ActionClientHelper.send_goal"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.ActionClientHelper.send_goal">[docs]</a>    <span class="k">def</span> <span class="nf">send_goal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.send_goal"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.send_goal">[docs]</a>    <span class="k">def</span> <span class="nf">send_goal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start the action server with a new `goal`. Note this call is not blocking (i.e., asynchronous performed).</span>
 
@@ -154,7 +143,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning send a new goal, cancel the current request first!&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ActionClientHelper.cancel_goals"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.ActionClientHelper.cancel_goals">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_goals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.cancel_goals"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.cancel_goals">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_goals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop the computation of the action server.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -167,7 +156,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning cannot cancel a not running service!&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ActionClientHelper.reset_client_states"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.ActionClientHelper.reset_client_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_client_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.reset_client_states"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.reset_client_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_client_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset the client state variables stored in this class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -180,7 +169,7 @@
 <span class="sd">        This function is called when the action server send some `feedback` back to the client.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            feedback: feedbacks from the action server</span>
+<span class="sd">            feedback: feedbacks from the action servers</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Acquire the mutex to synchronise the computation concerning the `feedback` message with the other nodes of the architecture.</span>
@@ -199,9 +188,9 @@
 <span class="sd">        computation, i.e., it provides a `done` message.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            status: </span>
+<span class="sd">            status(str): status</span>
 
-<span class="sd">            results(): results from the action server</span>
+<span class="sd">            results(str): results from the action servers</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Acquire the mutex to synchronise the computation concerning the `done` message with the other nodes of the architecture.</span>
@@ -217,34 +206,34 @@
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ActionClientHelper.is_done"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.ActionClientHelper.is_done">[docs]</a>    <span class="k">def</span> <span class="nf">is_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># they should be mutex safe</span>
+<div class="viewcode-block" id="ActionClientHelper.is_done"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.is_done">[docs]</a>    <span class="k">def</span> <span class="nf">is_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># they should be mutex safe</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get `True` if the action server finished is computation, or `False` otherwise.</span>
 <span class="sd">        Note that use this method should do it in a `self._mutex` safe manner.</span>
 
 <span class="sd">        Results:</span>
-<span class="sd">            self._is_done(bool): If the reasoner has finished its calculations.</span>
+<span class="sd">            bool: If the reasoner has finished its calculations.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span></div>
 
-<div class="viewcode-block" id="ActionClientHelper.is_running"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.ActionClientHelper.is_running">[docs]</a>    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.is_running"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.is_running">[docs]</a>    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get `True` if the action server is running, or `False` otherwise.</span>
 <span class="sd">        A note that use this method should do it in a `self._mutex` safe manner.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            self._is_running: If the server is still running.</span>
+<span class="sd">            bool: `True` If the server is still running, `False` otherwise.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span></div>
  
-<div class="viewcode-block" id="ActionClientHelper.get_results"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.ActionClientHelper.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.get_results"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the results of the action server, if any, or `None` and return this value.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            self._results(): Some results have arrived.</span>
+<span class="sd">            str: Some results have arrived, None otherwise.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None: No results arrived</span>
 
@@ -255,7 +244,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: cannot result&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span></div></div>
 
-<div class="viewcode-block" id="InterfaceHelper"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.InterfaceHelper">[docs]</a><span class="k">class</span> <span class="nc">InterfaceHelper</span><span class="p">:</span>
+<div class="viewcode-block" id="InterfaceHelper"><a class="viewcode-back" href="../../index.html#scripts.helper.InterfaceHelper">[docs]</a><span class="k">class</span> <span class="nc">InterfaceHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to decouple the implementation of the Finite State Machine to the stimulus might that</span>
 <span class="sd">    lead to state transitions. This class manages the synchronization with subscribers and action</span>
@@ -276,7 +265,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">planner_client</span> <span class="o">=</span> <span class="n">ActionClientHelper</span><span class="p">(</span><span class="s1">&#39;motion/planner&#39;</span><span class="p">,</span> <span class="n">PlanAction</span><span class="p">,</span> <span class="n">mutex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">controller_client</span> <span class="o">=</span> <span class="n">ActionClientHelper</span><span class="p">(</span><span class="s1">&#39;motion/controller&#39;</span><span class="p">,</span> <span class="n">ControlAction</span><span class="p">,</span> <span class="n">mutex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="p">)</span>
 
-<div class="viewcode-block" id="InterfaceHelper.reset_states"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.InterfaceHelper.reset_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="InterfaceHelper.reset_states"><a class="viewcode-back" href="../../index.html#scripts.helper.InterfaceHelper.reset_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset the stimulus, which are stored as states variable fo this class.</span>
 <span class="sd">        This function assumes that no states of the Finite State Machine run concurrently.</span>
@@ -298,7 +287,7 @@
             <span class="c1"># Release the mutex to eventually unblock the other subscribers or action servers that are waiting.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
-<div class="viewcode-block" id="InterfaceHelper.is_battery_low"><a class="viewcode-back" href="../../index.html#scripts.interface_helper.InterfaceHelper.is_battery_low">[docs]</a>    <span class="k">def</span> <span class="nf">is_battery_low</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="InterfaceHelper.is_battery_low"><a class="viewcode-back" href="../../index.html#scripts.helper.InterfaceHelper.is_battery_low">[docs]</a>    <span class="k">def</span> <span class="nf">is_battery_low</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the state variable encoded in this class that concerns the battery level.</span>
 <span class="sd">        The returning value will be `True` if the battery is low, `False` otherwise.</span>
@@ -307,7 +296,7 @@
 <span class="sd">        synchronization  with the threads involving the subscribers and action clients.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            self._battery_low(bool): `True` if the battery is low, `False` otherwise</span>
+<span class="sd">            bool: `True` if the battery is low, `False` otherwise</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_battery_low</span></div>
@@ -324,132 +313,6 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setting initial robot position&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot set current robot position&quot;</span><span class="p">)</span></div>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">class BehaviorHelper:</span>
-<span class="sd">    </span>
-
-<span class="sd">    def __init__(self):</span>
-<span class="sd">        self.agent = &quot;Robot1&quot;</span>
-<span class="sd">        self.current_position = &quot;isIn&quot;</span>
-<span class="sd">        self.urgent_class = &quot;URGENT&quot;</span>
-<span class="sd">        self.reachable = &quot;canReach&quot;</span>
-<span class="sd">        self.last_visit = &quot;visitedAt&quot;</span>
-<span class="sd">        self.robot_timestamp = &quot;now&quot;</span>
-<span class="sd">        self.charging_location = &quot;E&quot;</span>
-<span class="sd">        self.time_stamps_type = &quot;Long&quot;</span>
-<span class="sd">        self.corridors = &#39;CORRIDOR&#39;</span>
-
-<span class="sd">        self.urgent = &#39;urgent&#39;</span>
-<span class="sd">        self.corridor = &#39;corridor&#39;</span>
-<span class="sd">        self.robot_position = &#39;robot_position&#39;</span>
-<span class="sd">        self.reachable_destinations = &#39;reachable_destinations&#39;</span>
-
-<span class="sd">    def inters_b2_lists(self, list1, list2):</span>
-<span class="sd">        </span>
-<span class="sd">        intersection = []</span>
-<span class="sd">        for element in list1:</span>
-<span class="sd">            if element in list2:</span>
-<span class="sd">                intersection.append(element)</span>
-<span class="sd">        return intersection</span>
-
-<span class="sd">    def clean_strings(self, string_type, list_):</span>
-<span class="sd">       </span>
-<span class="sd">        if string_type == 1:</span>
-<span class="sd">            if len(list_) == 1:</span>
-<span class="sd">                list_[0] = list_[0][32:-1]</span>
-<span class="sd">                </span>
-<span class="sd">            else:</span>
-<span class="sd">                for x in range (len(list_)):</span>
-<span class="sd">                    list_[x] = list_[x][32:-1]</span>
-<span class="sd">        if string_type == 2:</span>
-<span class="sd">            list_ = list_[0][1:-11]</span>
-<span class="sd">        return list_</span>
-
-<span class="sd">    def get_locations(self, location):</span>
-<span class="sd">        </span>
-
-<span class="sd">        if location == self.corridor:</span>
-<span class="sd">            list_of_corridors = client.query.ind_b2_class(self.corridors)</span>
-<span class="sd">            location_list = self.clean_strings(1, list_of_corridors)</span>
-<span class="sd">            </span>
-<span class="sd">        if location == self.urgent:</span>
-<span class="sd">            urgent_rooms = client.query.ind_b2_class(self.urgent_class)</span>
-<span class="sd">            location_list = self.clean_strings(1, urgent_rooms)</span>
-
-<span class="sd">        if location == self.robot_position:</span>
-<span class="sd">            current_pose = client.query.objectprop_b2_ind(self.current_position, self.agent)</span>
-<span class="sd">            location = self.clean_strings(1, current_pose)</span>
-<span class="sd">            location_list = current_pose[0]</span>
-
-<span class="sd">        if location == self.reachable_destinations:</span>
-<span class="sd">            possible_destinations = client.query.objectprop_b2_ind(self.reachable, self.agent)</span>
-<span class="sd">            location_list = self.clean_strings(1, possible_destinations)</span>
-
-<span class="sd">        return location_list</span>
-
-
-<span class="sd">    def decide_target(self):</span>
-<span class="sd">       </span>
-
-<span class="sd">        client.utils.sync_buffered_reasoner()</span>
-<span class="sd">        list_of_corridors = self.get_locations(self.corridor)</span>
-<span class="sd">        current_pose = self.get_locations(self.robot_position)</span>
-<span class="sd">        print(simple_colors.cyan(&quot;current pose is: [&quot;+(current_pose)+&quot;]&quot;))</span>
-<span class="sd">        possible_destinations = self.get_locations(self.reachable_destinations)</span>
-<span class="sd">        print(simple_colors.cyan(&quot;Possible destinations: [&quot; + &quot;, &quot;.join(possible_destinations) +&quot;]&quot;))</span>
-<span class="sd">        urgent_rooms = self.get_locations(self.urgent)</span>
-<span class="sd">        print(simple_colors.red(&quot;URGENT ROOMS: [&quot; + &quot;, &quot; .join(urgent_rooms) + &quot;]&quot;))</span>
-<span class="sd">        reachable_urgent = self.inters_b2_lists(possible_destinations, urgent_rooms)</span>
-<span class="sd">        print(simple_colors.green(&quot;URGENT AND REACHABLE LOCATIONS: [&quot;+&quot;, &quot;.join(reachable_urgent)+&quot;]&quot;))</span>
-<span class="sd">        # if the list is empty</span>
-<span class="sd">        if not reachable_urgent:</span>
-<span class="sd">            # if the list of possible destination </span>
-<span class="sd">            # contains only one element</span>
-<span class="sd">            if len(possible_destinations) == 1:</span>
-<span class="sd">                target = possible_destinations[0]</span>
-<span class="sd">            else:</span>
-<span class="sd">                target = random.choice(self.inters_b2_lists(possible_destinations, list_of_corridors))</span>
-<span class="sd">        # if chosen_target list is not empty</span>
-<span class="sd">        else:</span>
-<span class="sd">            # save the first element of the list as the oldest timestamp</span>
-<span class="sd">            oldest = client.query.dataprop_b2_ind(self.last_visit, reachable_urgent[0])</span>
-<span class="sd">            # clean the string</span>
-<span class="sd">            oldest = self.clean_strings(2, oldest)</span>
-<span class="sd">            for i in range (len(reachable_urgent)):</span>
-<span class="sd">                choice_last_visit = client.query.dataprop_b2_ind(self.last_visit, reachable_urgent[i])</span>
-<span class="sd">                choice_last_visit = self.clean_strings(2, choice_last_visit)</span>
-<span class="sd">                if choice_last_visit &lt;= oldest:</span>
-<span class="sd">                    target = reachable_urgent[i]</span>
-<span class="sd">        print(simple_colors.cyan(&quot;TARGET &quot; + target + &quot; ACQUIRED&quot;))</span>
-<span class="sd">        return current_pose, target, list_of_corridors</span>
-
-
-<span class="sd">    def move_to_target(self, chosen_target, current_pose, list_of_corridors):</span>
-<span class="sd">        </span>
-<span class="sd">        last_visit = client.query.dataprop_b2_ind(self.last_visit, chosen_target)</span>
-
-<span class="sd">        if chosen_target not in list_of_corridors:</span>
-<span class="sd">            last_visit = self.clean_strings(2, last_visit)</span>
-
-<span class="sd">        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, chosen_target, current_pose)</span>
-<span class="sd">        client.utils.sync_buffered_reasoner()</span>
-<span class="sd">        last_change = client.query.dataprop_b2_ind(self.robot_timestamp, self.agent)</span>
-<span class="sd">        last_change = self.clean_strings(2, last_change)</span>
-<span class="sd">        current_time = str(int(time.time()))</span>
-
-<span class="sd">        if chosen_target not in list_of_corridors:</span>
-<span class="sd">            client.manipulation.replace_dataprop_b2_ind(self.last_visit, chosen_target, self.time_stamps_type, current_time, last_visit)</span>
-
-<span class="sd">        client.manipulation.replace_dataprop_b2_ind(self.robot_timestamp, self.agent, self.time_stamps_type, current_time, last_change)</span>
-<span class="sd">        client.utils.sync_buffered_reasoner()</span>
-<span class="sd">        print(simple_colors.cyan(&quot;Now the robot is in &quot; + chosen_target))</span>
-
-
-<span class="sd">    def go_to_recharge(self, current_location):</span>
-<span class="sd">       </span>
-<span class="sd">        client.manipulation.replace_objectprop_b2_ind(self.current_position, self.agent, self.charging_location, current_location)</span>
-<span class="sd">        client.utils.sync_buffered_reasoner()</span>
-<span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
            </div>

@@ -8,18 +8,18 @@
 ROS node for implementing the robot state. It includes the current position and battery level.
 
 Publishes to: 
-    /state/battery_low the boolean stating if the battery is low or not
+    /state/battery_low: the boolean stating if the battery is low or not
 
 Service:
-    /state/get_pose: Get the robot current pose in the simulation
+    /state/get_pose: get the robot current pose
 
-    /state/set_pose: Set the robot current pose in the simulation
+    /state/set_pose: set the robot current pose
 """
 
 import threading
 import rospy
 from std_msgs.msg import Bool
-from interface_helper import InterfaceHelper
+from helper import InterfaceHelper
 from Assignment1.msg import Point
 from Assignment1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
 
@@ -41,7 +41,7 @@ class RobotState:
         rospy.Service('state/get_pose', GetPose, self.get_pose)
         rospy.Service('state/set_pose', SetPose, self.set_pose)
         # Start publisher on a separate thread.
-        th = threading.Thread(target = self.A_is_battery_low)
+        th = threading.Thread(target = self.is_battery_low_)
         th.start()
     
     def set_pose(self, request):
@@ -51,10 +51,10 @@ class RobotState:
         as given by the client. This server returns an empty `response`.
 
         Args:
-            request: 
+            request(Point): current robot position to be set
 
         Returns:
-            empty (SetPoseResponse): an empty response
+            SetPoseResponse: an empty response
 
         """
         if request.pose is not None:
@@ -66,17 +66,17 @@ class RobotState:
         # Return an empty response.
         return SetPoseResponse()
 
-    def get_pose(self, response):
+    def get_pose(self, request):
         """
         The `robot/get_pose` service implementation.
         The `request` input parameter is given by the client as empty. Thus, it is not used.
         The `response` returned to the client contains the current robot pose.
 
         Args:
-            response: the response of the server
+            request: empty response
 
         Returns:
-            response(GetPoseResponse): the position of the robot
+            response(Point): the position of the robot
 
         """
         # Log information.
@@ -92,16 +92,16 @@ class RobotState:
         response.pose = self._pose
         return response
 
-    def A_is_battery_low(self):
+    def is_battery_low_(self):
         """
         Publish changes of battery levels. This method runs on a separate thread.
         """
         # Define a `lathed` publisher to wait for initialisation and publish immediately.
         publisher = rospy.Publisher('state/battery_low', Bool, queue_size = 1, latch = True)
         # Publish battery level changes randomly.
-        self.A_random_battery_notifier(publisher)
+        self.random_battery_notifier_(publisher)
 
-    def A_random_battery_notifier(self, publisher):
+    def random_battery_notifier_(self, publisher):
         """
         Publish when the battery change state (i.e., high/low) based on a random
         delay within the interval [`self._random_battery_time[0]`, `self._random_battery_time[1]`).
@@ -109,7 +109,7 @@ class RobotState:
         boolean value, i.e., `True`: battery low, `False`: battery high.
 
         Args:
-            publisher(bool): boolean value stating the battery status
+            publisher(publisher): publisher for the battery status.
 
         """
         delay = 0  # Initialised to 0 just for logging purposes.

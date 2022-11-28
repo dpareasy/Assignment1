@@ -73,7 +73,7 @@
 
 <span class="sd">.. moduleauthor:: Davide Leo Parisi &lt;davide.parisi1084@gmail.com&gt;</span>
 
-<span class="sd">ROS node for implementing the Robot behavior.</span>
+<span class="sd">ROS node that helps the robot in performing its actions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># Import ROS libraries.</span>
 <span class="kn">import</span> <span class="nn">random</span>
@@ -119,7 +119,7 @@
 <span class="sd">        clean the strings obtained by the query.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            string_type(int): an integer specifying if the string is obtained from</span>
+<span class="sd">            string_type(int): an integer specifying if type of the string to clear (if locations or timestamps)</span>
 <span class="sd">            </span>
 <span class="sd">            list_(str): list of string to be cleaned </span>
 
@@ -140,13 +140,13 @@
 
 <div class="viewcode-block" id="BehaviorHelper.get_locations"><a class="viewcode-back" href="../../index.html#scripts.robot_actions.BehaviorHelper.get_locations">[docs]</a>    <span class="k">def</span> <span class="nf">get_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        function for location&#39;s query</span>
+<span class="sd">        function performing the location&#39;s queries to aRMOR server.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            location(str): a string to select the query to ask</span>
+<span class="sd">            location(str): a string to select the typr of query.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            location_list(str): list of queried location</span>
+<span class="sd">            location_list(str): list of queried location.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -172,7 +172,7 @@
 
 <div class="viewcode-block" id="BehaviorHelper.decide_target"><a class="viewcode-back" href="../../index.html#scripts.robot_actions.BehaviorHelper.decide_target">[docs]</a>    <span class="k">def</span> <span class="nf">decide_target</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plan the next robot movement.</span>
+<span class="sd">        Function that plans the next robot movement.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            current_pose(str): The current robot position obtained from the ontology</span>

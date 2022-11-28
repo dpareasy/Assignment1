@@ -86,10 +86,7 @@
 <span class="c1">#from threading import Lock</span>
 <span class="c1">#from std_msgs.msg import Bool</span>
 <span class="kn">from</span> <span class="nn">smach</span> <span class="kn">import</span> <span class="n">State</span> <span class="c1">#StateMachine, State</span>
-<span class="c1">#from load_ontology import LoadMap</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">simple_colors</span>
-<span class="kn">from</span> <span class="nn">interface_helper</span> <span class="kn">import</span> <span class="n">InterfaceHelper</span>
+<span class="kn">from</span> <span class="nn">helper</span> <span class="kn">import</span> <span class="n">InterfaceHelper</span>
 <span class="kn">from</span> <span class="nn">robot_actions</span> <span class="kn">import</span> <span class="n">BehaviorHelper</span>
 <span class="kn">from</span> <span class="nn">load_ontology</span> <span class="kn">import</span> <span class="n">CreateMap</span>
 <span class="kn">from</span> <span class="nn">Assignment1.msg</span> <span class="kn">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">ControlGoal</span><span class="p">,</span> <span class="n">PlanGoal</span>
@@ -151,13 +148,7 @@
 
 <div class="viewcode-block" id="DecideTarget"><a class="viewcode-back" href="../../index.html#scripts.state_machine.DecideTarget">[docs]</a><span class="k">class</span> <span class="nc">DecideTarget</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class to implement the behavior of the decision state of the robot.</span>
-
-<span class="sd">    Class constructor, i.e., class initializer. Input parameters are:</span>
-
-<span class="sd">    - `interface_helper`: the helper class invoked to interface with the server.</span>
-
-<span class="sd">    - `behavior_hleper`: the helper class invoked to interface with the behavior.</span>
+<span class="sd">    A class to implement the behavior of the reasoning state of the robot.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_helper</span><span class="p">,</span> <span class="n">behavior_helper</span><span class="p">):</span>
@@ -171,22 +162,20 @@
 
 <div class="viewcode-block" id="DecideTarget.execute"><a class="viewcode-back" href="../../index.html#scripts.state_machine.DecideTarget.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function responsible of the transition between the </span>
+<span class="sd">        Function responsible of the transitions between the </span>
 <span class="sd">        STATE_DECISION and the STATE_RECHARGING or STATE_MOVING.</span>
 <span class="sd">        The function will call several functions responsible of</span>
 <span class="sd">        the decision state of the robot. It makes a request to the</span>
-<span class="sd">        planner server, which is the one responsible of the dummy</span>
-<span class="sd">        simulation of the way int which the robot decide the target. The `userdata`</span>
-<span class="sd">        parameter is used to use some variables in the other states.</span>
+<span class="sd">        planner server to obtain the path to follow.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            userdata: for output_keys</span>
+<span class="sd">            userdata: used for output_keys to STATE_MOVING to pass data to the other states.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_RECHARGING (str): transition to the recharging state.</span>
+<span class="sd">            TRANS_RECHARGING (str): transition to STATE_RECHARGING.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_DECIDED (str): transition to the moving state.</span>
+<span class="sd">            TRANS_DECIDED (str): transition to the STATE_MOVING.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Define a random point to be reached through some via-points to be planned.</span>
@@ -225,12 +214,6 @@
 <div class="viewcode-block" id="MoveToTarget"><a class="viewcode-back" href="../../index.html#scripts.state_machine.MoveToTarget">[docs]</a><span class="k">class</span> <span class="nc">MoveToTarget</span><span class="p">(</span><span class="n">smach</span><span class="o">.</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to implement the behavior of the moving state of the robot.</span>
-
-<span class="sd">    Class constructor, i.e., class initializer. Input parameters are:</span>
-
-<span class="sd">    - `interface_helper`: the helper class invoked to interface with the server.</span>
-
-<span class="sd">    - `behavior_hleper`: the helper class invoked to interface with the behavior.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_helper</span><span class="p">,</span> <span class="n">behavior_helper</span><span class="p">):</span>
@@ -246,18 +229,16 @@
 <span class="sd">        STATE_MOVING and the STATE_RECHARGING or STATE_DECISION.</span>
 <span class="sd">        The function will call several functions responsible of </span>
 <span class="sd">        the movement of the robot. It makes a request to the controller</span>
-<span class="sd">        server which is the one responsible of the dummy simulation of the </span>
-<span class="sd">        movement of the robot from a location to the target. The `userdata`</span>
-<span class="sd">        parameter is used to import parameters from the other states.</span>
+<span class="sd">        server which is the one responsible of the movement.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            userdata: for input keys</span>
+<span class="sd">            userdata: for input_keys from STATE_DECISION and output_keys to STATE_SURVEY</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_RECHARGING(str): transition to the recharging state.</span>
+<span class="sd">            TRANS_RECHARGING(str): transition to the STATE_RECHARGING.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_MOVED(str): transition to the moving state.</span>
+<span class="sd">            TRANS_MOVED(str): transition to STATE_SURVEY.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get the plan to a random position computed by the `PLAN_TO_RANDOM_POSE` state.</span>
@@ -294,12 +275,7 @@
 
 <div class="viewcode-block" id="Surveying"><a class="viewcode-back" href="../../index.html#scripts.state_machine.Surveying">[docs]</a><span class="k">class</span> <span class="nc">Surveying</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class to simulate the location surveying.</span>
-
-<span class="sd">    Class constructor, i.e., class initializer. Input parameters are:</span>
-
-<span class="sd">    - `interface_helper`: the helper class invoked to interface with the server.</span>
-
+<span class="sd">    A class to simulate the surveillance action of the robot.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_helper</span><span class="p">,</span> <span class="n">behavior_helper</span><span class="p">):</span>
@@ -319,13 +295,13 @@
 <span class="sd">        battery is low it suddenly goes to the STATE_RECHARGING</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            userdata: take input from the STATE_MOVING</span>
+<span class="sd">            userdata: take input from the STATE_MOVING. </span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_RECHARGING(str): transition to the recharging state</span>
+<span class="sd">            TRANS_RECHARGING(str): transition to STATE_RECHARGING.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_SURVEYED(str): transition to the decision state </span>
+<span class="sd">            TRANS_SURVEYED(str): transition to STATE_DECISION.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">current_pose</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">current_pose</span>
@@ -353,12 +329,6 @@
 <div class="viewcode-block" id="Recharging"><a class="viewcode-back" href="../../index.html#scripts.state_machine.Recharging">[docs]</a><span class="k">class</span> <span class="nc">Recharging</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to implement the behavior of the recharging state of the robot.</span>
-
-<span class="sd">    Class constructor, i.e., class initializer. Input parameters are:</span>
-
-<span class="sd">    - `interface_helper`: the helper class invoked to interface with the server.</span>
-
-<span class="sd">    - `behavior_hleper`: the helper class invoked to interface with the behavior.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface_helper</span><span class="p">,</span> <span class="n">behavior_helper</span><span class="p">):</span>
@@ -375,14 +345,14 @@
 <span class="sd">        Function responsible of the transition between the </span>
 <span class="sd">        STATE_RECHARGING to the STATE_DECISION.</span>
 <span class="sd">        It waits until the battery is fully charged and then it changes state.</span>
-<span class="sd">        The input parameter `userdata` is not used since no data is required</span>
-<span class="sd">        from the other states.</span>
+<span class="sd">        The battery status is notified by the publisher robot_state. The function called to check the status `is_battery_low()`</span>
+<span class="sd">        is defined in helper.py.</span>
 <span class="sd"> </span>
 <span class="sd">        Args:</span>
 <span class="sd">            userdata: not used</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_RECHARGED(str): transition to the recharging state</span>
+<span class="sd">            TRANS_RECHARGED(str): transition to STATE_DECISION</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">rospy</span><span class="o">.</span><span class="n">is_shutdown</span><span class="p">():</span>  <span class="c1"># Wait for stimulus from the other nodes of the architecture.</span>
@@ -401,7 +371,7 @@
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../index.html#scripts.state_machine.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This function creates the state machine and defines all the transitions. Jere a nested state machine is created</span>
+<span class="sd">    This function creates the state machine and defines all the transitions. Here a nested state machine is created.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;state_machine&#39;</span><span class="p">,</span> <span class="n">log_level</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
     <span class="c1"># Initialise an classes to manage the interfaces with the other nodes in the architecture.</span>

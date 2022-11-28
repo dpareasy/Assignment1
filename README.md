@@ -44,7 +44,7 @@ Given the scenario presented above the software is developed as follow.
 
 ### Sequence diagram ###
 
-In the figure below is presente the sequence diagram of the architecture
+In the figure below is presente the sequence diagram of the architecture.
 
 ![sequence_diagram2](https://user-images.githubusercontent.com/92155300/204143099-dbe686ee-22e9-4f66-960e-0e046f2b49ba.png)
 
@@ -205,6 +205,11 @@ Follow these steps to install the software:
 5. Clone inside your workspace [topological_map](https://github.com/buoncubi/topological_map) containing the ontology for this project;
 6. Run `chmod +x <file_name>` for each file inside the scripts folder;
 7. Run `catkin_make` from the root of your workspace.
+8. Install `simple_colors` by copying the following line on your terminal:
+
+```
+pip install simple-colors
+```
 
 As regardin the third point, the developer have encountered some issues with the function `disj_inds_of_class(self, class_name)` of [armor_manipilation_client.py](https://github.com/EmaroLab/armor_py_api/blob/main/scripts/armor_api/armor_manipulation_client.py). To fix this problem a new function have been created:
 

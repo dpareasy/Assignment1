@@ -30,6 +30,11 @@ RobotActions Module
 .. automodule:: scripts.robot_actions
    :members:
 
+Helper Module
+=============
+.. automodule:: scripts.helper
+   :members:
+
 Indices and tables
 ==================
 

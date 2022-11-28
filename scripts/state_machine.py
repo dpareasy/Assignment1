@@ -20,10 +20,7 @@ import time
 #from threading import Lock
 #from std_msgs.msg import Bool
 from smach import State #StateMachine, State
-#from load_ontology import LoadMap
-import os
-import simple_colors
-from interface_helper import InterfaceHelper
+from helper import InterfaceHelper
 from robot_actions import BehaviorHelper
 from load_ontology import CreateMap
 from Assignment1.msg import Point, ControlGoal, PlanGoal
@@ -85,13 +82,7 @@ class LoadOntology(smach.State):
 
 class DecideTarget(smach.State):
     """
-    A class to implement the behavior of the decision state of the robot.
-
-    Class constructor, i.e., class initializer. Input parameters are:
-
-    - `interface_helper`: the helper class invoked to interface with the server.
-
-    - `behavior_hleper`: the helper class invoked to interface with the behavior.
+    A class to implement the behavior of the reasoning state of the robot.
     """
 
     def __init__(self, interface_helper, behavior_helper):
@@ -105,22 +96,20 @@ class DecideTarget(smach.State):
 
     def execute(self, userdata):
         """
-        Function responsible of the transition between the 
+        Function responsible of the transitions between the 
         STATE_DECISION and the STATE_RECHARGING or STATE_MOVING.
         The function will call several functions responsible of
         the decision state of the robot. It makes a request to the
-        planner server, which is the one responsible of the dummy
-        simulation of the way int which the robot decide the target. The `userdata`
-        parameter is used to use some variables in the other states.
+        planner server to obtain the path to follow.
 
         Args:
-            userdata: for output_keys
+            userdata: used for output_keys to STATE_MOVING to pass data to the other states.
 
         Returns:
-            TRANS_RECHARGING (str): transition to the recharging state.
+            TRANS_RECHARGING (str): transition to STATE_RECHARGING.
         
         Returns:
-            TRANS_DECIDED (str): transition to the moving state.
+            TRANS_DECIDED (str): transition to the STATE_MOVING.
 
         """
         # Define a random point to be reached through some via-points to be planned.
@@ -159,12 +148,6 @@ class DecideTarget(smach.State):
 class MoveToTarget(smach.State):
     """
     A class to implement the behavior of the moving state of the robot.
-
-    Class constructor, i.e., class initializer. Input parameters are:
-
-    - `interface_helper`: the helper class invoked to interface with the server.
-
-    - `behavior_hleper`: the helper class invoked to interface with the behavior.
     """
 
     def __init__(self, interface_helper, behavior_helper):
@@ -180,18 +163,16 @@ class MoveToTarget(smach.State):
         STATE_MOVING and the STATE_RECHARGING or STATE_DECISION.
         The function will call several functions responsible of 
         the movement of the robot. It makes a request to the controller
-        server which is the one responsible of the dummy simulation of the 
-        movement of the robot from a location to the target. The `userdata`
-        parameter is used to import parameters from the other states.
+        server which is the one responsible of the movement.
 
         Args:
-            userdata: for input keys
+            userdata: for input_keys from STATE_DECISION and output_keys to STATE_SURVEY
         
         Returns:
-            TRANS_RECHARGING(str): transition to the recharging state.
+            TRANS_RECHARGING(str): transition to the STATE_RECHARGING.
 
         Returns:
-            TRANS_MOVED(str): transition to the moving state.
+            TRANS_MOVED(str): transition to STATE_SURVEY.
 
         """
         # Get the plan to a random position computed by the `PLAN_TO_RANDOM_POSE` state.
@@ -228,12 +209,7 @@ class MoveToTarget(smach.State):
 
 class Surveying(State):
     """
-    A class to simulate the location surveying.
-
-    Class constructor, i.e., class initializer. Input parameters are:
-
-    - `interface_helper`: the helper class invoked to interface with the server.
-
+    A class to simulate the surveillance action of the robot.
     """
 
     def __init__(self, interface_helper, behavior_helper):
@@ -253,13 +229,13 @@ class Surveying(State):
         battery is low it suddenly goes to the STATE_RECHARGING
 
         Args:
-            userdata: take input from the STATE_MOVING
+            userdata: take input from the STATE_MOVING. 
 
         Returns:
-            TRANS_RECHARGING(str): transition to the recharging state
+            TRANS_RECHARGING(str): transition to STATE_RECHARGING.
 
         Returns:
-            TRANS_SURVEYED(str): transition to the decision state 
+            TRANS_SURVEYED(str): transition to STATE_DECISION.
 
         """
         current_pose = userdata.current_pose
@@ -287,12 +263,6 @@ class Surveying(State):
 class Recharging(State):
     """
     A class to implement the behavior of the recharging state of the robot.
-
-    Class constructor, i.e., class initializer. Input parameters are:
-
-    - `interface_helper`: the helper class invoked to interface with the server.
-
-    - `behavior_hleper`: the helper class invoked to interface with the behavior.
     """
 
     def __init__(self, interface_helper, behavior_helper):
@@ -309,14 +279,14 @@ class Recharging(State):
         Function responsible of the transition between the 
         STATE_RECHARGING to the STATE_DECISION.
         It waits until the battery is fully charged and then it changes state.
-        The input parameter `userdata` is not used since no data is required
-        from the other states.
+        The battery status is notified by the publisher robot_state. The function called to check the status `is_battery_low()`
+        is defined in helper.py.
  
         Args:
             userdata: not used
 
         Returns:
-            TRANS_RECHARGED(str): transition to the recharging state
+            TRANS_RECHARGED(str): transition to STATE_DECISION
 
         """
         while not rospy.is_shutdown():  # Wait for stimulus from the other nodes of the architecture.
@@ -335,7 +305,7 @@ class Recharging(State):
 
 def main():
     """
-    This function creates the state machine and defines all the transitions. Jere a nested state machine is created
+    This function creates the state machine and defines all the transitions. Here a nested state machine is created.
     """
     rospy.init_node('state_machine', log_level = rospy.INFO)
     # Initialise an classes to manage the interfaces with the other nodes in the architecture.

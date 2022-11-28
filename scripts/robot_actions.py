@@ -7,7 +7,7 @@
 
 .. moduleauthor:: Davide Leo Parisi <davide.parisi1084@gmail.com>
 
-ROS node for implementing the Robot behavior.
+ROS node that helps the robot in performing its actions.
 """
 # Import ROS libraries.
 import random
@@ -53,7 +53,7 @@ class BehaviorHelper:
         clean the strings obtained by the query.
 
         Args:
-            string_type(int): an integer specifying if the string is obtained from
+            string_type(int): an integer specifying if type of the string to clear (if locations or timestamps)
             
             list_(str): list of string to be cleaned 
 
@@ -74,13 +74,13 @@ class BehaviorHelper:
 
     def get_locations(self, location):
         """
-        function for location's query
+        function performing the location's queries to aRMOR server.
 
         Args:
-            location(str): a string to select the query to ask
+            location(str): a string to select the typr of query.
 
         Returns:
-            location_list(str): list of queried location
+            location_list(str): list of queried location.
 
         """
 
@@ -106,7 +106,7 @@ class BehaviorHelper:
 
     def decide_target(self):
         """
-        Plan the next robot movement.
+        Function that plans the next robot movement.
 
         Returns:
             current_pose(str): The current robot position obtained from the ontology

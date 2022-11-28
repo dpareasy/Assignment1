@@ -75,9 +75,9 @@
 </li>
 <li><a class="reference internal" href="#module-scripts.robot_state">RobotState Module</a><ul>
 <li><a class="reference internal" href="#scripts.robot_state.RobotState"><code class="docutils literal notranslate"><span class="pre">RobotState</span></code></a><ul>
-<li><a class="reference internal" href="#scripts.robot_state.RobotState.A_is_battery_low"><code class="docutils literal notranslate"><span class="pre">RobotState.A_is_battery_low()</span></code></a></li>
-<li><a class="reference internal" href="#scripts.robot_state.RobotState.A_random_battery_notifier"><code class="docutils literal notranslate"><span class="pre">RobotState.A_random_battery_notifier()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.robot_state.RobotState.get_pose"><code class="docutils literal notranslate"><span class="pre">RobotState.get_pose()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_state.RobotState.is_battery_low_"><code class="docutils literal notranslate"><span class="pre">RobotState.is_battery_low_()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_state.RobotState.random_battery_notifier_"><code class="docutils literal notranslate"><span class="pre">RobotState.random_battery_notifier_()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.robot_state.RobotState.set_pose"><code class="docutils literal notranslate"><span class="pre">RobotState.set_pose()</span></code></a></li>
 </ul>
 </li>
@@ -91,6 +91,23 @@
 <li><a class="reference internal" href="#scripts.robot_actions.BehaviorHelper.go_to_recharge"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.go_to_recharge()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.robot_actions.BehaviorHelper.inters_b2_lists"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.inters_b2_lists()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.robot_actions.BehaviorHelper.move_to_target"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.move_to_target()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-scripts.helper">Helper Module</a><ul>
+<li><a class="reference internal" href="#scripts.helper.ActionClientHelper"><code class="docutils literal notranslate"><span class="pre">ActionClientHelper</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.helper.ActionClientHelper.cancel_goals"><code class="docutils literal notranslate"><span class="pre">ActionClientHelper.cancel_goals()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.helper.ActionClientHelper.get_results"><code class="docutils literal notranslate"><span class="pre">ActionClientHelper.get_results()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.helper.ActionClientHelper.is_done"><code class="docutils literal notranslate"><span class="pre">ActionClientHelper.is_done()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.helper.ActionClientHelper.is_running"><code class="docutils literal notranslate"><span class="pre">ActionClientHelper.is_running()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.helper.ActionClientHelper.reset_client_states"><code class="docutils literal notranslate"><span class="pre">ActionClientHelper.reset_client_states()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.helper.ActionClientHelper.send_goal"><code class="docutils literal notranslate"><span class="pre">ActionClientHelper.send_goal()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#scripts.helper.InterfaceHelper"><code class="docutils literal notranslate"><span class="pre">InterfaceHelper</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.helper.InterfaceHelper.is_battery_low"><code class="docutils literal notranslate"><span class="pre">InterfaceHelper.is_battery_low()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.helper.InterfaceHelper.reset_states"><code class="docutils literal notranslate"><span class="pre">InterfaceHelper.reset_states()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -129,16 +146,16 @@
 </div>
 <div class="section" id="module-scripts.load_ontology">
 <span id="loadontology-module"></span><h1>LoadOntology Module<a class="headerlink" href="#module-scripts.load_ontology" title="Permalink to this heading"></a></h1>
-<span class="target" id="module-load_onotology"></span><p>ROS node for creating the ontology</p>
+<span class="target" id="module-load_onotology"></span><p>ROS node for creating the ontology.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="scripts.load_ontology.CreateMap">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.load_ontology.</span></span><span class="sig-name descname"><span class="pre">CreateMap</span></span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap" title="Permalink to this definition"></a></dt>
-<dd><p>This class contains all the method used to create the topological map</p>
+<dd><p>This class contains all the methods used to create the topological map.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.load_ontology.CreateMap.LoadMap">
 <span class="sig-name descname"><span class="pre">LoadMap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap.LoadMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap.LoadMap" title="Permalink to this definition"></a></dt>
 <dd><p>Function initializing the environment in which the robot should move.
-This mechanism is generalized in a way in which every envirnoment can be
+This mechanism is generalized in a way in which many envirnoments can be
 created. The creation of the environment is done via call to armor server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -152,11 +169,11 @@ created. The creation of the environment is done via call to armor server.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.load_ontology.CreateMap.get_input">
-<span class="sig-name descname"><span class="pre">get_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap.get_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap.get_input" title="Permalink to this definition"></a></dt>
-<dd><p>Function checking if the value taken as input is an integer</p>
+<span class="sig-name descname"><span class="pre">get_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap.get_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap.get_input" title="Permalink to this definition"></a></dt>
+<dd><p>Function checking if the value taken as input is an integer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – 0 if corrdiors are request, 1 if rooms rea request</p>
+<dd class="field-odd"><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – 0 if corrdiors are request, 1 if rooms are request</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An integern number</p>
@@ -170,7 +187,7 @@ created. The creation of the environment is done via call to armor server.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.load_ontology.CreateMap.not_int">
 <span class="sig-name descname"><span class="pre">not_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#CreateMap.not_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.CreateMap.not_int" title="Permalink to this definition"></a></dt>
-<dd><p>Function checking if the value is an integer or not</p>
+<dd><p>Function checking if the value is an integer or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>value</strong> – input value</p>
@@ -203,34 +220,27 @@ created. The creation of the environment is done via call to armor server.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="scripts.state_machine.DecideTarget">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">DecideTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#DecideTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.DecideTarget" title="Permalink to this definition"></a></dt>
-<dd><p>A class to implement the behavior of the decision state of the robot.</p>
-<p>Class constructor, i.e., class initializer. Input parameters are:</p>
-<ul class="simple">
-<li><p><cite>interface_helper</cite>: the helper class invoked to interface with the server.</p></li>
-<li><p><cite>behavior_hleper</cite>: the helper class invoked to interface with the behavior.</p></li>
-</ul>
+<dd><p>A class to implement the behavior of the reasoning state of the robot.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.state_machine.DecideTarget.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#DecideTarget.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.DecideTarget.execute" title="Permalink to this definition"></a></dt>
-<dd><p>Function responsible of the transition between the
+<dd><p>Function responsible of the transitions between the
 STATE_DECISION and the STATE_RECHARGING or STATE_MOVING.
 The function will call several functions responsible of
 the decision state of the robot. It makes a request to the
-planner server, which is the one responsible of the dummy
-simulation of the way int which the robot decide the target. The <cite>userdata</cite>
-parameter is used to use some variables in the other states.</p>
+planner server to obtain the path to follow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>userdata</strong> – for output_keys</p>
+<dd class="field-odd"><p><strong>userdata</strong> – used for output_keys to STATE_MOVING to pass data to the other states.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transition to the recharging state.</p>
+<dd class="field-even"><p>transition to STATE_RECHARGING.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>TRANS_RECHARGING (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>)</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transition to the moving state.</p>
+<dd class="field-even"><p>transition to the STATE_MOVING.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>TRANS_DECIDED (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>)</p>
@@ -271,11 +281,6 @@ required from the other states.</p>
 <dt class="sig sig-object py" id="scripts.state_machine.MoveToTarget">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">MoveToTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#MoveToTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.MoveToTarget" title="Permalink to this definition"></a></dt>
 <dd><p>A class to implement the behavior of the moving state of the robot.</p>
-<p>Class constructor, i.e., class initializer. Input parameters are:</p>
-<ul class="simple">
-<li><p><cite>interface_helper</cite>: the helper class invoked to interface with the server.</p></li>
-<li><p><cite>behavior_hleper</cite>: the helper class invoked to interface with the behavior.</p></li>
-</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.state_machine.MoveToTarget.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#MoveToTarget.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.MoveToTarget.execute" title="Permalink to this definition"></a></dt>
@@ -283,21 +288,19 @@ required from the other states.</p>
 STATE_MOVING and the STATE_RECHARGING or STATE_DECISION.
 The function will call several functions responsible of
 the movement of the robot. It makes a request to the controller
-server which is the one responsible of the dummy simulation of the
-movement of the robot from a location to the target. The <cite>userdata</cite>
-parameter is used to import parameters from the other states.</p>
+server which is the one responsible of the movement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>userdata</strong> – for input keys</p>
+<dd class="field-odd"><p><strong>userdata</strong> – for input_keys from STATE_DECISION and output_keys to STATE_SURVEY</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transition to the recharging state.</p>
+<dd class="field-even"><p>transition to the STATE_RECHARGING.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>TRANS_RECHARGING(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>)</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transition to the moving state.</p>
+<dd class="field-even"><p>transition to STATE_SURVEY.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>TRANS_MOVED(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>)</p>
@@ -311,25 +314,20 @@ parameter is used to import parameters from the other states.</p>
 <dt class="sig sig-object py" id="scripts.state_machine.Recharging">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">Recharging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#Recharging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.Recharging" title="Permalink to this definition"></a></dt>
 <dd><p>A class to implement the behavior of the recharging state of the robot.</p>
-<p>Class constructor, i.e., class initializer. Input parameters are:</p>
-<ul class="simple">
-<li><p><cite>interface_helper</cite>: the helper class invoked to interface with the server.</p></li>
-<li><p><cite>behavior_hleper</cite>: the helper class invoked to interface with the behavior.</p></li>
-</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.state_machine.Recharging.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#Recharging.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.Recharging.execute" title="Permalink to this definition"></a></dt>
 <dd><p>Function responsible of the transition between the
 STATE_RECHARGING to the STATE_DECISION.
 It waits until the battery is fully charged and then it changes state.
-The input parameter <cite>userdata</cite> is not used since no data is required
-from the other states.</p>
+The battery status is notified by the publisher robot_state. The function called to check the status <cite>is_battery_low()</cite>
+is defined in helper.py.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>userdata</strong> – not used</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transition to the recharging state</p>
+<dd class="field-even"><p>transition to STATE_DECISION</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>TRANS_RECHARGED(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>)</p>
@@ -342,11 +340,7 @@ from the other states.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="scripts.state_machine.Surveying">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">Surveying</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">behavior_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#Surveying"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.Surveying" title="Permalink to this definition"></a></dt>
-<dd><p>A class to simulate the location surveying.</p>
-<p>Class constructor, i.e., class initializer. Input parameters are:</p>
-<ul class="simple">
-<li><p><cite>interface_helper</cite>: the helper class invoked to interface with the server.</p></li>
-</ul>
+<dd><p>A class to simulate the surveillance action of the robot.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.state_machine.Surveying.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#Surveying.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.Surveying.execute" title="Permalink to this definition"></a></dt>
@@ -356,16 +350,16 @@ for the survey of the location and then make tha transition. If the
 battery is low it suddenly goes to the STATE_RECHARGING</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>userdata</strong> – take input from the STATE_MOVING</p>
+<dd class="field-odd"><p><strong>userdata</strong> – take input from the STATE_MOVING.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transition to the recharging state</p>
+<dd class="field-even"><p>transition to STATE_RECHARGING.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>TRANS_RECHARGING(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>)</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transition to the decision state</p>
+<dd class="field-even"><p>transition to STATE_DECISION.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>TRANS_SURVEYED(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>)</p>
@@ -378,7 +372,7 @@ battery is low it suddenly goes to the STATE_RECHARGING</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="scripts.state_machine.main">
 <span class="sig-prename descclassname"><span class="pre">scripts.state_machine.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/state_machine.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.state_machine.main" title="Permalink to this definition"></a></dt>
-<dd><p>This function creates the state machine and defines all the transitions. Jere a nested state machine is created</p>
+<dd><p>This function creates the state machine and defines all the transitions. Here a nested state machine is created.</p>
 </dd></dl>
 
 </div>
@@ -386,10 +380,10 @@ battery is low it suddenly goes to the STATE_RECHARGING</p>
 <span id="robotstate-module"></span><h1>RobotState Module<a class="headerlink" href="#module-scripts.robot_state" title="Permalink to this heading"></a></h1>
 <span class="target" id="module-robot_state"></span><p>ROS node for implementing the robot state. It includes the current position and battery level.</p>
 <dl>
-<dt>Publishes to:</dt><dd><p>/state/battery_low the boolean stating if the battery is low or not</p>
+<dt>Publishes to:</dt><dd><p>/state/battery_low: the boolean stating if the battery is low or not</p>
 </dd>
-<dt>Service:</dt><dd><p>/state/get_pose: Get the robot current pose in the simulation</p>
-<p>/state/set_pose: Set the robot current pose in the simulation</p>
+<dt>Service:</dt><dd><p>/state/get_pose: get the robot current pose</p>
+<p>/state/set_pose: set the robot current pose</p>
 </dd>
 </dl>
 <dl class="py class">
@@ -399,40 +393,40 @@ battery is low it suddenly goes to the STATE_RECHARGING</p>
 This class defines two services to get and set the current
 robot pose, and a publisher to notify that the battery is low.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="scripts.robot_state.RobotState.A_is_battery_low">
-<span class="sig-name descname"><span class="pre">A_is_battery_low</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_state.html#RobotState.A_is_battery_low"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_state.RobotState.A_is_battery_low" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.robot_state.RobotState.get_pose">
+<span class="sig-name descname"><span class="pre">get_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_state.html#RobotState.get_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_state.RobotState.get_pose" title="Permalink to this definition"></a></dt>
+<dd><p>The <cite>robot/get_pose</cite> service implementation.
+The <cite>request</cite> input parameter is given by the client as empty. Thus, it is not used.
+The <cite>response</cite> returned to the client contains the current robot pose.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> – empty response</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the position of the robot</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>response(Point)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_state.RobotState.is_battery_low_">
+<span class="sig-name descname"><span class="pre">is_battery_low_</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_state.html#RobotState.is_battery_low_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_state.RobotState.is_battery_low_" title="Permalink to this definition"></a></dt>
 <dd><p>Publish changes of battery levels. This method runs on a separate thread.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="scripts.robot_state.RobotState.A_random_battery_notifier">
-<span class="sig-name descname"><span class="pre">A_random_battery_notifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">publisher</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_state.html#RobotState.A_random_battery_notifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_state.RobotState.A_random_battery_notifier" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="scripts.robot_state.RobotState.random_battery_notifier_">
+<span class="sig-name descname"><span class="pre">random_battery_notifier_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">publisher</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_state.html#RobotState.random_battery_notifier_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_state.RobotState.random_battery_notifier_" title="Permalink to this definition"></a></dt>
 <dd><p>Publish when the battery change state (i.e., high/low) based on a random
 delay within the interval [<cite>self._random_battery_time[0]</cite>, <cite>self._random_battery_time[1]</cite>).
 The message is published through the <cite>publisher</cite> input parameter and is a
 boolean value, i.e., <cite>True</cite>: battery low, <cite>False</cite>: battery high.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>publisher</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – boolean value stating the battery status</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="scripts.robot_state.RobotState.get_pose">
-<span class="sig-name descname"><span class="pre">get_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_state.html#RobotState.get_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_state.RobotState.get_pose" title="Permalink to this definition"></a></dt>
-<dd><p>The <cite>robot/get_pose</cite> service implementation.
-The <cite>request</cite> input parameter is given by the client as empty. Thus, it is not used.
-The <cite>response</cite> returned to the client contains the current robot pose.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>response</strong> – the response of the server</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the position of the robot</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>response(GetPoseResponse)</p>
+<dd class="field-odd"><p><strong>publisher</strong> (<em>publisher</em>) – publisher for the battery status.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -445,13 +439,13 @@ The <cite>request</cite> input parameter is the current robot pose to be set,
 as given by the client. This server returns an empty <cite>response</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>request</strong> – </p>
+<dd class="field-odd"><p><strong>request</strong> (<em>Point</em>) – current robot position to be set</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>an empty response</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>empty (SetPoseResponse)</p>
+<dd class="field-odd"><p>SetPoseResponse</p>
 </dd>
 </dl>
 </dd></dl>
@@ -461,7 +455,7 @@ as given by the client. This server returns an empty <cite>response</cite>.</p>
 </div>
 <div class="section" id="module-scripts.robot_actions">
 <span id="robotactions-module"></span><h1>RobotActions Module<a class="headerlink" href="#module-scripts.robot_actions" title="Permalink to this heading"></a></h1>
-<span class="target" id="module-robot_actions"></span><p>ROS node for implementing the Robot behavior.</p>
+<span class="target" id="module-robot_actions"></span><p>ROS node that helps the robot in performing its actions.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="scripts.robot_actions.BehaviorHelper">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.robot_actions.</span></span><span class="sig-name descname"><span class="pre">BehaviorHelper</span></span><a class="reference internal" href="_modules/scripts/robot_actions.html#BehaviorHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_actions.BehaviorHelper" title="Permalink to this definition"></a></dt>
@@ -473,7 +467,7 @@ as given by the client. This server returns an empty <cite>response</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>string_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – an integer specifying if the string is obtained from</p></li>
+<li><p><strong>string_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – an integer specifying if type of the string to clear (if locations or timestamps)</p></li>
 <li><p><strong>list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – list of string to be cleaned</p></li>
 </ul>
 </dd>
@@ -489,7 +483,7 @@ as given by the client. This server returns an empty <cite>response</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.robot_actions.BehaviorHelper.decide_target">
 <span class="sig-name descname"><span class="pre">decide_target</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_actions.html#BehaviorHelper.decide_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_actions.BehaviorHelper.decide_target" title="Permalink to this definition"></a></dt>
-<dd><p>Plan the next robot movement.</p>
+<dd><p>Function that plans the next robot movement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The current robot position obtained from the ontology</p>
@@ -515,13 +509,13 @@ as given by the client. This server returns an empty <cite>response</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.robot_actions.BehaviorHelper.get_locations">
 <span class="sig-name descname"><span class="pre">get_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_actions.html#BehaviorHelper.get_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_actions.BehaviorHelper.get_locations" title="Permalink to this definition"></a></dt>
-<dd><p>function for location’s query</p>
+<dd><p>function performing the location’s queries to aRMOR server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – a string to select the query to ask</p>
+<dd class="field-odd"><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – a string to select the typr of query.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of queried location</p>
+<dd class="field-even"><p>list of queried location.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>location_list(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>)</p>
@@ -573,6 +567,124 @@ as given by the client. This server returns an empty <cite>response</cite>.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-scripts.helper">
+<span id="helper-module"></span><h1>Helper Module<a class="headerlink" href="#module-scripts.helper" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-interface_helper"></span><p>ROS node for defining the behavior of the state machine</p>
+<dl class="simple">
+<dt>Subscribes to:</dt><dd><p>/state/battery_low: where the robot_state publishes the battery status.</p>
+</dd>
+<dt>Service:</dt><dd><p>/state/set_pose: set the current position.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.helper.ActionClientHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.helper.</span></span><span class="sig-name descname"><span class="pre">ActionClientHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feedback_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#ActionClientHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.ActionClientHelper" title="Permalink to this definition"></a></dt>
+<dd><p>A class to simplify the implementation of a client for ROS action servers. It is used by the <cite>InterfaceHelper</cite> class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.ActionClientHelper.cancel_goals">
+<span class="sig-name descname"><span class="pre">cancel_goals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#ActionClientHelper.cancel_goals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.ActionClientHelper.cancel_goals" title="Permalink to this definition"></a></dt>
+<dd><p>Stop the computation of the action server.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.ActionClientHelper.get_results">
+<span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#ActionClientHelper.get_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.ActionClientHelper.get_results" title="Permalink to this definition"></a></dt>
+<dd><p>Get the results of the action server, if any, or <cite>None</cite> and return this value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Some results have arrived, None otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>No results arrived</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.ActionClientHelper.is_done">
+<span class="sig-name descname"><span class="pre">is_done</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#ActionClientHelper.is_done"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.ActionClientHelper.is_done" title="Permalink to this definition"></a></dt>
+<dd><p>Get <cite>True</cite> if the action server finished is computation, or <cite>False</cite> otherwise.
+Note that use this method should do it in a <cite>self._mutex</cite> safe manner.</p>
+<dl class="simple">
+<dt>Results:</dt><dd><p>bool: If the reasoner has finished its calculations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.ActionClientHelper.is_running">
+<span class="sig-name descname"><span class="pre">is_running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#ActionClientHelper.is_running"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.ActionClientHelper.is_running" title="Permalink to this definition"></a></dt>
+<dd><p>Get <cite>True</cite> if the action server is running, or <cite>False</cite> otherwise.
+A note that use this method should do it in a <cite>self._mutex</cite> safe manner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>True</cite> If the server is still running, <cite>False</cite> otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.ActionClientHelper.reset_client_states">
+<span class="sig-name descname"><span class="pre">reset_client_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#ActionClientHelper.reset_client_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.ActionClientHelper.reset_client_states" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the client state variables stored in this class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.ActionClientHelper.send_goal">
+<span class="sig-name descname"><span class="pre">send_goal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">goal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#ActionClientHelper.send_goal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.ActionClientHelper.send_goal" title="Permalink to this definition"></a></dt>
+<dd><p>Start the action server with a new <cite>goal</cite>. Note this call is not blocking (i.e., asynchronous performed).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>goal</strong> (<em>Point</em>) – Goal point</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.helper.InterfaceHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.helper.</span></span><span class="sig-name descname"><span class="pre">InterfaceHelper</span></span><a class="reference internal" href="_modules/scripts/helper.html#InterfaceHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.InterfaceHelper" title="Permalink to this definition"></a></dt>
+<dd><p>A class to decouple the implementation of the Finite State Machine to the stimulus might that
+lead to state transitions. This class manages the synchronization with subscribers and action
+servers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.InterfaceHelper.is_battery_low">
+<span class="sig-name descname"><span class="pre">is_battery_low</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#InterfaceHelper.is_battery_low"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.InterfaceHelper.is_battery_low" title="Permalink to this definition"></a></dt>
+<dd><p>Get the state variable encoded in this class that concerns the battery level.
+The returning value will be <cite>True</cite> if the battery is low, <cite>False</cite> otherwise.
+Note that the node using this class might exploit the <cite>reset_state</cite> function to improve robustness.
+Also note that this function should be used when the <cite>mutex</cite> has been acquired. This assures the
+synchronization  with the threads involving the subscribers and action clients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>True</cite> if the battery is low, <cite>False</cite> otherwise</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.InterfaceHelper.reset_states">
+<span class="sig-name descname"><span class="pre">reset_states</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#InterfaceHelper.reset_states"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.InterfaceHelper.reset_states" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the stimulus, which are stored as states variable fo this class.
+This function assumes that no states of the Finite State Machine run concurrently.</p>
 </dd></dl>
 
 </dd></dl>

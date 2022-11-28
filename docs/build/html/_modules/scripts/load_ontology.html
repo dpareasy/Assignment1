@@ -72,7 +72,7 @@
 
 <span class="sd">.. moduleauthor:: Davide Leo Parisi &lt;davide.parisi1084@gmail.com&gt;</span>
 
-<span class="sd">ROS node for creating the ontology</span>
+<span class="sd">ROS node for creating the ontology.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># Import the armor client class</span>
@@ -86,7 +86,7 @@
 
 <div class="viewcode-block" id="CreateMap"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap">[docs]</a><span class="k">class</span> <span class="nc">CreateMap</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class contains all the method used to create the topological map</span>
+<span class="sd">    This class contains all the methods used to create the topological map.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -106,7 +106,7 @@
     <span class="c1"># check if a value is an integer</span>
 <div class="viewcode-block" id="CreateMap.not_int"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap.not_int">[docs]</a>    <span class="k">def</span> <span class="nf">not_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function checking if the value is an integer or not</span>
+<span class="sd">        Function checking if the value is an integer or not.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: input value</span>
@@ -126,21 +126,21 @@
             <span class="k">return</span> <span class="mi">0</span></div>
 
     <span class="c1"># check if the input is an integer number </span>
-<div class="viewcode-block" id="CreateMap.get_input"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap.get_input">[docs]</a>    <span class="k">def</span> <span class="nf">get_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">):</span>
+<div class="viewcode-block" id="CreateMap.get_input"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap.get_input">[docs]</a>    <span class="k">def</span> <span class="nf">get_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location_type</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function checking if the value taken as input is an integer</span>
+<span class="sd">        Function checking if the value taken as input is an integer.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            location(int): 0 if corrdiors are request, 1 if rooms rea request</span>
+<span class="sd">            location(int): 0 if corrdiors are request, 1 if rooms are request</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            number(int): An integern number</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">number</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">location_type</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_int</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
                 <span class="n">number</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Enter the number of corridors: &#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">location_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">not_int</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
                 <span class="n">number</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Enter the number of room for each corridor: &#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span></div>
@@ -148,7 +148,7 @@
 <div class="viewcode-block" id="CreateMap.LoadMap"><a class="viewcode-back" href="../../index.html#scripts.load_ontology.CreateMap.LoadMap">[docs]</a>    <span class="k">def</span> <span class="nf">LoadMap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function initializing the environment in which the robot should move.</span>
-<span class="sd">        This mechanism is generalized in a way in which every envirnoment can be </span>
+<span class="sd">        This mechanism is generalized in a way in which many envirnoments can be </span>
 <span class="sd">        created. The creation of the environment is done via call to armor server.</span>
 
 <span class="sd">        Args:</span>

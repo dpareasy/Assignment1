@@ -6,7 +6,7 @@
 
 .. moduleauthor:: Davide Leo Parisi <davide.parisi1084@gmail.com>
 
-ROS node for creating the ontology
+ROS node for creating the ontology.
 """
 
 # Import the armor client class
@@ -20,7 +20,7 @@ client = ArmorClient("assignment", "my_ontology")
 
 class CreateMap:
     """
-    This class contains all the method used to create the topological map
+    This class contains all the methods used to create the topological map.
     """
 
     def __init__(self):
@@ -40,7 +40,7 @@ class CreateMap:
     # check if a value is an integer
     def not_int(self,value):
         """
-        Function checking if the value is an integer or not
+        Function checking if the value is an integer or not.
 
         Args:
             value: input value
@@ -60,21 +60,21 @@ class CreateMap:
             return 0
 
     # check if the input is an integer number 
-    def get_input(self, location):
+    def get_input(self, location_type):
         """
-        Function checking if the value taken as input is an integer
+        Function checking if the value taken as input is an integer.
 
         Args:
-            location(int): 0 if corrdiors are request, 1 if rooms rea request
+            location(int): 0 if corrdiors are request, 1 if rooms are request
         
         Returns:
             number(int): An integern number
         """
         number = ''
-        if location == 0:
+        if location_type == 0:
             while self.not_int(number):
                 number = input('Enter the number of corridors: ')
-        if location == 1:
+        if location_type == 1:
             while self.not_int(number):
                 number = input('Enter the number of room for each corridor: ')
         return int(number)
@@ -82,7 +82,7 @@ class CreateMap:
     def LoadMap(self):
         """
         Function initializing the environment in which the robot should move.
-        This mechanism is generalized in a way in which every envirnoment can be 
+        This mechanism is generalized in a way in which many envirnoments can be 
         created. The creation of the environment is done via call to armor server.
 
         Args:

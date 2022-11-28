@@ -10,7 +10,11 @@
 ROS node for defining the behavior of the state machine
 
 Subscribes to:
-    /state/battery_low where the robot_state publishes the battery status
+    /state/battery_low: where the robot_state publishes the battery status.
+
+Service:
+    /state/set_pose: set the current position.
+
 """
 
 # Import ROS libraries.
@@ -32,17 +36,6 @@ class ActionClientHelper:
     """
     A class to simplify the implementation of a client for ROS action servers. It is used by the `InterfaceHelper` class.
 
-    Class constructor, i.e., class initializer. Input parameters are:
-
-    - `service_name`: it is the name of the server that will be invoked by this client.
-
-    - `action_type`: it is the message type that the server will exchange.
-
-    - `done_callback`: it is the name of the function called when the action server completed its computation. If this parameter is not set (i.e., set to `None`), then only the `self._done_callback` function will be called when the server completes its computation.
-
-    - `feedback_callback`: it is the name of the function called when the action server sends a feedback message. If this parameter is not set (i.e., set to `None`), then only the `self._feedback_callback` functions will be called when the server sends a feedback message.
-
-    - `mutex`: it is a `Lock` object synchronised with the `done_callback` and `feedback_callback`. If it is not set (i.e., set to `None`), then a new mutex instance is considered. Set this variable if you want to extends the synchronization with other classes.
     """
     def __init__(self, service_name, action_type, done_callback=None, feedback_callback=None, mutex=None):
         # Initialise the state of this client, i.e.,  `_is_running`, `_is_done`, and `_results`.
@@ -110,7 +103,7 @@ class ActionClientHelper:
         This function is called when the action server send some `feedback` back to the client.
 
         Args:
-            feedback: feedbacks from the action server
+            feedback: feedbacks from the action servers
 
         """
         # Acquire the mutex to synchronise the computation concerning the `feedback` message with the other nodes of the architecture.
@@ -129,9 +122,9 @@ class ActionClientHelper:
         computation, i.e., it provides a `done` message.
 
         Args:
-            status: 
+            status(str): status
 
-            results(): results from the action server
+            results(str): results from the action servers
 
         """
         # Acquire the mutex to synchronise the computation concerning the `done` message with the other nodes of the architecture.
@@ -153,7 +146,7 @@ class ActionClientHelper:
         Note that use this method should do it in a `self._mutex` safe manner.
 
         Results:
-            self._is_done(bool): If the reasoner has finished its calculations.
+            bool: If the reasoner has finished its calculations.
 
         """
         return self._is_done
@@ -164,7 +157,7 @@ class ActionClientHelper:
         A note that use this method should do it in a `self._mutex` safe manner.
 
         Returns:
-            self._is_running: If the server is still running.
+            bool: `True` If the server is still running, `False` otherwise.
 
         """
         return self._is_running
@@ -174,7 +167,7 @@ class ActionClientHelper:
         Get the results of the action server, if any, or `None` and return this value.
 
         Returns:
-            self._results(): Some results have arrived.
+            str: Some results have arrived, None otherwise.
         Returns:
             None: No results arrived
 
@@ -237,7 +230,7 @@ class InterfaceHelper:
         synchronization  with the threads involving the subscribers and action clients.
 
         Returns:
-            self._battery_low(bool): `True` if the battery is low, `False` otherwise
+            bool: `True` if the battery is low, `False` otherwise
 
         """
         return self._battery_low
