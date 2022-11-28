@@ -285,11 +285,11 @@ As stated in [Assumptions](#Assumptions), some hypothesis have been made to simp
 
 The ideas for possible improvements come from the previous section:
 
-1. An importat improvement, which will make the simulation more realistic, is the implementation a method to bring the robot safe to the recharging location, by following the best path connecting its actual position and the recharging location.
+1. An importat improvement, which will make the simulation more realistic, is the implementation a method to bring the robot to the recharging location by following the best path which connects its actual position with the recharging location.
 
-2. As regarding the creation of the map, it could be useful to implement a code which make the user able to create any possible environment. Note that the developer chose this solution for simplicity, since it wasn't a requirement for the project.
+2. As regarding the creation of the map, it could be useful to implement a code which make the user able to create any possible environment. Note that the developer chose this solution for simplicity, since it wasn't a requirement of the project.
 
-2. As already mentioned in [System limitations](#system-limitations) an other improvement could be the implementation of a reasoning system about the next location to visit, if no urgent rooms are detected. This could be done by driving the decision by assigning to corridors an hihger probability than rooms.
+2. As already mentioned in [System limitations](#system-limitations) an other improvement could be the implementation of a reasoning system for the decision of the next location to visit if no urgent rooms occurs. This can be achieved by assigning a higher probability to corridors than to rooms, so that the robot is more likely to move through corridors.
 
 ## Documentation ##
 
