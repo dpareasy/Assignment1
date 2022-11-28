@@ -16,6 +16,7 @@ The software uses a Smach state machine and builds the ontology with aRMOR serve
 ## System's Features ##
 
 ### Scenario ###
+
 ![environment](https://user-images.githubusercontent.com/92155300/204328875-8f3529e6-f970-4634-bbe2-08476acd3461.png)
 
 The scenario involves a surveying robot deployed in the indoor environmnet presented in the image above. Its aim is to move between the locations of the map and stay there for a while for surveillance purposes, before starting reasoning to decide the next room to visit. Before starting moving around the environment the robot must wait until receiving all the information about the environment.
@@ -49,7 +50,7 @@ Given the scenario presented above the software is developed as follow.
 In the figure below the whole software architecture is presented.
 
 
-![UML](https://user-images.githubusercontent.com/92155300/204353733-fce3ce63-49c1-40fb-97cb-a7d287c09deb.png)
+![UML](https://user-images.githubusercontent.com/92155300/204357527-20d9ff80-60a1-4663-972c-f4f0218c78eb.png)
 
 
 It is important to remark that the communications between the state_machine and the other servers are managed by two different helper classes:
