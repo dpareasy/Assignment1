@@ -1,6 +1,6 @@
 # Assignment1
 
-Author: Davide Leo Parisi
+Author: [Davide Leo Parisi](https://github.com/dpareasy)
 
 Contacts:
 * personal email: davide.parisi1084@gmail.com
