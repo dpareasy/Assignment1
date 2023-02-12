@@ -126,6 +126,7 @@ class CreateMap:
         for j in range(0,corridor_number):
             corridor_list.append('C' + str(j+1))
             client.manipulation.add_ind_to_class(corridor_list[j], "LOCATION")
+            client.manipulation.add_dataprop_to_ind("visitedAt", corridor_list[j], "Long", str(int(time.time())))
             print("Added " + corridor_list[j] + " to LOCATION")
 
         # for cycle for creating all the doors

@@ -160,8 +160,6 @@ def decide_target():
 ```
 def move_to_target():
    move the robot in the new position
-   if new position is a room:
-      update location timestamps
    update robot timestamps
 
 ```

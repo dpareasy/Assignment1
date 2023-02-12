@@ -164,9 +164,9 @@ class BehaviorHelper:
         """
         
 
-        if chosen_target not in list_of_corridors:
-            last_visit = client.query.dataprop_b2_ind('visitedAt', chosen_target)
-            last_visit = self.clean_strings(2, last_visit)
+        
+        last_visit = client.query.dataprop_b2_ind('visitedAt', chosen_target)
+        last_visit = self.clean_strings(2, last_visit)
 
         client.manipulation.replace_objectprop_b2_ind('isIn', self.agent, chosen_target, current_pose)
         client.utils.sync_buffered_reasoner()
@@ -174,8 +174,7 @@ class BehaviorHelper:
         last_change = self.clean_strings(2, last_change)
         current_time = str(int(time.time()))
 
-        if chosen_target not in list_of_corridors:
-            client.manipulation.replace_dataprop_b2_ind('visitedAt', chosen_target, 'Long', current_time, last_visit)
+        client.manipulation.replace_dataprop_b2_ind('visitedAt', chosen_target, 'Long', current_time, last_visit)
 
         client.manipulation.replace_dataprop_b2_ind('now', self.agent, 'Long', current_time, last_change)
         client.utils.sync_buffered_reasoner()
